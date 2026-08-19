@@ -1,0 +1,36 @@
+/* Minimal override just for colors and white bar background */
+.df-lightbox-wrapper {
+    background-color: rgba(0, 0, 0, 0.8) !important; /* Transparan gelap sesuai referensi */
+}
+
+.df-lightbox-wrapper::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important; left: 0 !important; right: 0 !important;
+    height: 50px !important;
+    background-color: white !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    z-index: 1 !important;
+}
+
+.df-lightbox-wrapper .df-ui-btn,
+.df-lightbox-wrapper .df-lightbox-close {
+    color: #ea580c !important;
+    z-index: 2 !important; /* Make sure they sit on top of the white bar */
+}
+
+.df-lightbox-wrapper .df-lightbox-close:before {
+    content: "\e646" !important;
+    font-size: 24px !important;
+    font-weight: 900 !important;
+    -webkit-text-stroke: 1.5px #ea580c !important;
+}
+
+/* Ensure container doesn't overlap the top bar */
+.df-lightbox-wrapper .df-container {
+    top: 50px !important;
+    height: calc(100% - 50px) !important;
+    background-color: transparent !important;
+}
+
+/* Keep the rest of dFlip exactly as native to avoid breaking the book! */

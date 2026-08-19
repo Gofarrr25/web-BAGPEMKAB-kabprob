@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@yield('title', $siteSettings['site_name'] ?? 'Bagian Pemerintahan Kabupaten Probolinggo')</title>
+    @stack('meta')
+    
+    {{-- Favicon --}}
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-blue': '#2563eb',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Nunito', sans-serif; transition: font-size 0.2s ease, letter-spacing 0.2s ease, line-height 0.2s ease, font-weight 0.2s ease, filter 0.2s ease, background-color 0.2s ease, color 0.2s ease; }
+        @media (hover: hover) {
+            .dropdown-wrapper:hover .dropdown-menu {
+                display: block !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+        }
+        
+        /* Accessibility Styles */
+        .acc-highlight-titles h1, .acc-highlight-titles h2, .acc-highlight-titles h3, .acc-highlight-titles h4, .acc-highlight-titles h5, .acc-highlight-titles h6 {
+            border: 2px solid #FF5722 !important;
+            padding: 2px !important;
+        }
+        .acc-highlight-links a {
+            background-color: #FFEB3B !important;
+            color: #000 !important;
+            text-decoration: underline !important;
+            font-weight: bold !important;
+        }
+        .acc-dyslexia * {
+            font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
+        }
+        .acc-letter-spacing-1 { letter-spacing: 0.05em !important; }
+        .acc-letter-spacing-2 { letter-spacing: 0.1em !important; }
+        .acc-letter-spacing-3 { letter-spacing: 0.15em !important; }
+        
+        .acc-line-height-1 { line-height: 1.5 !important; }
+        .acc-line-height-2 { line-height: 1.75 !important; }
+        .acc-line-height-3 { line-height: 2.0 !important; }
+        
+        .acc-font-weight-1 * { font-weight: 500 !important; }
+        .acc-font-weight-2 * { font-weight: 600 !important; }
+        .acc-font-weight-3 * { font-weight: 700 !important; }
+        
+        .acc-contrast-dark { background-color: #121212 !important; color: #fff !important; }
+        .acc-contrast-dark * { background-color: #121212 !important; color: #fff !important; border-color: #444 !important; }
+        .acc-contrast-light { background-color: #fff !important; color: #000 !important; }
+        .acc-contrast-light * { background-color: #fff !important; color: #000 !important; border-color: #ccc !important; }
+        .acc-contrast-high { filter: contrast(150%) !important; }
+        
+        .acc-saturation-high { filter: saturate(200%) !important; }
+        .acc-saturation-low { filter: saturate(50%) !important; }
+        .acc-saturation-monochrome { filter: grayscale(100%) !important; }
+        
+        .acc-stop-animations * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+        
+        .acc-large-cursor, .acc-large-cursor * { cursor: url('https://cdn.iconscout.com/icon/free/png-256/cursor-1438980-1214470.png'), auto !important; }
+        
+        /* CKEditor 5 Frontend Styles */
+        .text-align-left { text-align: left !important; }
+        .text-align-center { text-align: center !important; }
+        .text-align-right { text-align: right !important; }
+        .text-align-justify { text-align: justify !important; }
+        
+        figure.image { margin: 1.5rem auto; display: table; max-width: 100%; }
+        figure.image img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+        figure.image figcaption { text-align: center; font-size: 0.875rem; color: #6b7280; padding-top: 0.5rem; }
+        
+        .image-style-align-left { float: left; margin: 0 1.5rem 1.5rem 0 !important; }
+        .image-style-align-right { float: right; margin: 0 0 1.5rem 1.5rem !important; }
+        .image-style-align-center { display: block; margin-left: auto !important; margin-right: auto !important; text-align: center; }
+        .image-style-side { float: right; margin: 0 0 1.5rem 1.5rem !important; max-width: 50%; }
+        
+        .prose table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .prose table th, .prose table td { border: 1px solid #e5e7eb; padding: 0.75rem; }
+        .prose table th { background-color: #f9fafb; font-weight: bold; }
+        .media { margin: 1.5rem auto; text-align: center; display: block; }
+        .media iframe { max-width: 100%; display: inline-block; }
+    </style>
+</head>
+<body class="bg-gray-50 flex flex-col min-h-screen">
+
+    <!-- Header Navbar -->
+    <header class="bg-white sticky top-0 z-50 border-b border-gray-100 shadow-sm">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <div class="flex-shrink-0">
+                    <a href="/" class="flex items-center gap-3">
+                        @if(isset($siteSettings['site_logo']) && $siteSettings['site_logo'])
+                            <img src="{{ asset('storage/' . $siteSettings['site_logo']) }}" class="h-12 object-contain" alt="Logo">
+                        @else
+                            <img src="https://diskominfo.probolinggokab.go.id/backend/gambar/logo_frontend.png" class="h-12 object-contain" alt="Logo">
+                        @endif
+                        <div class="flex flex-col">
+                            <span class="font-extrabold text-gray-900 text-sm sm:text-base leading-tight tracking-tight uppercase">
+                                {{ $siteSettings['site_name'] ?? 'Bagian Pemerintahan' }}
+                            </span>
+                            <span class="text-[10px] sm:text-xs text-gray-500 font-bold tracking-wider uppercase">
+                                Sekretariat Daerah Kab. Probolinggo
+                            </span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Tengah: Menu Navigasi (Hasil CRUD Manajemen Menu & Submenu) -->
+                <nav class="hidden lg:flex items-center gap-6">
+                    <a href="/" class="text-gray-600 hover:text-blue-700 font-semibold text-sm uppercase tracking-wide">HOME</a>
+
+                    @if(isset($headerNavMenus) && $headerNavMenus->count() > 0)
+                        @foreach($headerNavMenus as $menuItem)
+                            @if($menuItem->children && $menuItem->children->count() > 0)
+                                <!-- Menu Utama yang memiliki Submenu Dropdown -->
+                                <div class="relative py-4 dropdown-wrapper">
+                                    <button onclick="toggleFrontendMenu(event, 'menu-{{ $menuItem->id }}')" class="text-gray-600 hover:text-blue-700 font-semibold text-sm uppercase tracking-wide flex items-center focus:outline-none">
+                                        @if($menuItem->icon)<i class="{{ $menuItem->icon }} mr-1.5 text-blue-600"></i>@endif
+                                        {{ $menuItem->title }} <i class="fas fa-chevron-down text-[10px] ml-1 pointer-events-none"></i>
+                                    </button>
+                                    <div id="menu-{{ $menuItem->id }}" class="dropdown-menu hidden absolute left-0 top-full mt-0 w-64 bg-white border border-gray-100 shadow-lg rounded-b-md z-50 overflow-visible">
+                                        <ul class="py-2">
+                                            @foreach($menuItem->children as $child)
+                                                @if($child->children && $child->children->count() > 0)
+                                                    <li class="relative group/sub">
+                                                        <a href="{{ $child->link_url ?? '#' }}" class="flex justify-between items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600">
+                                                            <span>@if($child->icon)<i class="{{ $child->icon }} mr-1.5 text-gray-400"></i>@endif {{ $child->title }}</span>
+                                                            <i class="fas fa-chevron-right text-[10px] text-gray-400"></i>
+                                                        </a>
+                                                        <!-- Sub-dropdown Level 3 -->
+                                                        <ul class="absolute left-full top-0 mt-0 w-56 bg-white border border-gray-100 shadow-lg rounded-md hidden group-hover/sub:block z-50">
+                                                            @foreach($child->children as $grandchild)
+                                                                <li>
+                                                                    <a href="{{ $grandchild->link_url ?? '#' }}" target="{{ $grandchild->target }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600">
+                                                                        @if($grandchild->icon)<i class="{{ $grandchild->icon }} mr-1.5 text-gray-400"></i>@endif {{ $grandchild->title }}
+                                                                    </a>
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </li>
+                                                @else
+                                                    <li>
+                                                        <a href="{{ $child->link_url ?? '#' }}" target="{{ $child->target }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600">
+                                                            @if($child->icon)<i class="{{ $child->icon }} mr-1.5 text-gray-400"></i>@endif
+                                                            {{ $child->title }}
+                                                        </a>
+                                                    </li>
+                                                @endif
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
+                            @else
+                                <!-- Single Menu Link -->
+                                <a href="{{ $menuItem->link_url }}" target="{{ $menuItem->target }}" class="text-gray-600 hover:text-blue-700 font-semibold text-sm uppercase tracking-wide">
+                                    @if($menuItem->icon)<i class="{{ $menuItem->icon }} mr-1.5 text-blue-600"></i>@endif
+                                    {{ $menuItem->title }}
+                                </a>
+                            @endif
+                        @endforeach
+                    @else
+                        <!-- Standalone Fallback -->
+                        <a href="/page/struktur-organisasi" class="text-gray-600 hover:text-blue-700 font-semibold text-sm uppercase tracking-wide">PROFIL</a>
+                    @endif
+
+                    <a href="/login" class="text-gray-600 hover:text-blue-700 font-semibold text-sm uppercase tracking-wide">LOGIN</a>
+                </nav>
+
+                <div class="flex items-center gap-4">
+                    <div class="hidden lg:block flex-shrink-0">
+                        @if(isset($siteSettings['berakhlak_logo']) && $siteSettings['berakhlak_logo'])
+                            <img src="{{ asset('storage/' . $siteSettings['berakhlak_logo']) }}" class="h-12 object-contain" alt="BerAKHLAK">
+                        @else
+                            <img src="https://diskominfo.probolinggokab.go.id/frontend/images/img-berakhlak.png" class="h-12 object-contain" alt="BerAKHLAK Default">
+                        @endif
+                    </div>
+                    <!-- Hamburger Menu Button (Mobile) -->
+                    <button onclick="toggleMobileMenu()" class="lg:hidden text-gray-600 hover:text-blue-600 focus:outline-none p-2 rounded-md hover:bg-gray-100 transition">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Navigation (Off-canvas / Dropdown) -->
+        <div id="mobileMenu" class="lg:hidden hidden bg-white border-b border-gray-100 shadow-md absolute w-full left-0 top-full max-h-[80vh] overflow-y-auto z-40">
+            <nav class="flex flex-col p-4 gap-2">
+                <a href="/" class="px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-blue-600 font-bold rounded-lg transition uppercase">Home</a>
+
+                @if(isset($headerNavMenus) && $headerNavMenus->count() > 0)
+                    @foreach($headerNavMenus as $menuItem)
+                        @if($menuItem->children && $menuItem->children->count() > 0)
+                            <div class="flex flex-col">
+                                <button onclick="toggleMobileSubmenu('mobile-sub-{{ $menuItem->id }}')" class="flex justify-between items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-blue-600 font-bold rounded-lg transition uppercase w-full text-left">
+                                    <span>@if($menuItem->icon)<i class="{{ $menuItem->icon }} mr-2 text-blue-500"></i>@endif{{ $menuItem->title }}</span>
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </button>
+                                <div id="mobile-sub-{{ $menuItem->id }}" class="hidden flex-col pl-6 mt-1 gap-1">
+                                    @foreach($menuItem->children as $child)
+                                        @if($child->children && $child->children->count() > 0)
+                                            <div class="flex flex-col">
+                                                <button onclick="toggleMobileSubmenu('mobile-sub-sub-{{ $child->id }}')" class="flex justify-between items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600 font-semibold rounded-lg transition w-full text-left">
+                                                    <span>@if($child->icon)<i class="{{ $child->icon }} mr-2 text-gray-400"></i>@endif{{ $child->title }}</span>
+                                                    <i class="fas fa-chevron-down text-xs"></i>
+                                                </button>
+                                                <div id="mobile-sub-sub-{{ $child->id }}" class="hidden flex-col pl-6 mt-1 gap-1 border-l-2 border-gray-100 ml-2">
+                                                    @foreach($child->children as $grandchild)
+                                                        <a href="{{ $grandchild->link_url ?? '#' }}" target="{{ $grandchild->target }}" class="px-4 py-2 text-sm text-gray-500 hover:text-blue-600 transition">
+                                                            @if($grandchild->icon)<i class="{{ $grandchild->icon }} mr-2 text-gray-400"></i>@endif{{ $grandchild->title }}
+                                                        </a>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @else
+                                            <a href="{{ $child->link_url ?? '#' }}" target="{{ $child->target }}" class="px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600 font-semibold rounded-lg transition">
+                                                @if($child->icon)<i class="{{ $child->icon }} mr-2 text-gray-400"></i>@endif{{ $child->title }}
+                                            </a>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                        @else
+                            <a href="{{ $menuItem->link_url }}" target="{{ $menuItem->target }}" class="px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-blue-600 font-bold rounded-lg transition uppercase">
+                                @if($menuItem->icon)<i class="{{ $menuItem->icon }} mr-2 text-blue-500"></i>@endif{{ $menuItem->title }}
+                            </a>
+                        @endif
+                    @endforeach
+                @else
+                    <a href="/page/struktur-organisasi" class="px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-blue-600 font-bold rounded-lg transition uppercase">Profil</a>
+                @endif
+                <a href="/login" class="px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-blue-600 font-bold rounded-lg transition uppercase">Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Global Submenu Banner -->
+    @if(!request()->is('/'))
+        <div class="bg-[#1a365d] py-12 border-t border-white/10 shadow-inner relative overflow-hidden">
+            <!-- Background Image/Pattern Overlay -->
+            <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none"></div>
+            
+            <div class="container mx-auto px-4 lg:px-8 relative z-10 flex flex-col items-start justify-center">
+                <!-- Title -->
+                <h1 class="text-[24px] font-bold text-white drop-shadow-md mb-2">
+                    @php
+                        $headerTitle = $__env->yieldContent('title', ucwords(str_replace('-', ' ', request()->segment(count(request()->segments())) ?? 'Halaman')));
+                        $headerTitle = explode(' - ', $headerTitle)[0];
+                    @endphp
+                    {{ $headerTitle }}
+                </h1>
+                
+                <!-- Breadcrumb -->
+                <nav class="text-white text-[14px] font-normal flex items-center gap-2">
+                    <a href="/" class="hover:text-gray-200 transition">Home</a>
+                    @php
+                        $segments = request()->segments();
+                        $url = '';
+                    @endphp
+                    @foreach($segments as $segment)
+                        @php $url .= '/' . $segment; @endphp
+                        <i class="fas fa-chevron-right text-[10px] text-white mx-1"></i>
+                        @if($loop->last)
+                            <span class="text-white">{{ ucwords(str_replace('-', ' ', $segment)) }}</span>
+                        @else
+                            <a href="{{ $url }}" class="hover:text-gray-200 transition">{{ ucwords(str_replace('-', ' ', $segment)) }}</a>
+                        @endif
+                    @endforeach
+                </nav>
+            </div>
+            
+            <!-- Optional Right Side Image like screenshot -->
+            <div class="absolute right-0 bottom-0 opacity-20 pointer-events-none hidden md:block">
+                @if(isset($siteSettings['berakhlak_logo']) && $siteSettings['berakhlak_logo'])
+                    <img src="{{ asset('storage/' . $siteSettings['berakhlak_logo']) }}" class="h-32 object-cover grayscale" alt="Background Element">
+                @else
+                    <img src="https://diskominfo.probolinggokab.go.id/frontend/images/img-berakhlak.png" class="h-32 object-cover grayscale" alt="Background Element">
+                @endif
+            </div>
+        </div>
+    @endif
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        @yield('content')
+    </main>
+
+    <!-- Footer Presisi Dinamis -->
+    <footer class="bg-[#1a365d] text-white pt-10 pb-4 mt-12">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                
+                <!-- Kolom 1: Logo & Deskripsi Profil Footer -->
+                <div>
+                    @if(isset($siteSettings['footer_logo']) && $siteSettings['footer_logo'])
+                        <img src="{{ asset('storage/' . $siteSettings['footer_logo']) }}" class="h-16 mb-4 object-contain" alt="Logo Footer">
+                    @elseif(isset($siteSettings['site_logo']) && $siteSettings['site_logo'])
+                        <img src="{{ asset('storage/' . $siteSettings['site_logo']) }}" class="h-16 mb-4 object-contain filter brightness-0 invert" alt="Logo Footer">
+                    @else
+                        <img src="https://diskominfo.probolinggokab.go.id/backend/gambar/logo_backend.png" class="h-16 mb-4 object-contain filter brightness-0 invert" alt="DISKOMINFO">
+                    @endif
+
+                    <p class="text-gray-300 text-sm leading-relaxed pr-4 textToRead">
+                        {{ $siteSettings['footer_description'] ?? 'Website Resmi Bagian Pemerintahan Sekretariat Daerah Kabupaten Probolinggo. Merupakan media informasi elektronik satu pintu meliputi penyimpanan dan pengelolaan informasi serta pelayanan publik kepada masyarakat.' }}
+                    </p>
+                </div>
+
+                <!-- Kolom 2: Links Survey & QR Code SKM -->
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4 textToRead">{{ $siteSettings['survey_title'] ?? 'Links Survey' }}</h3>
+                    <div class="bg-white p-2 rounded-md inline-block w-32 h-32 mb-2 shadow-lg">
+                        @if(isset($siteSettings['survey_qr_image']) && $siteSettings['survey_qr_image'])
+                            <img src="{{ asset('storage/' . $siteSettings['survey_qr_image']) }}" class="w-full h-full object-contain" alt="QR Code Survey">
+                        @else
+                            <img src="https://diskominfo.probolinggokab.go.id/backend/gambar/qr_code_kominfo.png" class="w-full h-full object-contain" alt="QR Code Survey">
+                        @endif
+                    </div>
+                    @if(isset($siteSettings['survey_link']) && $siteSettings['survey_link'])
+                        <div>
+                            <a href="{{ $siteSettings['survey_link'] }}" target="_blank" class="text-xs text-yellow-400 hover:text-yellow-300 hover:underline font-semibold flex items-center gap-1 transition">
+                                <i class="fas fa-external-link-alt"></i> Isi Form Survey Online
+                            </a>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Kolom 3: Alamat Kantor & Kontak -->
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4 textToRead">Alamat Kantor</h3>
+                    <p class="text-gray-300 text-sm mb-4 textToRead">
+                        {{ $siteSettings['office_address'] ?? 'Jl. Panglima Sudirman No. 134 lt. 3 - Kraksaan - Probolinggo' }}
+                    </p>
+                    <ul class="space-y-3 text-sm text-gray-300 textToRead">
+                        <li class="flex items-start gap-3"><i class="fas fa-phone-alt mt-1 text-blue-400"></i> {{ $siteSettings['phone'] ?? '0335 844554' }}</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-envelope mt-1 text-blue-400"></i> {{ $siteSettings['email'] ?? 'bagpemerintahan@probolinggokab.go.id' }}</li>
+                    </ul>
+
+                    @if(!empty($siteSettings['instagram_url']) || !empty($siteSettings['facebook_url']) || !empty($siteSettings['youtube_url']) || !empty($siteSettings['tiktok_url']))
+                        <div class="flex items-center gap-3 mt-6">
+                            @if(!empty($siteSettings['instagram_url']))
+                                <a href="{{ $siteSettings['instagram_url'] }}" target="_blank" class="w-9 h-9 rounded bg-white/10 hover:bg-pink-600 flex items-center justify-center text-white transition shadow"><i class="fab fa-instagram"></i></a>
+                            @endif
+                            @if(!empty($siteSettings['facebook_url']))
+                                <a href="{{ $siteSettings['facebook_url'] }}" target="_blank" class="w-9 h-9 rounded bg-white/10 hover:bg-blue-600 flex items-center justify-center text-white transition shadow"><i class="fab fa-facebook-f"></i></a>
+                            @endif
+                            @if(!empty($siteSettings['tiktok_url']))
+                                <a href="{{ $siteSettings['tiktok_url'] }}" target="_blank" class="w-9 h-9 rounded bg-white/10 hover:bg-black flex items-center justify-center text-white transition shadow"><i class="fab fa-tiktok"></i></a>
+                            @endif
+                            @if(!empty($siteSettings['youtube_url']))
+                                <a href="{{ $siteSettings['youtube_url'] }}" target="_blank" class="w-9 h-9 rounded bg-white/10 hover:bg-red-600 flex items-center justify-center text-white transition shadow"><i class="fab fa-youtube"></i></a>
+                            @endif
+                        </div>
+                    @endif
+                </div>
+            </div>
+            
+            <div class="border-t border-white/10 pt-6 mt-4 text-center text-sm text-gray-400 flex flex-col md:flex-row justify-between items-center gap-2">
+                <span>{{ $siteSettings['footer_copyright'] ?? (strtoupper($siteSettings['site_name'] ?? 'BAGIAN PEMERINTAHAN KABUPATEN PROBOLINGGO') . ' © ' . date('Y') . '. All Rights Reserved') }}</span>
+                <span>Powered by Laravel</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Tombol Accessibility & Back to Top -->
+    <div class="fixed bottom-6 left-6 z-50">
+        <button id="btn-accessibility-toggle" class="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg hover:bg-blue-700">
+            <i class="fab fa-accessible-icon"></i>
+        </button>
+    </div>
+
+    <!-- Accessibility Panel -->
+    <div id="accessibility-panel" class="fixed top-0 left-0 h-full w-full max-w-[340px] bg-white shadow-2xl z-[100] transform -translate-x-full transition-transform duration-300 flex flex-col font-sans text-sm border-r border-gray-200">
+        <div class="bg-blue-700 text-white flex justify-between items-center px-4 py-3">
+            <h2 class="font-bold text-base">Menu Aksesibilitas</h2>
+            <div class="flex gap-2">
+                <button id="btn-acc-reset" class="bg-white text-blue-700 w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 shadow" title="Reset Semua"><i class="fas fa-undo"></i></button>
+                <button id="btn-acc-close" class="bg-white text-blue-700 w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 shadow" title="Tutup"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+        
+        <div class="flex-grow overflow-y-auto p-4 bg-gray-50 text-gray-800">
+            <!-- Language (Mock) -->
+            <div class="mb-4">
+                <select class="w-full border border-gray-300 rounded-md p-2 bg-white font-semibold">
+                    <option>Bahasa Indonesia (Indonesian)</option>
+                </select>
+            </div>
+
+            <!-- Penyesuaian Konten -->
+            <div class="mb-6">
+                <h3 class="text-xs font-semibold text-gray-500 mb-2">Penyesuaian Konten</h3>
+                
+                <div class="bg-white border border-gray-200 rounded-xl p-4 mb-3 flex items-center justify-between shadow-sm">
+                    <div class="flex items-center gap-3 font-bold"><i class="fas fa-text-height text-lg"></i> Sesuaikan Ukuran Font</div>
+                    <div class="flex items-center gap-4">
+                        <button id="btn-acc-font-minus" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200"><i class="fas fa-minus text-xs"></i></button>
+                        <span id="acc-font-size-val" class="font-bold w-10 text-center">100%</span>
+                        <button id="btn-acc-font-plus" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200"><i class="fas fa-plus text-xs"></i></button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <button id="btn-sorot-judul" class="bg-white border border-gray-200 rounded-xl p-4 flex flex-col items-center justify-center gap-3 hover:bg-gray-50 shadow-sm transition">
+                        <i class="fas fa-heading text-3xl"></i>
+                        <span class="text-xs font-semibold text-center">Sorot Judul</span>
+                    </button>
+                    <button id="btn-sorot-tautan" class="bg-white border border-gray-200 rounded-xl p-4 flex flex-col items-center justify-center gap-3 hover:bg-gray-50 shadow-sm transition">
+                        <i class="fas fa-link text-3xl"></i>
+                        <span class="text-xs font-semibold text-center">Sorot Tautan</span>
+                    </button>
+                    <button id="btn-font-disleksia" class="bg-white border border-gray-200 rounded-xl p-4 flex flex-col items-center justify-center gap-3 hover:bg-gray-50 shadow-sm transition">
+                        <i class="fas fa-font text-3xl"></i>
+                        <span class="text-xs font-semibold text-center">Font Disleksia</span>
+                    </button>
+                    <button id="btn-jarak-huruf" class="bg-white border border-gray-200 rounded-xl p-4 flex flex-col items-center justify-center gap-3 hover:bg-gray-50 shadow-sm transition">
+                        <span class="font-serif text-3xl font-bold tracking-widest">|A|</span>
+                        <span class="text-xs font-semibold text-center">Jarak Huruf</span>
+                    </button>
+                    <button id="btn-tinggi-baris" class="bg-white border border-gray-200 rounded-xl p-4 flex flex-col items-center justify-center gap-3 hover:bg-gray-50 shadow-sm transition">
+                        <i class="fas fa-text-height text-3xl"></i>
+                        <span class="text-xs font-semibold text-center">Tinggi Baris</span>
+                    </button>
+                    <button id="btn-ketebalan-font" class="bg-white border border-gray-200 rounded-xl p-4 flex flex-col items-center justify-center gap-3 hover:bg-gray-50 shadow-sm transition">
+                        <i class="fas fa-bold text-3xl"></i>
+                        <span class="text-xs font-semibold text-center">Ketebalan Font</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Penyesuaian Warna -->
+            <div class="mb-6">
+                <h3 class="text-xs font-semibold text-gray-500 mb-2">Penyesuaian Warna</h3>
+                <div class="grid grid-cols-3 gap-2">
+                    <button id="btn-kontras-gelap" class="bg-white border border-gray-200 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 shadow-sm transition">
+                        <i class="fas fa-moon text-2xl"></i>
+                        <span class="text-[10px] font-semibold text-center leading-tight">Kontras Gelap</span>
+                    </button>
+                    <button id="btn-kontras-terang" class="bg-white border border-gray-200 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 shadow-sm transition">
+                        <i class="fas fa-sun text-2xl"></i>
+                        <span class="text-[10px] font-semibold text-center leading-tight">Kontras Terang</span>
+                    </button>
+                    <button id="btn-kontras-tinggi" class="bg-white border border-gray-200 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 shadow-sm transition">
+                        <i class="fas fa-adjust text-2xl"></i>
+                        <span class="text-[10px] font-semibold text-center leading-tight">Kontras Tinggi</span>
+                    </button>
+                    <button id="btn-saturasi-tinggi" class="bg-white border border-gray-200 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 shadow-sm transition">
+                        <i class="fas fa-tint text-2xl"></i>
+                        <span class="text-[10px] font-semibold text-center leading-tight">Saturasi Tinggi</span>
+                    </button>
+                    <button id="btn-saturasi-rendah" class="bg-white border border-gray-200 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 shadow-sm transition">
+                        <i class="fas fa-tint-slash text-2xl"></i>
+                        <span class="text-[10px] font-semibold text-center leading-tight">Saturasi Rendah</span>
+                    </button>
+                    <button id="btn-monokrom" class="bg-white border border-gray-200 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 shadow-sm transition">
+                        <i class="fas fa-palette text-2xl"></i>
+                        <span class="text-[10px] font-semibold text-center leading-tight">Monokrom</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Alat -->
+            <div class="mb-4">
+                <h3 class="text-xs font-semibold text-gray-500 mb-2">Alat</h3>
+                <div class="grid grid-cols-3 gap-2">
+                    <button id="btn-panduan-membaca" class="bg-white border border-gray-200 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 shadow-sm transition">
+                        <i class="fas fa-book-reader text-2xl"></i>
+                        <span class="text-[10px] font-semibold text-center leading-tight">Panduan Membaca</span>
+                    </button>
+                    <button id="btn-hentikan-animasi" class="bg-white border border-gray-200 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 shadow-sm transition">
+                        <i class="fas fa-pause-circle text-2xl"></i>
+                        <span class="text-[10px] font-semibold text-center leading-tight">Hentikan Animasi</span>
+                    </button>
+                    <button id="btn-kursor-besar" class="bg-white border border-gray-200 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 shadow-sm transition">
+                        <i class="fas fa-mouse-pointer text-2xl"></i>
+                        <span class="text-[10px] font-semibold text-center leading-tight">Kursor Besar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white py-4 text-center text-sm font-bold shadow-md">
+            Web Accessibility.
+        </div>
+    </div>
+    
+    <button onclick="window.scrollTo(0,0)" class="fixed bottom-6 right-6 bg-white text-gray-800 w-10 h-10 flex items-center justify-center shadow-lg hover:bg-gray-100 z-50">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+    
+    <script>
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+            } else {
+                mobileMenu.classList.add('hidden');
+            }
+        }
+
+        function toggleMobileSubmenu(id) {
+            const submenu = document.getElementById(id);
+            if (submenu.classList.contains('hidden')) {
+                submenu.classList.remove('hidden');
+                submenu.classList.add('flex');
+            } else {
+                submenu.classList.add('hidden');
+                submenu.classList.remove('flex');
+            }
+        }
+
+        function toggleFrontendMenu(event, menuId) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const allMenus = document.querySelectorAll('.dropdown-menu');
+            allMenus.forEach(menu => {
+                if(menu.id !== menuId) {
+                    menu.classList.add('hidden');
+                    menu.style.display = 'none';
+                }
+            });
+            
+            const targetMenu = document.getElementById(menuId);
+            if(targetMenu.classList.contains('hidden')) {
+                targetMenu.classList.remove('hidden');
+                targetMenu.style.display = 'block';
+            } else {
+                targetMenu.classList.add('hidden');
+                targetMenu.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('click', function() {
+            const allMenus = document.querySelectorAll('.dropdown-menu');
+            allMenus.forEach(menu => {
+                menu.classList.add('hidden');
+                menu.style.display = 'none';
+            });
+        });
+    </script>
+
+    {{-- Text-to-Speech Bahasa Indonesia (Auto) --}}
+    <script src="{{ asset('js/tts-indonesia.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('js/accessibility.js') }}?v={{ time() }}"></script>
+
+    @stack('scripts')
+</body>
+</html>
