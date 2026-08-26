@@ -27,7 +27,7 @@
                     <label class="block text-sm font-bold text-gray-700 mb-2">Tipe Media <span class="text-red-500">*</span></label>
                     <select name="type" id="mediaType" onchange="toggleMediaInput()" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 bg-white outline-none transition">
                         <option value="image">Foto / Gambar</option>
-                        <option value="video">Tautan Video YouTube</option>
+                        <option value="video">Video</option>
                     </select>
                 </div>
                 
@@ -49,9 +49,24 @@
                 </div>
                 
                 <div id="videoInputGroup" class="mb-5" style="display: none;">
-                    <label class="block text-sm font-bold text-gray-700 mb-2">Tautan Video YouTube <span class="text-red-500">*</span></label>
-                    <input type="url" name="video_url" placeholder="https://www.youtube.com/watch?v=..."
-                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition">
+                    <div class="mb-3">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Sumber Video</label>
+                        <select id="videoSourceType" onchange="toggleVideoSource()" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition">
+                            <option value="youtube">Tautan YouTube</option>
+                            <option value="local">Unggah Video Lokal</option>
+                        </select>
+                    </div>
+
+                    <div id="youtubeInputWrapper">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Tautan Video YouTube <span class="text-red-500">*</span></label>
+                        <input type="url" name="video_url" id="videoUrlInput" placeholder="https://www.youtube.com/watch?v=..."
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition">
+                    </div>
+
+                    <div id="localVideoWrapper" style="display: none;">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Unggah Video Lokal (MP4/WebM/Ogg) <span class="text-red-500">*</span></label>
+                        <input type="file" name="file" id="localVideoInput" disabled accept="video/mp4,video/webm,video/ogg" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 cursor-pointer">
+                    </div>
                 </div>
                 
                 <button type="submit" class="w-full py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 transition shadow-md">
@@ -189,12 +204,37 @@
 <script>
     function toggleMediaInput() {
         const type = document.getElementById('mediaType').value;
+        const imageInput = document.getElementById('imageInput');
+        const localVideoInput = document.getElementById('localVideoInput');
+        
         if(type === 'image') {
             document.getElementById('imageInputGroup').style.display = 'block';
             document.getElementById('videoInputGroup').style.display = 'none';
+            if (imageInput) imageInput.disabled = false;
+            if (localVideoInput) localVideoInput.disabled = true;
         } else {
             document.getElementById('imageInputGroup').style.display = 'none';
             document.getElementById('videoInputGroup').style.display = 'block';
+            if (imageInput) imageInput.disabled = true;
+            toggleVideoSource();
+        }
+    }
+
+    function toggleVideoSource() {
+        const source = document.getElementById('videoSourceType').value;
+        const localVideoInput = document.getElementById('localVideoInput');
+        const videoUrlInput = document.getElementById('videoUrlInput');
+        
+        if(source === 'youtube') {
+            document.getElementById('youtubeInputWrapper').style.display = 'block';
+            document.getElementById('localVideoWrapper').style.display = 'none';
+            if(localVideoInput) localVideoInput.disabled = true;
+            if(videoUrlInput) videoUrlInput.disabled = false;
+        } else {
+            document.getElementById('youtubeInputWrapper').style.display = 'none';
+            document.getElementById('localVideoWrapper').style.display = 'block';
+            if(localVideoInput) localVideoInput.disabled = false;
+            if(videoUrlInput) videoUrlInput.disabled = true;
         }
     }
 

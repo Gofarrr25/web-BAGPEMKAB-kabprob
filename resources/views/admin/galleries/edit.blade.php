@@ -60,13 +60,27 @@
                 </div>
             @else
                 <div class="mb-5 bg-gray-50 p-4 border border-gray-200 rounded-lg">
-                    <label class="block text-sm font-bold text-gray-700 mb-2">Tautan Video YouTube <span class="text-red-500">*</span></label>
-                    <input type="url" name="video_url" required value="{{ old('video_url', $gallery->video_url) }}" placeholder="https://www.youtube.com/watch?v=..."
-                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition">
-                    @error('video_url') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                    <div class="mb-4">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Tautan Video YouTube</label>
+                        <input type="url" name="video_url" value="{{ old('video_url', $gallery->video_url) }}" placeholder="https://www.youtube.com/watch?v=..."
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition">
+                        <p class="text-xs text-gray-500 mt-1">Isi tautan ini jika ingin menggunakan YouTube. Biarkan kosong jika ingin menggunakan video lokal.</p>
+                        @error('video_url') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                    </div>
                     
-                    <div class="mt-4 w-48 rounded overflow-hidden border border-gray-300">
-                        <img src="{{ $gallery->thumbnail_url }}" class="w-full object-cover">
+                    <div class="mb-4">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">ATAU Ganti Video Lokal (MP4/WebM/Ogg)</label>
+                        <input type="file" name="file" accept="video/mp4,video/webm,video/ogg" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 cursor-pointer">
+                        <p class="text-xs text-gray-500 mt-1">Mengunggah file akan menimpa video lokal sebelumnya. Maksimal 50MB.</p>
+                        @error('file') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="mt-4 rounded overflow-hidden border border-gray-300 bg-black flex items-center justify-center max-w-sm">
+                        @if($gallery->file_path)
+                            <video src="{{ asset('storage/' . $gallery->file_path) }}" class="w-full h-auto max-h-48" controls></video>
+                        @else
+                            <img src="{{ $gallery->thumbnail_url }}" class="w-full h-48 object-cover">
+                        @endif
                     </div>
                 </div>
             @endif

@@ -21,11 +21,12 @@ class GalleryController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'type' => 'required|in:image,video',
-            'file' => 'nullable|required_if:type,image|image|mimes:jpg,jpeg,png,webp,gif|max:10240',
-            'video_url' => 'nullable|required_if:type,video|url',
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif,mp4,webm,ogg|max:51200',
+            'video_url' => 'nullable|url|regex:/^(https?\:\/\/)?(www\.youtube\.com|youtu\.be|youtube\.com)\/.+$/',
             'created_at' => 'nullable|date',
         ], [
-            'file.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
+            'file.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, WebP, MP4, WebM, atau OGG.',
+            'video_url.regex' => 'Tautan video harus berasal dari YouTube (youtube.com atau youtu.be).',
         ]);
 
         $filePath = null;
@@ -38,7 +39,7 @@ class GalleryController extends Controller
             $fileName = 'galleries/' . uniqid() . '.' . $image_type;
             \Illuminate\Support\Facades\Storage::disk('public')->put($fileName, $image_base64);
             $filePath = $fileName;
-        } elseif ($request->hasFile('file') && $request->type === 'image') {
+        } elseif ($request->hasFile('file')) {
             $filePath = $request->file('file')->store('galleries', 'public');
         }
 
@@ -69,10 +70,11 @@ class GalleryController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'created_at' => 'nullable|date',
-            'video_url' => 'nullable|required_if:type,video|url',
-            'file' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:10240',
+            'video_url' => 'nullable|url|regex:/^(https?\:\/\/)?(www\.youtube\.com|youtu\.be|youtube\.com)\/.+$/',
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif,mp4,webm,ogg|max:51200',
         ], [
-            'file.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
+            'file.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, WebP, MP4, WebM, atau OGG.',
+            'video_url.regex' => 'Tautan video harus berasal dari YouTube (youtube.com atau youtu.be).',
         ]);
 
         $updateData = [
@@ -101,7 +103,7 @@ class GalleryController extends Controller
             if ($gallery->file_path) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($gallery->file_path);
             }
-        } elseif ($request->hasFile('file') && $gallery->type === 'image') {
+        } elseif ($request->hasFile('file')) {
             if ($gallery->file_path) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($gallery->file_path);
             }

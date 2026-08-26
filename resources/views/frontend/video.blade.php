@@ -100,13 +100,16 @@
 
 @php
     $formattedVideos = collect($videos->items())->values()->map(function($v, $idx) {
+        $isLocal = !empty($v->file_path) && $v->type === 'video';
         return [
             'index' => $idx,
             'title' => $v->title,
             'videoId' => $v->youtube_id,
-            'embedUrl' => $v->embed_url,
+            'embedUrl' => $v->embed_url ? $v->embed_url . '&autoplay=1' : null,
             'watchUrl' => $v->watch_url,
             'thumbnail' => $v->thumbnail_url,
+            'isLocal' => $isLocal,
+            'localUrl' => $isLocal ? asset('storage/' . $v->file_path) : null,
         ];
     });
 @endphp
@@ -115,23 +118,12 @@
     @json($formattedVideos)
 </script>
 
-<!-- YouTube IFrame API -->
-<script src="https://www.youtube.com/iframe_api"></script>
-
 @push('scripts')
 <script>
     const videoDataElement = document.getElementById('videoDataJson');
     const videoDataList = videoDataElement ? JSON.parse(videoDataElement.textContent) : [];
 
     let currentVideoIndex = 0;
-    let ytPlayerInstance = null;
-    let ytApiReady = false;
-    let embedCheckTimer = null;
-
-    // YouTube IFrame API siap
-    window.onYouTubeIframeAPIReady = function() {
-        ytApiReady = true;
-    };
 
     function openLightbox(index) {
         if (videoDataList.length === 0) return;
@@ -153,73 +145,21 @@
 
         // Setup fallback data
         document.getElementById('fallbackThumb').src = item.thumbnail;
-        document.getElementById('fallbackLink').href = item.watchUrl;
+        document.getElementById('fallbackLink').href = item.watchUrl || '#';
 
-        // Hancurkan player lama jika ada
-        if (ytPlayerInstance) {
-            try { ytPlayerInstance.destroy(); } catch(e) {}
-            ytPlayerInstance = null;
-        }
-
-        // Buat ulang container div untuk player
         const wrapper = document.getElementById('ytPlayerWrapper');
-        wrapper.innerHTML = '<div id="ytPlayer"></div>';
-
-        if (ytApiReady && item.videoId) {
-            // Gunakan YouTube IFrame Player API
-            try {
-                ytPlayerInstance = new YT.Player('ytPlayer', {
-                    width: '100%',
-                    height: '100%',
-                    videoId: item.videoId,
-                    playerVars: {
-                        autoplay: 1,
-                        rel: 0,
-                        modestbranding: 1,
-                        playsinline: 1,
-                        origin: window.location.origin
-                    },
-                    events: {
-                        onReady: function(event) {
-                            // Player berhasil dimuat, coba putar
-                            event.target.playVideo();
-                            clearTimeout(embedCheckTimer);
-                        },
-                        onError: function(event) {
-                            // Error: tampilkan fallback
-                            console.warn('YouTube Player Error:', event.data);
-                            showFallback();
-                        },
-                        onStateChange: function(event) {
-                            // Jika video berhasil dimulai, pastikan fallback tersembunyi
-                            if (event.data === YT.PlayerState.PLAYING) {
-                                document.getElementById('embedFallback').classList.add('hidden');
-                                clearTimeout(embedCheckTimer);
-                            }
-                        }
-                    }
-                });
-
-                // Safety timeout: jika 5 detik player tidak ready, tampilkan fallback
-                clearTimeout(embedCheckTimer);
-                embedCheckTimer = setTimeout(function() {
-                    // Cek apakah player sudah memutar video
-                    if (ytPlayerInstance && typeof ytPlayerInstance.getPlayerState === 'function') {
-                        const state = ytPlayerInstance.getPlayerState();
-                        if (state !== YT.PlayerState.PLAYING && state !== YT.PlayerState.BUFFERING && state !== YT.PlayerState.PAUSED) {
-                            showFallback();
-                        }
-                    } else {
-                        showFallback();
-                    }
-                }, 6000);
-
-            } catch(e) {
-                console.error('YouTube API error:', e);
-                showFallback();
-            }
+        
+        if (item.isLocal && item.localUrl) {
+            // Putar video lokal dengan HTML5 player
+            wrapper.innerHTML = `<video src="${item.localUrl}" controls autoplay class="w-full h-full outline-none bg-black"></video>`;
+        } else if (item.embedUrl) {
+            // Gunakan iframe langsung untuk YouTube agar lebih stabil
+            wrapper.innerHTML = `<iframe src="${item.embedUrl}" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen onerror="showFallback()"></iframe>`;
+            
+            // Fallback checking: since we can't easily detect cross-origin iframe errors natively in all browsers,
+            // we assume it works if the embedUrl is valid.
         } else {
-            // YouTube API belum siap — langsung fallback
+            // Data video tidak valid
             showFallback();
         }
     }
@@ -227,7 +167,6 @@
     function showFallback() {
         document.getElementById('ytPlayerWrapper').classList.add('hidden');
         document.getElementById('embedFallback').classList.remove('hidden');
-        clearTimeout(embedCheckTimer);
     }
 
     function prevVideo() {
@@ -245,14 +184,10 @@
     function closeLightbox() {
         document.getElementById('videoLightboxModal').classList.add('hidden');
         document.body.style.overflow = 'auto';
-        clearTimeout(embedCheckTimer);
-        if (ytPlayerInstance) {
-            try { ytPlayerInstance.destroy(); } catch(e) {}
-            ytPlayerInstance = null;
-        }
-        // Reset player wrapper
+        
+        // Hapus elemen iframe atau video agar playback berhenti
         const wrapper = document.getElementById('ytPlayerWrapper');
-        if (wrapper) wrapper.innerHTML = '<div id="ytPlayer"></div>';
+        if (wrapper) wrapper.innerHTML = '';
     }
 
     // Keyboard Shortcuts (Arrow Left, Arrow Right, ESC)
