@@ -10,8 +10,8 @@
             <p class="text-xs text-gray-500 mt-1">Kelola urutan dan visibilitas widget di sidebar kanan halaman Home.</p>
         </div>
         <div class="flex gap-2">
-            <a href="{{ route('admin.settings.index') }}" class="px-4 py-2 bg-gray-100 text-gray-700 rounded shadow-sm hover:bg-gray-200 transition font-bold text-sm flex items-center gap-2">
-                <i class="fas fa-arrow-left"></i> Pengaturan
+            <a href="{{ route('admin.dashboard') }}" class="px-4 py-2 bg-gray-100 text-gray-700 rounded shadow-sm hover:bg-gray-200 transition font-bold text-sm flex items-center gap-2">
+                <i class="fas fa-arrow-left"></i> Dashboard
             </a>
             <a href="{{ route('admin.home-widgets.create') }}" class="px-4 py-2 bg-brand-blue text-white rounded shadow hover:bg-brand-dark transition font-bold text-sm flex items-center gap-2">
                 <i class="fas fa-plus"></i> Tambah Widget
