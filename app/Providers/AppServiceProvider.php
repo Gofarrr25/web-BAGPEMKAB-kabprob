@@ -32,6 +32,8 @@ class AppServiceProvider extends ServiceProvider
         // Register Auth Logging Events
         Event::listen(Login::class, [LogAuthenticationActivity::class, 'handleLogin']);
         Event::listen(Logout::class, [LogAuthenticationActivity::class, 'handleLogout']);
+        Event::listen(\Illuminate\Auth\Events\Failed::class, [LogAuthenticationActivity::class, 'handleFailed']);
+        Event::listen(\Illuminate\Auth\Events\Lockout::class, [LogAuthenticationActivity::class, 'handleLockout']);
 
         // Global Strict Password Policy: min 8 chars, mixed case, numbers, symbols
         Password::defaults(function () {
@@ -50,36 +52,58 @@ class AppServiceProvider extends ServiceProvider
                 }
             });
 
-            $headerNavMenus = Menu::whereNull('parent_id')
-                ->where('is_active', true)
-                ->where(function($q) {
-                    $q->where('position', 'navbar')->orWhereNull('position');
-                })
-                ->with([
-                    'children' => function($q) {
-                        $q->where('is_active', true)->orderBy('order_index');
-                    },
-                    'children.children' => function($q) {
-                        $q->where('is_active', true)->orderBy('order_index');
-                    }
-                ])
-                ->orderBy('order_index')
-                ->get();
+            $headerNavMenus = \Illuminate\Support\Facades\Cache::remember('header_nav_menus', 3600, function () {
+                try {
+                    return Menu::whereNull('parent_id')
+                        ->where('is_active', true)
+                        ->where(function($q) {
+                            $q->where('position', 'navbar')->orWhereNull('position');
+                        })
+                        ->with([
+                            'page',
+                            'children' => function($q) {
+                                $q->where('is_active', true)->orderBy('order_index');
+                            },
+                            'children.page',
+                            'children.parent',
+                            'children.children' => function($q) {
+                                $q->where('is_active', true)->orderBy('order_index');
+                            },
+                            'children.children.page',
+                            'children.children.parent'
+                        ])
+                        ->orderBy('order_index')
+                        ->get()
+                        ->toArray();
+                } catch (\Throwable $e) {
+                    return [];
+                }
+            });
 
-            $footerNavMenus = Menu::whereNull('parent_id')
-                ->where('is_active', true)
-                ->where('position', 'footer')
-                ->with([
-                    'children' => function($q) {
-                        $q->where('is_active', true)->orderBy('order_index');
-                    }
-                ])
-                ->orderBy('order_index')
-                ->get();
+            $footerNavMenus = \Illuminate\Support\Facades\Cache::remember('footer_nav_menus', 3600, function () {
+                try {
+                    return Menu::whereNull('parent_id')
+                        ->where('is_active', true)
+                        ->where('position', 'footer')
+                        ->with([
+                            'page',
+                            'children' => function($q) {
+                                $q->where('is_active', true)->orderBy('order_index');
+                            },
+                            'children.page',
+                            'children.parent'
+                        ])
+                        ->orderBy('order_index')
+                        ->get()
+                        ->toArray();
+                } catch (\Throwable $e) {
+                    return [];
+                }
+            });
 
             $view->with('siteSettings', $cachedSettings);
-            $view->with('headerNavMenus', $headerNavMenus);
-            $view->with('footerNavMenus', $footerNavMenus);
+            $view->with('headerNavMenus', json_decode(json_encode($headerNavMenus)));
+            $view->with('footerNavMenus', json_decode(json_encode($footerNavMenus)));
         });
     }
 }

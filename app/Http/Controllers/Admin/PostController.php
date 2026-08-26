@@ -29,8 +29,10 @@ class PostController extends Controller
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:10240',
             'created_at' => 'nullable|date',
+        ], [
+            'image.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
         ]);
 
         $imagePath = null;
@@ -86,8 +88,10 @@ class PostController extends Controller
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:10240',
             'created_at' => 'nullable|date',
+        ], [
+            'image.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
         ]);
 
         $imagePath = $post->image;

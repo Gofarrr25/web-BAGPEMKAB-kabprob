@@ -15,8 +15,13 @@
 		<meta property="og:site_name" content="Tim Bagian Pemerintahan Probolinggo" />		 
 		<meta name="theme-color" content="#ffffff">
 		<link rel="canonical" href="https://diskominfo.probolinggokab.go.id/" />
-        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-        <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
+        @php
+            $faviconUrl = (isset($siteSettings['site_logo']) && $siteSettings['site_logo']) 
+                ? asset('storage/' . $siteSettings['site_logo']) . '?v=' . time() 
+                : asset('favicon.png') . '?v=' . time();
+        @endphp
+        <link rel="icon" type="image/png" href="{{ $faviconUrl }}">
+        <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
 		 
 		<link rel="dns-prefetch" href="//fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
@@ -84,7 +89,10 @@
         </div>
             </div>
 								<div class="fv-row mb-5">	 
-									<label class="form-label">Password</label>		 									 
+									<div class="d-flex justify-content-between">
+										<label class="form-label">Password</label>
+										<a href="{{ route('password.request') }}" class="link-primary fs-6 fw-bolder">Lupa Password?</a>
+									</div>		 									 
 									<div class="fv-row position-relative mb-3">
 										<input id="password" type="password" class="form-control form-control-lg form-control-solid pe-12" name="password" required autocomplete="off" />
 										  

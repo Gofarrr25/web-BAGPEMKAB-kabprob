@@ -125,15 +125,25 @@ class AccessibilityControl {
         }
 
         // Contrast
+        const wrapper = document.getElementById('acc-content-wrapper') || body;
+        
         body.classList.remove('acc-contrast-dark', 'acc-contrast-light', 'acc-contrast-high');
+        wrapper.classList.remove('acc-contrast-dark', 'acc-contrast-light', 'acc-contrast-high');
+        
         if (this.state.contrast !== 'normal') {
-            body.classList.add('acc-contrast-' + this.state.contrast);
+            if (this.state.contrast === 'high') {
+                wrapper.classList.add('acc-contrast-high');
+            } else {
+                body.classList.add('acc-contrast-' + this.state.contrast);
+            }
         }
 
         // Saturation
         body.classList.remove('acc-saturation-high', 'acc-saturation-low', 'acc-saturation-monochrome');
+        wrapper.classList.remove('acc-saturation-high', 'acc-saturation-low', 'acc-saturation-monochrome');
+        
         if (this.state.saturation !== 'normal') {
-            body.classList.add('acc-saturation-' + this.state.saturation);
+            wrapper.classList.add('acc-saturation-' + this.state.saturation);
         }
 
         // Reading Guide

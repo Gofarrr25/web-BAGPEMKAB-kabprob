@@ -38,11 +38,11 @@
             @if($pdfUrl)
                 <!-- Jika Halaman Memiliki File PDF, Tampilkan PDF Viewer Interaktif -->
                 <div class="mb-8 w-full">
-                    <!-- Tab Baca (Klik 2x) -->
+                    <!-- Tab Baca (Klik) -->
                     <div class="flex">
                         <div class="_df_button bg-[#729b48] hover:bg-[#5f8439] text-white px-5 py-2.5 flex items-center justify-center font-semibold text-sm cursor-pointer transition shadow-sm" source="{{ $pdfUrl }}" style="min-width: 150px;">
                             <div class="flex items-center gap-2 pointer-events-none">
-                                <i class="fas fa-book-reader"></i> Baca (Klik 2x)
+                                <i class="fas fa-book-reader"></i> Baca (Klik)
                             </div>
                         </div>
                     </div>

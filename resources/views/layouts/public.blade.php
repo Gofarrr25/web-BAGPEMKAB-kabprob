@@ -7,8 +7,13 @@
     @stack('meta')
     
     {{-- Favicon --}}
-    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
+    @php
+        $faviconUrl = (isset($siteSettings['site_logo']) && $siteSettings['site_logo']) 
+            ? asset('storage/' . $siteSettings['site_logo']) . '?v=' . time()
+            : asset('favicon.png') . '?v=' . time();
+    @endphp
+    <link rel="icon" type="image/png" href="{{ $faviconUrl }}">
+    <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
 
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -99,6 +104,9 @@
 </head>
 <body class="bg-gray-50 flex flex-col min-h-screen">
 
+    <!-- Wrapper Khusus untuk Filter Accessibility agar posisi fixed tidak rusak -->
+    <div id="acc-content-wrapper" class="flex flex-col min-h-screen w-full transition-all duration-300">
+
     <!-- Header Navbar -->
     <header class="bg-white sticky top-0 z-50 border-b border-gray-100 shadow-sm">
         <div class="container mx-auto px-4 lg:px-8">
@@ -126,29 +134,29 @@
                 <nav class="hidden lg:flex items-center gap-6">
                     <a href="/" class="text-gray-600 hover:text-blue-700 font-semibold text-sm uppercase tracking-wide">HOME</a>
 
-                    @if(isset($headerNavMenus) && $headerNavMenus->count() > 0)
+                    @if(isset($headerNavMenus) && count($headerNavMenus) > 0)
                         @foreach($headerNavMenus as $menuItem)
-                            @if($menuItem->children && $menuItem->children->count() > 0)
+                            @if(isset($menuItem->children) && count($menuItem->children) > 0)
                                 <!-- Menu Utama yang memiliki Submenu Dropdown -->
                                 <div class="relative py-4 dropdown-wrapper">
                                     <button onclick="toggleFrontendMenu(event, 'menu-{{ $menuItem->id }}')" class="text-gray-600 hover:text-blue-700 font-semibold text-sm uppercase tracking-wide flex items-center focus:outline-none">
                                         @if($menuItem->icon)<i class="{{ $menuItem->icon }} mr-1.5 text-blue-600"></i>@endif
                                         {{ $menuItem->title }} <i class="fas fa-chevron-down text-[10px] ml-1 pointer-events-none"></i>
                                     </button>
-                                    <div id="menu-{{ $menuItem->id }}" class="dropdown-menu hidden absolute left-0 top-full mt-0 w-64 bg-white border border-gray-100 shadow-lg rounded-b-md z-50 overflow-visible">
+                                    <div id="menu-{{ $menuItem->id }}" class="dropdown-menu hidden absolute left-0 top-full mt-0 w-64 bg-white border border-gray-100 shadow-lg rounded-b-md z-50 max-h-[75vh] overflow-y-auto overflow-x-hidden" style="scrollbar-width: thin;">
                                         <ul class="py-2">
                                             @foreach($menuItem->children as $child)
-                                                @if($child->children && $child->children->count() > 0)
+                                                @if(isset($child->children) && count($child->children) > 0)
                                                     <li class="relative group/sub">
                                                         <a href="{{ $child->link_url ?? '#' }}" class="flex justify-between items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600">
                                                             <span>@if($child->icon)<i class="{{ $child->icon }} mr-1.5 text-gray-400"></i>@endif {{ $child->title }}</span>
-                                                            <i class="fas fa-chevron-right text-[10px] text-gray-400"></i>
+                                                            <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
                                                         </a>
                                                         <!-- Sub-dropdown Level 3 -->
-                                                        <ul class="absolute left-full top-0 mt-0 w-56 bg-white border border-gray-100 shadow-lg rounded-md hidden group-hover/sub:block z-50">
+                                                        <ul class="relative left-0 top-0 mt-0 w-full bg-gray-50/50 border-t border-gray-100 hidden group-hover/sub:block z-50">
                                                             @foreach($child->children as $grandchild)
                                                                 <li>
-                                                                    <a href="{{ $grandchild->link_url ?? '#' }}" target="{{ $grandchild->target }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600">
+                                                                    <a href="{{ $grandchild->link_url ?? '#' }}" target="{{ $grandchild->target }}" class="block px-8 py-2 text-sm text-gray-700 hover:bg-white hover:text-blue-600">
                                                                         @if($grandchild->icon)<i class="{{ $grandchild->icon }} mr-1.5 text-gray-400"></i>@endif {{ $grandchild->title }}
                                                                     </a>
                                                                 </li>
@@ -180,7 +188,11 @@
                         <a href="/page/struktur-organisasi" class="text-gray-600 hover:text-blue-700 font-semibold text-sm uppercase tracking-wide">PROFIL</a>
                     @endif
 
-                    <a href="/login" class="text-gray-600 hover:text-blue-700 font-semibold text-sm uppercase tracking-wide">LOGIN</a>
+                    @auth
+                        <a href="{{ route('admin.dashboard') }}" class="text-gray-600 hover:text-blue-700 font-semibold text-sm uppercase tracking-wide">DASHBOARD</a>
+                    @else
+                        <a href="/login" class="text-gray-600 hover:text-blue-700 font-semibold text-sm uppercase tracking-wide">LOGIN</a>
+                    @endauth
                 </nav>
 
                 <div class="flex items-center gap-4">
@@ -204,9 +216,9 @@
             <nav class="flex flex-col p-4 gap-2">
                 <a href="/" class="px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-blue-600 font-bold rounded-lg transition uppercase">Home</a>
 
-                @if(isset($headerNavMenus) && $headerNavMenus->count() > 0)
+                @if(isset($headerNavMenus) && count($headerNavMenus) > 0)
                     @foreach($headerNavMenus as $menuItem)
-                        @if($menuItem->children && $menuItem->children->count() > 0)
+                        @if(isset($menuItem->children) && count($menuItem->children) > 0)
                             <div class="flex flex-col">
                                 <button onclick="toggleMobileSubmenu('mobile-sub-{{ $menuItem->id }}')" class="flex justify-between items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-blue-600 font-bold rounded-lg transition uppercase w-full text-left">
                                     <span>@if($menuItem->icon)<i class="{{ $menuItem->icon }} mr-2 text-blue-500"></i>@endif{{ $menuItem->title }}</span>
@@ -214,7 +226,7 @@
                                 </button>
                                 <div id="mobile-sub-{{ $menuItem->id }}" class="hidden flex-col pl-6 mt-1 gap-1">
                                     @foreach($menuItem->children as $child)
-                                        @if($child->children && $child->children->count() > 0)
+                                        @if(isset($child->children) && count($child->children) > 0)
                                             <div class="flex flex-col">
                                                 <button onclick="toggleMobileSubmenu('mobile-sub-sub-{{ $child->id }}')" class="flex justify-between items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600 font-semibold rounded-lg transition w-full text-left">
                                                     <span>@if($child->icon)<i class="{{ $child->icon }} mr-2 text-gray-400"></i>@endif{{ $child->title }}</span>
@@ -245,8 +257,12 @@
                 @else
                     <a href="/page/struktur-organisasi" class="px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-blue-600 font-bold rounded-lg transition uppercase">Profil</a>
                 @endif
-                <a href="/login" class="px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-blue-600 font-bold rounded-lg transition uppercase">Login</a>
-            </nav>
+                  @auth
+                      <a href="{{ route('admin.dashboard') }}" class="px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-blue-600 font-bold rounded-lg transition uppercase">DASHBOARD</a>
+                  @else
+                      <a href="/login" class="px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-blue-600 font-bold rounded-lg transition uppercase">LOGIN</a>
+                  @endauth
+              </nav>
         </div>
     </header>
 
@@ -324,18 +340,21 @@
                 <!-- Kolom 2: Links Survey & QR Code SKM -->
                 <div>
                     <h3 class="text-xl font-bold text-white mb-4 textToRead">{{ $siteSettings['survey_title'] ?? 'Links Survey' }}</h3>
-                    <div class="bg-white p-2 rounded-md inline-block w-32 h-32 mb-2 shadow-lg">
+                    @if(isset($siteSettings['survey_link']) && $siteSettings['survey_link'])
+                        <a href="{{ $siteSettings['survey_link'] }}" target="_blank" class="bg-white p-2 rounded-md inline-block w-32 h-32 mb-2 shadow-lg hover:scale-105 hover:shadow-xl transition-all cursor-pointer border-2 border-transparent hover:border-yellow-400">
+                    @else
+                        <div class="bg-white p-2 rounded-md inline-block w-32 h-32 mb-2 shadow-lg">
+                    @endif
+
                         @if(isset($siteSettings['survey_qr_image']) && $siteSettings['survey_qr_image'])
                             <img src="{{ asset('storage/' . $siteSettings['survey_qr_image']) }}" class="w-full h-full object-contain" alt="QR Code Survey">
                         @else
                             <img src="https://diskominfo.probolinggokab.go.id/backend/gambar/qr_code_kominfo.png" class="w-full h-full object-contain" alt="QR Code Survey">
                         @endif
-                    </div>
+
                     @if(isset($siteSettings['survey_link']) && $siteSettings['survey_link'])
-                        <div>
-                            <a href="{{ $siteSettings['survey_link'] }}" target="_blank" class="text-xs text-yellow-400 hover:text-yellow-300 hover:underline font-semibold flex items-center gap-1 transition">
-                                <i class="fas fa-external-link-alt"></i> Isi Form Survey Online
-                            </a>
+                        </a>
+                    @else
                         </div>
                     @endif
                 </div>
@@ -376,6 +395,8 @@
             </div>
         </div>
     </footer>
+    
+    </div> <!-- END OF WRAPPER -->
 
     <!-- Tombol Accessibility & Back to Top -->
     <div class="fixed bottom-6 left-6 z-50">

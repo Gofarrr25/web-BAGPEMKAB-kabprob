@@ -27,7 +27,7 @@
                 
                 <div class="mb-5">
                     <label class="block text-sm font-bold text-gray-700 mb-2">Gambar Banner <span class="text-red-500">*</span></label>
-                    <input type="file" name="image" id="imageInput" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                    <input type="file" name="image" id="imageInput" accept="image/jpeg,image/png,image/webp,image/gif" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
                     <p class="text-xs text-gray-400 mt-2">
                         Pilih gambar, lalu Anda dapat menyesuaikan area crop (potong) secara interaktif.<br>
                         <strong>Rekomendasi ukuran: 1920 x 600 px (Rasio Landscape 21:9 atau 3:1). Gambar akan dipotong (crop) secara otomatis agar memenuhi lebar layar tanpa terdistorsi.</strong>

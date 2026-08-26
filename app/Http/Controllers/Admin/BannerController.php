@@ -19,9 +19,11 @@ class BannerController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:10240',
             'cropped_image' => 'nullable|string',
             'link_url' => 'nullable|string|max:255',
+        ], [
+            'image.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
         ]);
 
         $imagePath = null;
@@ -61,9 +63,11 @@ class BannerController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:10240',
             'cropped_image' => 'nullable|string',
             'link_url' => 'nullable|string|max:255',
+        ], [
+            'image.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
         ]);
 
         $data = [

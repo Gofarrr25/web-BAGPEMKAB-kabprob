@@ -72,7 +72,7 @@
                     <!-- Thumbnail -->
                     <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
                         <label class="block text-sm font-bold text-gray-700 mb-2">Gambar Utama (Thumbnail)</label>
-                        <input type="file" name="image" id="imageInput" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
+                        <input type="file" name="image" id="imageInput" accept="image/jpeg,image/png,image/webp,image/gif" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
                         <p class="text-xs text-gray-500 mt-2">
                             Format: JPG/PNG/WEBP (Maks 10MB)<br>
                             <strong>Rekomendasi ukuran: 800 x 533 px (Rasio 3:2) atau 800 x 450 px (Rasio 16:9). Tampilan depan akan memotong (crop) gambar agar seragam di dalam kartu berita.</strong>

@@ -6,8 +6,13 @@
     <title>@yield('title', 'Admin Panel - Diskominfo Probolinggo')</title>
     
     {{-- Favicon --}}
-    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
+    @php
+        $faviconUrl = (isset($siteSettings['site_logo']) && $siteSettings['site_logo']) 
+            ? asset('storage/' . $siteSettings['site_logo']) . '?v=' . time()
+            : asset('favicon.png') . '?v=' . time();
+    @endphp
+    <link rel="icon" type="image/png" href="{{ $faviconUrl }}">
+    <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
 
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -39,7 +44,8 @@
         }
     </script>
     @stack('styles')
-</head>
+
+    </head>
 <body class="bg-brand-light text-gray-800 font-sans antialiased overflow-hidden flex h-screen">
 
     <!-- Mobile Backdrop -->
@@ -78,7 +84,7 @@
             </a>
 
             <!-- Content Management (Semua Admin) -->
-            <div x-data="{ open: {{ request()->routeIs('admin.posts.*', 'admin.categories.*', 'admin.documents.*', 'admin.galleries.*', 'admin.banners.*', 'admin.instagram.*', 'admin.pages.*', 'admin.contact-settings.*') ? 'true' : 'false' }} }" class="mt-6">
+            <div x-data="{ open: {{ request()->routeIs('admin.posts.*', 'admin.categories.*', 'admin.documents.*', 'admin.galleries.*', 'admin.banners.*', 'admin.instagram.*', 'admin.pages.*', 'admin.contact-settings.*', 'admin.content-activities.*') ? 'true' : 'false' }} }" class="mt-6">
                 
                 <!-- Toggle Button -->
                 <button @click="open = !open" class="w-full flex items-center justify-between px-3 py-2 text-gray-400 hover:text-white transition-colors focus:outline-none sidebar-text mb-2">
@@ -88,7 +94,7 @@
                 
                 <!-- Collapsible Submenus -->
                 <div x-show="open" 
-                     x-collapse 
+                      
                      class="space-y-1 overflow-hidden transition-all duration-300"
                      x-transition:enter="transition-all ease-in-out duration-300"
                      x-transition:enter-start="opacity-0 max-h-0"
@@ -116,11 +122,6 @@
                         <i class="fas fa-images w-6 text-center text-lg"></i>
                         <span class="ml-3 font-semibold text-sm sidebar-text">Galeri & Video</span>
                     </a>
-                    
-                    <a href="{{ route('admin.banners.index') }}" class="flex items-center px-3 py-3 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.banners.*') ? 'bg-white/10 text-white font-bold' : '' }}">
-                        <i class="fas fa-image w-6 text-center text-lg"></i>
-                        <span class="ml-3 font-semibold text-sm sidebar-text">Banner Slider</span>
-                    </a>
 
                     <a href="{{ route('admin.instagram.index') }}" class="flex items-center px-3 py-3 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.instagram.*') ? 'bg-white/10 text-white font-bold' : '' }}">
                         <i class="fab fa-instagram w-6 text-center text-lg text-pink-400"></i>
@@ -135,6 +136,42 @@
                     <a href="{{ route('admin.contact-settings.index') }}" class="flex items-center px-3 py-3 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.contact-settings.*') ? 'bg-white/10 text-white font-bold' : '' }}">
                         <i class="fas fa-address-book w-6 text-center text-lg"></i>
                         <span class="ml-3 font-semibold text-sm sidebar-text">Kontak</span>
+                    </a>
+                    
+                    @unlessrole('Superadmin')
+                    <a href="{{ route('admin.content-activities.index') }}" class="flex items-center px-3 py-3 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.content-activities.*') ? 'bg-white/10 text-white font-bold' : '' }}">
+                        <i class="fas fa-history w-6 text-center text-lg"></i>
+                        <span class="ml-3 font-semibold text-sm sidebar-text">Riwayat Aktivitas Konten</span>
+                    </a>
+                    @endunlessrole
+                </div>
+            </div>
+            <!-- Konten Beranda (Semua Admin) -->
+            <div x-data="{ open: {{ request()->routeIs('admin.banners.*', 'admin.home-widgets.*', 'admin.related-links.*', 'admin.survey-settings.*') ? 'true' : 'false' }} }" class="mt-6 mb-4">
+                <button @click="open = !open" class="w-full flex items-center justify-between px-3 py-2 text-gray-400 hover:text-white transition-colors focus:outline-none sidebar-text mb-2">
+                    <span class="text-xs font-bold uppercase tracking-wider">Konten Beranda</span>
+                    <i class="fas fa-chevron-down text-xs transition-transform duration-300" :class="{'rotate-180': open}"></i>
+                </button>
+                <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="space-y-1" style="display: none;">
+                    
+                    <a href="{{ route('admin.banners.index') }}" class="flex items-center px-3 py-3 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.banners.*') ? 'bg-white/10 text-white font-bold' : '' }}">
+                        <i class="fas fa-image w-6 text-center text-lg"></i>
+                        <span class="ml-3 font-semibold text-sm sidebar-text">Banner Slider</span>
+                    </a>
+
+                    <a href="{{ route('admin.home-widgets.index') }}" class="flex items-center px-3 py-3 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.home-widgets.*') ? 'bg-white/10 text-white font-bold' : '' }}">
+                        <i class="fas fa-th-large w-6 text-center text-lg"></i>
+                        <span class="ml-3 font-semibold text-sm sidebar-text">Widget</span>
+                    </a>
+                    
+                    <a href="{{ route('admin.related-links.index') }}" class="flex items-center px-3 py-3 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.related-links.*') ? 'bg-white/10 text-white font-bold' : '' }}">
+                        <i class="fas fa-link w-6 text-center text-lg"></i>
+                        <span class="ml-3 font-semibold text-sm sidebar-text">Link Terkait</span>
+                    </a>
+                    
+                    <a href="{{ route('admin.survey-settings.index') }}" class="flex items-center px-3 py-3 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.survey-settings.*') ? 'bg-white/10 text-white font-bold' : '' }}">
+                        <i class="fas fa-qrcode w-6 text-center text-lg"></i>
+                        <span class="ml-3 font-semibold text-sm sidebar-text">Link Survey / QR SKM</span>
                     </a>
                 </div>
             </div>
@@ -172,7 +209,7 @@
 
         <!-- Footer Sidebar -->
         <div class="p-4 border-t border-white/10 text-xs text-center text-gray-400 sidebar-text">
-            &copy; 2026 Diskominfo<br>Kab. Probolinggo
+            &copy; 2026 Bagian Pemerintahan<br>Kab. Probolinggo
         </div>
     </aside>
 
@@ -180,7 +217,7 @@
     <div class="flex-1 flex flex-col min-w-0">
         
         <!-- Header -->
-        <header class="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-6 shadow-sm z-10 relative">
+        <header class="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-6 shadow-sm z-50 relative">
             <div class="flex items-center gap-4">
                 <button onclick="toggleSidebar()" class="text-gray-500 hover:text-gray-700 focus:outline-none p-2 rounded-md hover:bg-gray-100">
                     <i class="fas fa-bars text-xl"></i>
@@ -195,33 +232,63 @@
                     <i class="fas fa-external-link-alt"></i> Lihat Website
                 </a>
 
-                <div class="relative">
+                <div class="relative z-[9999]">
+                    @php
+                        $user = Auth::user();
+                        $name = $user ? $user->name : 'Admin';
+                        $role = $user ? $user->getRoleNames()->first() : 'Staff';
+                        
+                        $initials = '';
+                        $words = explode(' ', $name);
+                        foreach ($words as $w) {
+                            if (mb_strlen($w) > 0) {
+                                $initials .= mb_substr($w, 0, 1);
+                            }
+                            if (mb_strlen($initials) >= 2) break;
+                        }
+                        $initials = strtoupper($initials);
+                    @endphp
                     <!-- Tombol Klik Dropdown -->
-                    <button onclick="toggleUserDropdown(event)" class="flex items-center gap-3 focus:outline-none hover:bg-gray-50 p-2 rounded-lg transition">
+                    <button onclick="console.log('Avatar clicked → YES'); toggleUserDropdown(event)" class="flex items-center gap-3 focus:outline-none hover:bg-gray-50 p-2 rounded-lg transition relative z-[10000]">
                         <div class="text-right hidden sm:block">
-                            <p class="text-sm font-bold text-gray-800">{{ auth()->user()->name ?? 'Administrator' }}</p>
-                            <p class="text-xs text-gray-500">{{ auth()->user()->roles->pluck('name')->first() ?? 'Admin' }}</p>
+                            <p class="text-sm font-bold text-gray-800">{{ $name }}</p>
+                            <p class="text-xs text-gray-500">{{ $role }}</p>
                         </div>
-                        <div class="w-10 h-10 bg-brand-green rounded-full flex items-center justify-center text-white font-bold shadow-md border-2 border-white pointer-events-none">
-                            {{ substr(auth()->user()->name ?? 'A', 0, 1) }}
-                        </div>
+                        @php
+                            $hasPhoto = false;
+                            $v = '1';
+                            if ($user && !empty($user->profile_photo_path)) {
+                                $photoFile = storage_path('app/public/' . $user->profile_photo_path);
+                                if (file_exists($photoFile)) {
+                                    $hasPhoto = true;
+                                    $v = filemtime($photoFile);
+                                }
+                            }
+                        @endphp
+                        @if($hasPhoto)
+                            <img src="{{ asset('storage/' . $user->profile_photo_path) }}?v={{ $v }}" alt="Avatar" class="w-10 h-10 rounded-full object-cover shadow-md border-2 border-white pointer-events-none">
+                        @else
+                            <div class="w-10 h-10 bg-brand-green rounded-full flex items-center justify-center text-white font-bold shadow-md border-2 border-white pointer-events-none">
+                                {{ $initials }}
+                            </div>
+                        @endif
                         <i class="fas fa-chevron-down text-xs text-gray-400 pointer-events-none"></i>
                     </button>
 
-                    <!-- Dropdown Content (Hidden by default) -->
-                    <div id="userDropdown" class="hidden absolute right-0 mt-3 w-48 bg-white border border-gray-100 shadow-xl rounded-md overflow-hidden z-50">
+                    <!-- Dropdown Content -->
+                    <div id="userDropdown" class="hidden absolute right-0 mt-3 w-48 bg-white border border-gray-100 shadow-xl rounded-md overflow-hidden z-[10000]">
                         <div class="px-4 py-3 border-b border-gray-100 bg-gray-50">
                             <p class="text-sm text-gray-800 font-bold">Login sebagai:</p>
                             <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email ?? 'admin@email.com' }}</p>
                         </div>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition">
+                        <a href="{{ route('admin.profile.edit') }}" onclick="console.log('Profil clicked → YES');" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition relative z-[10001]">
                             <i class="fas fa-user-circle mr-2"></i> Profil Saya
                         </a>
-                        <form method="POST" action="{{ route('logout') }}" class="block">
+                        <a href="{{ route('logout') }}" onclick="console.log('Logout clicked → YES'); event.preventDefault(); console.log('Logout form submitted → YES'); document.getElementById('logout-form').submit();" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-semibold transition relative z-[10001]">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Keluar
+                        </a>
+                        <form id="logout-form" method="POST" action="{{ route('logout') }}" class="hidden">
                             @csrf
-                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-semibold transition">
-                                <i class="fas fa-sign-out-alt mr-2"></i> Keluar
-                            </button>
                         </form>
                     </div>
                 </div>
@@ -312,12 +379,25 @@
         });
 
         // Fungsi Buka Tutup User Menu (Top Right)
-        function toggleUserDropdown(event) {
+                function toggleUserDropdown(event) {
             event.stopPropagation();
             const menu = document.getElementById('userDropdown');
             if (menu.classList.contains('hidden')) {
                 menu.classList.remove('hidden');
-                menu.style.display = 'block';
+                menu.style.display = 'block'; 
+               
+                
+                // Deep Debugging
+                setTimeout(() => {
+                    const rect = menu.getBoundingClientRect();
+                    const style = window.getComputedStyle(menu);
+                    
+                    const aTag = menu.querySelector('a');
+                    if(aTag) {
+                        const aRect = aTag.getBoundingClientRect();
+                        const aStyle = window.getComputedStyle(aTag);
+                    }
+                }, 50);
             } else {
                 menu.classList.add('hidden');
                 menu.style.display = 'none';
@@ -346,11 +426,13 @@
         }
 
         // Tutup dropdown jika klik di luar area
-        document.addEventListener('click', function() {
+        document.addEventListener('click', function(event) {
             const menu = document.getElementById('userDropdown');
             if (menu && !menu.classList.contains('hidden')) {
-                menu.classList.add('hidden');
-                menu.style.display = 'none';
+                if (!menu.contains(event.target)) {
+                    menu.classList.add('hidden');
+                    menu.style.display = 'none';
+                }
             }
         });
 
@@ -394,3 +476,12 @@
     @stack('scripts')
 </body>
 </html>
+
+
+
+
+
+
+
+
+

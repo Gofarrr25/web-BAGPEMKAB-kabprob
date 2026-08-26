@@ -51,6 +51,7 @@
 
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama menu utama..." class="px-3 py-2 border border-gray-300 rounded-lg outline-none w-48 font-semibold">
             <button type="submit" class="px-3 py-2 bg-gray-800 text-white rounded-lg font-bold">Cari</button>
+            <a href="{{ route('admin.menus.index') }}" class="px-3 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300 rounded-lg font-bold transition">Reset</a>
         </form>
 
         <span class="text-gray-500 font-bold">Total: {{ $menus->total() }} Menu Utama</span>

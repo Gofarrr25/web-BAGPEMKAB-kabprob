@@ -12,6 +12,8 @@ class Menu extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity;
 
+    protected $appends = ['link_url'];
+
     protected $fillable = [
         'title',
         'icon',
@@ -27,13 +29,13 @@ class Menu extends Model
     protected static function booted()
     {
         static::saved(function ($menu) {
-            \Illuminate\Support\Facades\Cache::forget('header_menus');
-            \Illuminate\Support\Facades\Cache::forget('footer_menus');
+            \Illuminate\Support\Facades\Cache::forget('header_nav_menus');
+            \Illuminate\Support\Facades\Cache::forget('footer_nav_menus');
         });
 
         static::deleted(function ($menu) {
-            \Illuminate\Support\Facades\Cache::forget('header_menus');
-            \Illuminate\Support\Facades\Cache::forget('footer_menus');
+            \Illuminate\Support\Facades\Cache::forget('header_nav_menus');
+            \Illuminate\Support\Facades\Cache::forget('footer_nav_menus');
         });
     }
 

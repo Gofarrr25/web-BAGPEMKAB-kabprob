@@ -24,10 +24,12 @@ class HomeWidgetController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
             'link_url' => 'nullable|string|max:255',
             'order_index' => 'nullable|integer',
             'is_active' => 'nullable|boolean',
+        ], [
+            'image.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
         ]);
 
         $data = $request->except('image');
@@ -61,10 +63,12 @@ class HomeWidgetController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
             'link_url' => 'nullable|string|max:255',
             'order_index' => 'nullable|integer',
             'is_active' => 'nullable|boolean',
+        ], [
+            'image.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
         ]);
 
         $data = $request->except('image');

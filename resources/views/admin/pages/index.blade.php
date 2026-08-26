@@ -5,29 +5,6 @@
 
 @section('content')
 <div class="space-y-6">
-    
-    <!-- Top Action Banner -->
-    <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white rounded-2xl p-6 shadow-lg border border-indigo-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-            <div class="flex items-center gap-2">
-                <span class="p-2 bg-yellow-400/20 text-yellow-400 rounded-lg"><i class="fas fa-sitemap text-xl"></i></span>
-                <h3 class="font-extrabold text-xl text-white">Manajemen Halaman Statis Website</h3>
-            </div>
-            <p class="text-xs md:text-sm text-indigo-200 mt-2 max-w-2xl leading-relaxed">
-                Kelola dokumen PDF, bagan organisasi, artikel statis, serta tentukan posisinya secara otomatis pada kelompok Menu Utama atau Submenu navigasi.
-            </p>
-        </div>
-        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-            <a href="{{ route('admin.pages.create') }}" class="px-4 py-2.5 bg-white text-blue-900 font-bold rounded-xl text-xs hover:bg-blue-50 transition shadow-md flex items-center gap-2">
-                <i class="fas fa-plus-circle"></i> Tambah Halaman Baru
-            </a>
-            @role('Superadmin')
-            <a href="{{ route('admin.menus.index') }}" class="px-4 py-2.5 bg-yellow-400 text-gray-900 font-bold rounded-xl text-xs hover:bg-yellow-300 transition shadow-md flex items-center gap-2">
-                <i class="fas fa-network-wired"></i> Kelola di Menu Navigasi
-            </a>
-            @endrole
-        </div>
-    </div>
 
     <!-- Main Container Table -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-200/80 overflow-hidden">
@@ -42,6 +19,13 @@
                        class="w-full pl-9 pr-4 py-2 bg-white border border-gray-300 rounded-xl text-xs font-semibold text-gray-700 focus:ring-2 focus:ring-blue-500 outline-none transition">
             </div>
 
+            @role('Superadmin')
+            <div class="flex-shrink-0">
+                <a href="{{ route('admin.menus.index') }}" class="px-4 py-2 bg-yellow-400 text-gray-900 font-bold rounded-xl text-xs hover:bg-yellow-300 transition shadow-sm flex items-center gap-2">
+                    <i class="fas fa-network-wired"></i> Kelola di Menu Navigasi
+                </a>
+            </div>
+            @endrole
         </div>
 
         <!-- Table View -->

@@ -30,7 +30,7 @@
                                 <img src="https://diskominfo.probolinggokab.go.id/backend/gambar/logo_backend.png" alt="Logo Default" class="max-h-full max-w-full object-contain filter invert">
                             @endif
                         </div>
-                        <input type="file" name="site_logo" accept="image/*" class="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
+                        <input type="file" name="site_logo" accept="image/jpeg,image/png,image/webp,image/gif" class="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
                         <p class="text-[10px] text-gray-500 mt-1"><strong>Rekomendasi: Format PNG (Landscape 3:1).</strong></p>
                     </div>
 
@@ -43,7 +43,7 @@
                                 <img src="https://diskominfo.probolinggokab.go.id/frontend/images/img-berakhlak.png" alt="Logo Header Kanan Default" class="max-h-full max-w-full object-contain">
                             @endif
                         </div>
-                        <input type="file" name="berakhlak_logo" accept="image/*" class="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
+                        <input type="file" name="berakhlak_logo" accept="image/jpeg,image/png,image/webp,image/gif" class="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
                         <p class="text-[10px] text-gray-500 mt-1"><strong>Rekomendasi: Format PNG Transparan.</strong></p>
                     </div>
 
@@ -81,7 +81,7 @@
                                         <img src="https://diskominfo.probolinggokab.go.id/backend/gambar/logo_backend.png" alt="Logo Default" class="max-h-full max-w-full object-contain filter invert">
                                     @endif
                                 </div>
-                                <input type="file" name="footer_logo" accept="image/*" class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 cursor-pointer">
+                                <input type="file" name="footer_logo" accept="image/jpeg,image/png,image/webp,image/gif" class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 cursor-pointer">
                                 <p class="text-[10px] text-gray-500 mt-1"><strong>Rekomendasi: Format PNG Transparan, disarankan warna teks putih/terang untuk background gelap.</strong></p>
                             </div>
                         </div>
@@ -109,7 +109,7 @@
                             </div>
                             <div class="flex-1">
                                 <label class="block text-xs font-bold text-gray-700 mb-1">Unggah Gambar QR Code Survey SKM</label>
-                                <input type="file" name="survey_qr_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 cursor-pointer">
+                                <input type="file" name="survey_qr_image" accept="image/jpeg,image/png,image/webp,image/gif" class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 cursor-pointer">
                             </div>
                         </div>
 
@@ -138,191 +138,6 @@
             </div>
         </form>
 
-        <!-- SECTION KELOLA WIDGET HOME -->
-        <div class="mt-8 pt-6 border-t border-gray-200">
-            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
-                <div>
-                    <h4 class="font-bold text-purple-900 mb-1 text-base flex items-center gap-2">
-                        <i class="fas fa-th-large text-purple-600"></i> Kelola Widget Home
-                    </h4>
-                    <p class="text-xs text-gray-600">Atur widget yang tampil di sidebar kanan halaman Home (Maklumat Pelayanan, Kepala Bagian, dll).</p>
-                </div>
-                <div>
-                    <a href="{{ route('admin.home-widgets.create') }}" class="px-5 py-2.5 bg-purple-600 text-white font-bold rounded-lg hover:bg-purple-700 transition shadow flex items-center justify-center gap-2 text-xs">
-                        <i class="fas fa-plus"></i> Tambah Widget
-                    </a>
-                </div>
-            </div>
-
-            <div class="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm">
-                <div class="overflow-x-auto w-full">
-        <table class="w-full text-left border-collapse min-w-[800px]">
-                        <thead>
-                            <tr class="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider whitespace-nowrap">
-                                <th class="px-4 py-3 font-bold border-b w-16 text-center">Order</th>
-                                <th class="px-4 py-3 font-bold border-b">Widget / Judul</th>
-                                <th class="px-4 py-3 font-bold border-b">Link / URL</th>
-                                <th class="px-4 py-3 font-bold border-b text-center">Status</th>
-                                <th class="px-4 py-3 font-bold border-b text-right">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-sm">
-                            @forelse($homeWidgets as $widget)
-                            <tr class="border-b hover:bg-gray-50 transition group">
-                                <td class="px-4 py-3 text-center">
-                                    <span class="inline-block w-8 h-8 rounded-full bg-gray-100 text-gray-600 font-bold leading-8">{{ $widget->order_index }}</span>
-                                </td>
-                                <td class="px-4 py-3">
-                                    <div class="flex items-center gap-3">
-                                        @if($widget->image_path)
-                                            <img src="{{ asset('storage/' . $widget->image_path) }}" alt="{{ $widget->title }}" class="w-12 h-12 rounded object-cover border border-gray-200">
-                                        @else
-                                            <div class="w-12 h-12 rounded bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400">
-                                                <i class="fas fa-image"></i>
-                                            </div>
-                                        @endif
-                                        <span class="font-bold text-gray-800">{{ $widget->title }}</span>
-                                    </div>
-                                </td>
-                                <td class="px-4 py-3">
-                                    @if($widget->link_url)
-                                        <a href="{{ $widget->link_url }}" target="_blank" class="text-blue-500 hover:underline text-xs flex items-center gap-1">
-                                            {{ Str::limit($widget->link_url, 30) }} <i class="fas fa-external-link-alt text-[10px]"></i>
-                                        </a>
-                                    @else
-                                        <span class="text-gray-400 text-xs italic">Tanpa Link</span>
-                                    @endif
-                                </td>
-                                <td class="px-4 py-3 text-center">
-                                    @if($widget->is_active)
-                                        <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Aktif</span>
-                                    @else
-                                        <span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">Nonaktif</span>
-                                    @endif
-                                </td>
-                                <td class="px-4 py-3 text-right">
-                                    <div class="flex justify-end gap-2">
-                                        <a href="{{ route('admin.home-widgets.edit', $widget->id) }}" class="w-8 h-8 rounded bg-yellow-100 text-yellow-600 flex items-center justify-center hover:bg-yellow-200 transition" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form action="{{ route('admin.home-widgets.destroy', $widget->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus widget ini?');" class="inline-block m-0 p-0">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="w-8 h-8 rounded bg-red-100 text-red-600 flex items-center justify-center hover:bg-red-200 transition" title="Hapus">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="5" class="px-4 py-8 text-center text-gray-500">
-                                    <i class="fas fa-th-large text-4xl text-gray-300 mb-2"></i>
-                                    <p class="font-bold">Belum ada Widget Home</p>
-                                    <p class="text-xs">Silakan tambah widget baru untuk ditampilkan di Home.</p>
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <!-- END WIDGET SECTION -->
-
-        <!-- SECTION KELOLA LINK TERKAIT -->
-        <div class="mt-8 pt-6 border-t border-gray-200">
-            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
-                <div>
-                    <h4 class="font-bold text-teal-900 mb-1 text-base flex items-center gap-2">
-                        <i class="fas fa-link text-teal-600"></i> Kelola Link Terkait
-                    </h4>
-                    <p class="text-xs text-gray-600">Atur link instansi atau website terkait yang tampil di bagian bawah footer.</p>
-                </div>
-                <div>
-                    <a href="{{ route('admin.related-links.create') }}" class="px-5 py-2.5 bg-teal-600 text-white font-bold rounded-lg hover:bg-teal-700 transition shadow flex items-center justify-center gap-2 text-xs">
-                        <i class="fas fa-plus"></i> Tambah Link
-                    </a>
-                </div>
-            </div>
-
-            <div class="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm">
-                <div class="overflow-x-auto w-full">
-                    <table class="w-full text-left border-collapse min-w-[800px]">
-                        <thead>
-                            <tr class="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider whitespace-nowrap">
-                                <th class="px-4 py-3 font-bold border-b w-16 text-center">Urutan</th>
-                                <th class="px-4 py-3 font-bold border-b">Logo & Nama</th>
-                                <th class="px-4 py-3 font-bold border-b">URL Website</th>
-                                <th class="px-4 py-3 font-bold border-b text-center">Status</th>
-                                <th class="px-4 py-3 font-bold border-b text-right">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-sm">
-                            @forelse($relatedLinks ?? [] as $link)
-                            <tr class="border-b hover:bg-gray-50 transition group">
-                                <td class="px-4 py-3 text-center">
-                                    <span class="inline-block w-8 h-8 rounded-full bg-gray-100 text-gray-600 font-bold leading-8">{{ $link->order }}</span>
-                                </td>
-                                <td class="px-4 py-3">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-24 h-12 rounded border border-gray-200 bg-white flex items-center justify-center p-1 shrink-0">
-                                            @php 
-                                                $domain = parse_url($link->url, PHP_URL_HOST); 
-                                                $logoUrl = $link->logo_url ? $link->logo_url : "https://logo.clearbit.com/{$domain}";
-                                            @endphp
-                                            <img src="{{ $logoUrl }}" alt="Logo" class="max-w-full max-h-full object-contain" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($link->name) }}&background=f3f4f6&color=4b5563';">
-                                        </div>
-                                        <span class="font-bold text-gray-800">{{ $link->name }}</span>
-                                    </div>
-                                </td>
-                                <td class="px-4 py-3">
-                                    <a href="{{ $link->url }}" target="_blank" class="text-blue-500 hover:underline text-xs flex items-center gap-1">
-                                        {{ Str::limit($link->url, 40) }} <i class="fas fa-external-link-alt text-[10px]"></i>
-                                    </a>
-                                </td>
-                                <td class="px-4 py-3 text-center">
-                                    @if($link->is_active)
-                                        <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Aktif</span>
-                                    @else
-                                        <span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">Nonaktif</span>
-                                    @endif
-                                </td>
-                                <td class="px-4 py-3 text-right">
-                                    <div class="flex justify-end gap-2">
-                                        <a href="{{ route('admin.related-links.edit', $link->id) }}" class="w-8 h-8 rounded bg-yellow-100 text-yellow-600 flex items-center justify-center hover:bg-yellow-200 transition" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form action="{{ route('admin.related-links.destroy', $link->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus link ini?');" class="inline-block m-0 p-0">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="w-8 h-8 rounded bg-red-100 text-red-600 flex items-center justify-center hover:bg-red-200 transition" title="Hapus">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="5" class="px-4 py-8 text-center text-gray-500">
-                                    <i class="fas fa-link text-4xl text-gray-300 mb-2"></i>
-                                    <p class="font-bold">Belum ada Link Terkait</p>
-                                    <p class="text-xs">Silakan tambah link website terkait untuk ditampilkan di footer.</p>
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <!-- END LINK TERKAIT SECTION -->
-
     </div>
 </div>
 @endsection
-
-
-

@@ -25,7 +25,7 @@ class InstagramPostController extends Controller
             'instagram_name' => 'nullable|string|max:255',
             'instagram_followers' => 'nullable|string|max:100',
             'instagram_posts_count' => 'nullable|string|max:100',
-            'instagram_avatar' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
+            'instagram_avatar' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
             'instagram_embed_script' => 'nullable|string',
         ]);
 

@@ -58,16 +58,35 @@
         <!-- Filter Area (Optional if DataTables handles search) -->
         <div class="bg-white p-4 rounded-t-lg shadow-sm border border-gray-200 flex flex-wrap gap-4 items-center justify-between mb-0 border-b-0">
             <div class="flex gap-4 flex-wrap">
-                <div class="w-48">
-                    <select id="year-filter" class="w-full px-4 py-2 border border-gray-300 outline-none text-gray-700 bg-white">
-                        <option value="">Semua Tahun</option>
-                        @php
-                            $years = $documents->pluck('document_date')->filter()->map(fn($d) => \Carbon\Carbon::parse($d)->format('Y'))->unique()->sortDesc();
-                        @endphp
-                        @foreach($years as $year)
-                            <option value="{{ $year }}">{{ $year }}</option>
-                        @endforeach
-                    </select>
+                <div class="w-56">
+                    <div class="relative w-full" id="year-picker-container" data-years="{{ json_encode($availableYears) }}">
+                        <button type="button" id="year-picker-btn" class="w-full flex justify-between items-center px-4 py-2 border border-gray-300 rounded outline-none text-gray-700 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 transition-all">
+                            <span id="year-picker-label" class="font-medium text-sm">
+                                <i class="far fa-calendar-alt mr-2 text-gray-500"></i>
+                                {{ request('year') ? 'Tahun ' . request('year') : 'Semua Tahun' }}
+                            </span>
+                            <i class="fas fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
+                        
+                        <div id="year-picker-dropdown" class="absolute left-0 top-full mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 z-50 hidden opacity-0 transition-opacity duration-200" style="transform-origin: top left;">
+                            <div class="flex justify-between items-center p-3 bg-gray-50 border-b border-gray-100 rounded-t-lg">
+                                <button type="button" id="yp-prev" class="p-1.5 rounded hover:bg-gray-200 text-gray-600 transition"><i class="fas fa-angle-double-left"></i></button>
+                                <span id="yp-range-label" class="font-bold text-sm text-gray-700 tracking-wide"></span>
+                                <button type="button" id="yp-next" class="p-1.5 rounded hover:bg-gray-200 text-gray-600 transition"><i class="fas fa-angle-double-right"></i></button>
+                            </div>
+                            
+                            <div class="p-3">
+                                <div id="yp-grid" class="grid grid-cols-4 gap-2 text-sm">
+                                    <!-- Tahun di render via JS -->
+                                </div>
+                                <div class="mt-4 pt-3 border-t border-gray-100">
+                                    <button type="button" id="yp-all" class="w-full py-2 bg-blue-50 hover:bg-blue-100 text-[#1d4ed8] font-bold rounded transition text-sm">
+                                        Tampilkan Semua Tahun
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="w-64">
                     <select id="category-filter" class="w-full px-4 py-2 border border-gray-300 outline-none text-gray-700 bg-white">
@@ -219,11 +238,111 @@
             table.search($('#custom-search').val()).draw();
         });
 
-        // Custom Year Filter
-        $('#year-filter').on('change', function() {
-            var year = $(this).val();
-            // Search the Tanggal column (index 5) for the year
-            table.column(5).search(year).draw();
+        // Year Picker Logic
+        const ypBtn = document.getElementById('year-picker-btn');
+        const ypContainer = document.getElementById('year-picker-container');
+        const ypDropdown = document.getElementById('year-picker-dropdown');
+        const ypGrid = document.getElementById('yp-grid');
+        const ypRangeLabel = document.getElementById('yp-range-label');
+        
+        let availableYears = [];
+        try {
+            availableYears = JSON.parse(ypContainer.getAttribute('data-years') || '[]');
+        } catch(e) {
+            console.error('Failed to parse available years', e);
+        }
+        
+        const selectedYear = "{{ request('year') }}";
+        
+        let currentDecadeStart = 2020;
+        if (selectedYear) {
+            currentDecadeStart = Math.floor(parseInt(selectedYear) / 10) * 10;
+        } else if (availableYears.length > 0) {
+            currentDecadeStart = Math.floor(Math.max(...availableYears) / 10) * 10;
+        } else {
+            currentDecadeStart = Math.floor(new Date().getFullYear() / 10) * 10;
+        }
+
+        function renderYearGrid() {
+            ypRangeLabel.innerText = currentDecadeStart + " - " + (currentDecadeStart + 9);
+            ypGrid.innerHTML = '';
+            
+            const start = currentDecadeStart - 1;
+            const end = currentDecadeStart + 10;
+            
+            for (let y = start; y <= end; y++) {
+                const isAvailable = availableYears.includes(y);
+                const isSelected = y == selectedYear;
+                const isOutOfRange = (y < currentDecadeStart || y > currentDecadeStart + 9);
+                
+                const btnEl = document.createElement('button');
+                btnEl.type = 'button';
+                btnEl.innerText = y;
+                btnEl.className = 'py-2 rounded transition font-medium text-center ';
+                
+                if (isSelected) {
+                    btnEl.className += 'bg-[#1d4ed8] text-white shadow-md ';
+                } else if (isAvailable) {
+                    btnEl.className += 'bg-gray-50 text-gray-700 hover:bg-blue-100 hover:text-blue-700 border border-gray-100 ';
+                    if (isOutOfRange) btnEl.className += 'opacity-60 ';
+                } else {
+                    btnEl.className += 'text-gray-300 cursor-not-allowed bg-transparent ';
+                }
+                
+                if (isAvailable) {
+                    btnEl.onclick = function() {
+                        applyYearFilter(y);
+                    };
+                }
+                
+                ypGrid.appendChild(btnEl);
+            }
+        }
+        
+        function applyYearFilter(year) {
+            const url = new URL(window.location.href);
+            if (year) {
+                url.searchParams.set('year', year);
+            } else {
+                url.searchParams.delete('year');
+            }
+            window.location.href = url.toString();
+        }
+        
+        ypBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (ypDropdown.classList.contains('hidden')) {
+                ypDropdown.classList.remove('hidden');
+                setTimeout(() => ypDropdown.classList.remove('opacity-0'), 10);
+                renderYearGrid();
+            } else {
+                ypDropdown.classList.add('opacity-0');
+                setTimeout(() => ypDropdown.classList.add('hidden'), 200);
+            }
+        });
+        
+        document.getElementById('yp-prev').addEventListener('click', function(e) {
+            e.stopPropagation();
+            currentDecadeStart -= 10;
+            renderYearGrid();
+        });
+        
+        document.getElementById('yp-next').addEventListener('click', function(e) {
+            e.stopPropagation();
+            currentDecadeStart += 10;
+            renderYearGrid();
+        });
+        
+        document.getElementById('yp-all').addEventListener('click', function(e) {
+            e.stopPropagation();
+            applyYearFilter('');
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!ypDropdown.contains(e.target) && !ypBtn.contains(e.target) && !ypDropdown.classList.contains('hidden')) {
+                ypDropdown.classList.add('opacity-0');
+                setTimeout(() => ypDropdown.classList.add('hidden'), 200);
+            }
         });
     });
 

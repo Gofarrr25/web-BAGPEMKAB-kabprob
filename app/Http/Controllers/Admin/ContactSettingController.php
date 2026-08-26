@@ -13,7 +13,7 @@ class ContactSettingController extends Controller
     {
         /** @var \App\Models\User|null $user */
         $user = Auth::user();
-        if (!$user || !($user->hasRole('Admin') || $user->hasRole('Superadmin'))) abort(403);
+        if (!$user || !$user->hasAnyRole(['Admin', 'Admin OPD', 'Superadmin'])) abort(403);
         
         $settings = Setting::all()->pluck('value', 'key');
         return view('admin.contact_settings.index', compact('settings'));
@@ -28,13 +28,12 @@ class ContactSettingController extends Controller
     {
         /** @var \App\Models\User|null $user */
         $user = Auth::user();
-        if (!$user || !($user->hasRole('Admin') || $user->hasRole('Superadmin'))) abort(403);
+        if (!$user || !$user->hasAnyRole(['Admin', 'Admin OPD', 'Superadmin'])) abort(403);
 
         $request->validate([
             'office_address' => 'nullable|string',
             'phone' => 'nullable|string',
             'email' => 'nullable|string',
-            'business_hours' => 'nullable|string',
             'facebook_url' => 'nullable|string',
             'twitter_url' => 'nullable|string',
             'instagram_url' => 'nullable|string',

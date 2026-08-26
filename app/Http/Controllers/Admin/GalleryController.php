@@ -21,9 +21,11 @@ class GalleryController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'type' => 'required|in:image,video',
-            'file' => 'nullable|required_if:type,image|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'file' => 'nullable|required_if:type,image|image|mimes:jpg,jpeg,png,webp,gif|max:10240',
             'video_url' => 'nullable|required_if:type,video|url',
             'created_at' => 'nullable|date',
+        ], [
+            'file.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
         ]);
 
         $filePath = null;
@@ -68,7 +70,9 @@ class GalleryController extends Controller
             'title' => 'required|string|max:255',
             'created_at' => 'nullable|date',
             'video_url' => 'nullable|required_if:type,video|url',
-            'file' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'file' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:10240',
+        ], [
+            'file.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
         ]);
 
         $updateData = [

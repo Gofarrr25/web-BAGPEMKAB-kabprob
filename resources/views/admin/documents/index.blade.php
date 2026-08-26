@@ -60,6 +60,9 @@
                     </td>
                     <td class="px-6 py-4 text-gray-600 font-semibold">{{ $doc->user->name ?? 'Admin' }}</td>
                     <td class="px-6 py-4 text-right space-x-2">
+                        <a href="{{ route('admin.documents.edit', $doc->id) }}" class="text-amber-600 hover:text-amber-800 font-bold px-3 py-1.5 rounded-lg border border-amber-200 hover:bg-amber-50 transition text-xs inline-flex items-center gap-1" title="Edit Data">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
                         <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank" download class="text-blue-600 hover:text-blue-800 font-bold px-3 py-1.5 rounded-lg border border-blue-200 hover:bg-blue-50 transition text-xs inline-flex items-center gap-1" title="Unduh File">
                             <i class="fas fa-download"></i> Download {{ strtoupper($ext) }}
                         </a>

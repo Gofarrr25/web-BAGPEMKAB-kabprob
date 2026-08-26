@@ -79,7 +79,7 @@
                                 <p class="text-xs text-gray-500 mt-1 font-semibold">Gambar aktif</p>
                             </div>
                         @endif
-                        <input type="file" name="image" id="imageInput" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
+                        <input type="file" name="image" id="imageInput" accept="image/jpeg,image/png,image/webp,image/gif" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
                         <p class="text-xs text-gray-400 mt-2">
                             Biarkan kosong jika tidak ingin mengubah gambar.<br>
                             <strong>Rekomendasi ukuran: 800 x 533 px (Rasio 3:2) atau 800 x 450 px (Rasio 16:9). Tampilan depan akan memotong (crop) gambar agar seragam di dalam kartu berita.</strong>

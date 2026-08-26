@@ -45,7 +45,7 @@
                             <img src="{{ asset('storage/' . $gallery->file_path) }}" class="w-full h-full object-cover">
                         </div>
                         <div class="flex-1">
-                            <input type="file" name="file" id="imageInput" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                            <input type="file" name="file" id="imageInput" accept="image/jpeg,image/png,image/webp,image/gif" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
                             <p class="text-xs text-gray-400 mt-2">Biarkan kosong jika tidak ingin mengubah foto. Rasio potongan otomatis adalah 4:3.</p>
                         </div>
                     </div>

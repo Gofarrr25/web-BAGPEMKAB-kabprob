@@ -58,10 +58,6 @@
                     <input type="email" name="email" value="{{ $settings['email'] ?? 'bagpemerintahan@probolinggokab.go.id' }}" class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-xs font-semibold">
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">Jam Operasional / Pelayanan</label>
-                    <textarea name="business_hours" rows="3" class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-xs">{{ $settings['business_hours'] ?? "Senin - Kamis: 07.30 - 16.00 WIB\nJumat: 07.30 - 15.00 WIB\nSabtu - Minggu: Libur" }}</textarea>
-                </div>
             </div>
             
             <!-- Media Sosial -->

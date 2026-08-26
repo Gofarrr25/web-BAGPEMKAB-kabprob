@@ -30,6 +30,11 @@ class Document extends Model
             ->logFillable()
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
-            ->setDescriptionForEvent(fn(string $eventName) => "Document has been {$eventName}");
+            ->setDescriptionForEvent(function (string $eventName) {
+                if ($eventName === 'created') return 'Tambah Data — Dokumen PPID';
+                if ($eventName === 'updated') return 'Edit Data — Dokumen PPID';
+                if ($eventName === 'deleted') return 'Hapus Data — Dokumen PPID';
+                return "Aktivitas Dokumen PPID: {$eventName}";
+            });
     }
 }

@@ -76,25 +76,83 @@
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
             <h3 class="font-bold text-gray-800">Aktivitas Konten Terbaru</h3>
-            <button class="text-sm text-blue-600 font-semibold hover:text-blue-800">Lihat Semua</button>
+            @if(Auth::user()->hasRole('Superadmin'))
+                <a href="{{ route('admin.activity-logs.index') }}" class="text-sm text-blue-600 font-semibold hover:text-blue-800">Lihat Semua</a>
+            @else
+                <a href="{{ route('admin.content-activities.index') }}" class="text-sm text-blue-600 font-semibold hover:text-blue-800">Lihat Semua</a>
+            @endif
         </div>
         <div class="overflow-x-auto w-full">
             <table class="w-full text-left border-collapse min-w-[500px]">
                 <thead>
                     <tr class="border-b border-gray-100 text-sm text-gray-500 whitespace-nowrap">
-                        <th class="px-6 py-3 font-semibold">Judul Konten</th>
+                        <th class="px-6 py-3 font-semibold">Judul Konten / Aktivitas</th>
                         <th class="px-6 py-3 font-semibold">Tipe</th>
+                        <th class="px-6 py-3 font-semibold">Aksi</th>
                         <th class="px-6 py-3 font-semibold">Penulis</th>
                         <th class="px-6 py-3 font-semibold">Tanggal</th>
                     </tr>
                 </thead>
                 <tbody class="text-sm">
-                    @forelse(\App\Models\Post::latest()->take(5)->get() as $post)
+                    @php
+                        $query = \Spatie\Activitylog\Models\Activity::with('causer')->whereNotNull('subject_type')->latest();
+                        if (!Auth::user()->hasRole('Superadmin')) {
+                            $query->whereNotIn('subject_type', ['App\Models\Setting', 'App\Models\User', 'App\Models\Menu', 'App\Models\OrganizationMember']);
+                        }
+                        $activities = $query->take(5)->get();
+                    @endphp
+                    @forelse($activities as $activity)
+                        @php
+                            // Get title dynamically
+                            $model = $activity->subject;
+                            $title = $model->title ?? $model->name ?? $activity->properties['attributes']['title'] ?? $activity->properties['attributes']['name'] ?? $activity->description;
+                            
+                            // Map type
+                            $type = class_basename($activity->subject_type);
+                            $typeMap = [
+                                'Post' => 'Berita',
+                                'Page' => 'Halaman',
+                                'Document' => 'Dokumen',
+                                'Gallery' => 'Galeri',
+                                'Video' => 'Video',
+                                'Banner' => 'Banner',
+                                'Agenda' => 'Agenda',
+                                'Category' => 'Kategori',
+                                'User' => 'Pengguna',
+                                'Setting' => 'Pengaturan',
+                                'OrganizationMember' => 'Struktur',
+                                'InstagramPost' => 'Instagram',
+                                'RelatedLink' => 'Link Terkait',
+                            ];
+                            $type = $typeMap[$type] ?? $type;
+                            
+                            // Action colors
+                            $event = $activity->event;
+                            $color = 'blue';
+                            if ($event == 'created') $color = 'green';
+                            elseif ($event == 'updated') $color = 'yellow';
+                            elseif ($event == 'deleted') $color = 'red';
+                            
+                            $eventMap = [
+                                'created' => 'Tambah',
+                                'updated' => 'Edit',
+                                'deleted' => 'Hapus',
+                            ];
+                            $event = $eventMap[$event] ?? $event;
+                        @endphp
                     <tr class="border-b border-gray-50 hover:bg-gray-50/50 transition">
-                        <td class="px-6 py-4 font-semibold text-gray-800 whitespace-nowrap">{{ $post->title }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap"><span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-bold">Berita</span></td>
-                        <td class="px-6 py-4 whitespace-nowrap">{{ $post->user->name ?? 'Admin' }}</td>
-                        <td class="px-6 py-4 text-gray-500 whitespace-nowrap">{{ $post->created_at->format('d M Y') }}</td>
+                        <td class="px-6 py-4 font-semibold text-gray-800 whitespace-nowrap">{{ Str::limit($title, 40) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap"><span class="bg-gray-100 text-gray-700 border border-gray-200 px-2 py-1 rounded text-xs font-bold">{{ $type }}</span></td>
+                        <td class="px-6 py-4 whitespace-nowrap"><span class="bg-{{ $color }}-100 text-{{ $color }}-700 px-2 py-1 rounded text-xs font-bold">{{ $event }}</span></td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-[10px]">
+                                    {{ substr($activity->causer->name ?? 'S', 0, 1) }}
+                                </div>
+                                {{ $activity->causer->name ?? 'Sistem' }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-gray-500 whitespace-nowrap">{{ $activity->created_at->format('d M Y, H:i') }}</td>
                     </tr>
                     @empty
                     <tr>
@@ -107,3 +165,4 @@
     </div>
 
 @endsection
+

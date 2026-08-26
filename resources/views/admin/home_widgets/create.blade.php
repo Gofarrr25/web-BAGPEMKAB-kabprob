@@ -29,7 +29,7 @@
 
         <div>
             <label class="block text-sm font-bold text-gray-700 mb-2">Gambar / Foto (Opsional)</label>
-            <input type="file" name="image" id="imageInput" accept="image/*" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition">
+            <input type="file" name="image" id="imageInput" accept="image/jpeg,image/png,image/webp,image/gif" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition">
             <p class="text-xs text-gray-500 mt-1">
                 Disarankan format JPG, PNG. Ukuran maksimal 2MB.<br>
                 <strong>Rekomendasi ukuran: 600 x 400 px (Rasio 3:2) atau 600 x 600 px (Persegi 1:1). Gambar akan dipotong sesuai rasio 3:2.</strong>

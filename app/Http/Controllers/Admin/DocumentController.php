@@ -32,7 +32,10 @@ class DocumentController extends Controller
             'category' => 'required|string|max:100',
             'document_date' => 'nullable|date',
             'file' => 'nullable|file|mimes:pdf|max:51200', // Max 50MB PDF
-            'zip_file' => 'nullable|file|mimes:zip,rar,7z|max:51200', // Max 50MB ZIP
+            'zip_file' => 'nullable|file|mimes:zip|max:51200', // Max 50MB ZIP
+        ], [
+            'file.mimes' => 'Format file tidak valid. Hanya file PDF yang diperbolehkan.',
+            'zip_file.mimes' => 'Format file tidak valid. Hanya file ZIP yang diperbolehkan.',
         ]);
 
         $filePath = null;
@@ -74,16 +77,25 @@ class DocumentController extends Controller
             'category' => 'required|string|max:100',
             'document_date' => 'nullable|date',
             'file' => 'nullable|file|mimes:pdf|max:51200',
-            'zip_file' => 'nullable|file|mimes:zip,rar,7z|max:51200',
+            'zip_file' => 'nullable|file|mimes:zip|max:51200',
+        ], [
+            'file.mimes' => 'Format file tidak valid. Hanya file PDF yang diperbolehkan.',
+            'zip_file.mimes' => 'Format file tidak valid. Hanya file ZIP yang diperbolehkan.',
         ]);
 
         $filePath = $document->file_path;
         if ($request->hasFile('file')) {
+            if ($filePath && \Illuminate\Support\Facades\Storage::disk('public')->exists($filePath)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($filePath);
+            }
             $filePath = $request->file('file')->store('documents', 'public');
         }
 
         $zipPath = $document->zip_path;
         if ($request->hasFile('zip_file')) {
+            if ($zipPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($zipPath)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($zipPath);
+            }
             $zipPath = $request->file('zip_file')->store('documents/zips', 'public');
         }
 

@@ -33,7 +33,7 @@
                 
                 <div id="imageInputGroup" class="mb-5">
                     <label class="block text-sm font-bold text-gray-700 mb-2">Unggah Foto <span class="text-red-500">*</span></label>
-                    <input type="file" name="file" id="imageInput" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                    <input type="file" name="file" id="imageInput" accept="image/jpeg,image/png,image/webp,image/gif" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
                     <p class="text-xs text-gray-400 mt-2">
                         Otomatis konversi ke format WebP ringan.<br>
                         <strong>Rekomendasi ukuran: 800 x 600 px (Rasio 4:3) atau 1080 x 1080 px (Rasio 1:1). Gambar akan dipotong sesuai rasio 4:3.</strong>

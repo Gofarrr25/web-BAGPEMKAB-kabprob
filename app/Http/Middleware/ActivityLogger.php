@@ -74,9 +74,9 @@ class ActivityLogger
         if (isset($segments[1]) && $request->is('admin*')) {
             $module = ucfirst(str_replace('-', ' ', $segments[1]));
         } elseif ($request->is('login')) {
-            $module = 'Otentikasi';
+            $module = 'Authentication';
         } elseif ($request->is('logout')) {
-            $module = 'Otentikasi';
+            $module = 'Authentication';
         }
 
         // Keamanan: Tangkap akses ditolak
@@ -90,10 +90,6 @@ class ActivityLogger
             if ($request->is('admin/activity-logs*')) return; 
             $activityType = 'Error Server';
             $description = 'Terjadi error internal saat mengakses ' . $request->path();
-        } elseif ($request->is('login') && $method === 'POST' && !Auth::check()) {
-            $activityType = 'Login Gagal';
-            $description = 'Gagal login. Email dicoba: ' . $request->input('email');
-            $user = null;
         } else {
             // Untuk HTTP Success (200-399) atau Redirect (302)
             if (in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'])) {
@@ -136,7 +132,16 @@ class ActivityLogger
         }
 
         // Bersihkan password atau data sensitif dari request payload
-        $payload = $request->except(['password', 'password_confirmation', '_token', '_method']);
+        $payload = $request->except([
+            'password', 
+            'password_confirmation', 
+            'current_password', 
+            'new_password', 
+            'new_password_confirmation',
+            '_token', 
+            '_method',
+            'captcha'
+        ]);
 
         $log->withProperties([
             'ip' => $request->ip(),

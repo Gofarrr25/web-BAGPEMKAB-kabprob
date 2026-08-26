@@ -56,7 +56,7 @@
             <div id="manualUploadArea" class="mb-6 p-4 border border-gray-200 bg-gray-50 rounded-lg">
                 <label class="block text-sm font-bold text-gray-700 mb-2">Upload Logo Manual <span class="text-xs text-gray-500 font-normal">(Opsional, akan menimpa logo otomatis)</span></label>
                 <div class="flex flex-col gap-2">
-                    <input type="file" name="logo_file" id="logoFileInput" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100 cursor-pointer">
+                    <input type="file" name="logo_file" id="logoFileInput" accept="image/jpeg,image/png,image/webp,image/gif" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100 cursor-pointer">
                     <span class="text-xs text-gray-500 text-center font-bold my-1">ATAU MASUKAN URL LOGO</span>
                     <input type="url" name="logo_url_manual" id="logoUrlManualInput" placeholder="URL Logo Alternatif (misal: https://...)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none transition font-mono text-sm">
                 </div>

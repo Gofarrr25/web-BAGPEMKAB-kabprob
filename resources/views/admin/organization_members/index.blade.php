@@ -32,7 +32,7 @@
                         <p class="text-gray-600 font-medium mb-1">Pilih Gambar Struktur Organisasi</p>
                         <p class="text-xs text-gray-400 mb-4">Format: JPG, PNG, WEBP (Max 5MB)</p>
                         
-                        <input type="file" name="image" id="imageInput" accept="image/jpeg,image/png,image/webp,image/jpg" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" @if(!$photo) required @endif>
+                        <input type="file" name="image" id="imageInput" accept="image/jpeg,image/png,image/webp,image/gif" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" @if(!$photo) required @endif>
                         <input type="hidden" name="cropped_image" id="croppedInput">
                         
                         <button type="button" class="px-4 py-2 bg-blue-50 text-blue-600 border border-blue-200 rounded-lg text-sm font-bold">

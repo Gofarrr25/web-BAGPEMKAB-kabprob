@@ -20,7 +20,23 @@ class ActivityLogController extends Controller
                 $q->where('description', 'like', "%{$search}%")
                   ->orWhere('properties->url', 'like', "%{$search}%")
                   ->orWhere('properties->ip', 'like', "%{$search}%")
-                  ->orWhere('properties->username', 'like', "%{$search}%");
+                  ->orWhere('properties->username', 'like', "%{$search}%")
+                  ->orWhereHas('causer', function($causerQ) use ($search) {
+                      $causerQ->where('name', 'like', "%{$search}%")
+                              ->orWhere('email', 'like', "%{$search}%");
+                  })
+                  ->orWhereHasMorph('subject', [
+                      \App\Models\Post::class, 
+                      \App\Models\Page::class,
+                      \App\Models\Document::class,
+                      \App\Models\Banner::class,
+                      \App\Models\HomeWidget::class
+                  ], function($subjectQ) use ($search) {
+                      $subjectQ->where('title', 'like', "%{$search}%");
+                  })
+                  ->orWhereHasMorph('subject', [\App\Models\Category::class, \App\Models\RelatedLink::class], function($subjectQ) use ($search) {
+                      $subjectQ->where('name', 'like', "%{$search}%");
+                  });
             });
         }
 

@@ -28,9 +28,22 @@
                 <tr class="border-b border-gray-50 hover:bg-gray-50/50 transition">
                     <td class="px-6 py-4 font-bold text-gray-800">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
-                                {{ substr($user->name, 0, 1) }}
-                            </div>
+                            @if($user->profile_photo_path)
+                                <img src="{{ asset('storage/' . $user->profile_photo_path) }}" class="w-8 h-8 rounded-full object-cover shadow-sm">
+                            @else
+                                @php
+                                    $words = explode(' ', $user->name);
+                                    $initials = '';
+                                    foreach ($words as $w) {
+                                        if (mb_strlen($w) > 0) $initials .= mb_substr($w, 0, 1);
+                                        if (mb_strlen($initials) >= 2) break;
+                                    }
+                                    $initials = strtoupper($initials);
+                                @endphp
+                                <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs shadow-sm">
+                                    {{ $initials }}
+                                </div>
+                            @endif
                             {{ $user->name }}
                         </div>
                     </td>

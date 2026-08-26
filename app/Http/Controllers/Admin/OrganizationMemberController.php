@@ -18,7 +18,9 @@ class OrganizationMemberController extends Controller
     public function uploadPhoto(Request $request)
     {
         $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:5120',
+        ], [
+            'image.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
         ]);
 
         $filePath = null;

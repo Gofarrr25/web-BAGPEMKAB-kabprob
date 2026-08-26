@@ -34,9 +34,9 @@ class SettingController extends Controller
 
         $request->validate([
             'site_name' => 'nullable|string|max:255',
-            'site_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
-            'footer_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
-            'survey_qr_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
+            'site_logo' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
+            'footer_logo' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
+            'survey_qr_image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
             'office_address' => 'nullable|string',
             'phone' => 'nullable|string',
             'email' => 'nullable|string',
@@ -49,7 +49,12 @@ class SettingController extends Controller
             'survey_title' => 'nullable|string',
             'survey_link' => 'nullable|string',
             'org_structure_mode' => 'nullable|in:dynamic,photo',
-            'org_structure_photo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'org_structure_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:5120',
+        ], [
+            'site_logo.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
+            'footer_logo.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
+            'survey_qr_image.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
+            'org_structure_photo.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
         ]);
 
         $imageFields = ['site_logo', 'footer_logo', 'survey_qr_image', 'org_structure_photo'];

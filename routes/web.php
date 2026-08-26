@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DocumentController;
@@ -13,6 +15,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\HomeWidgetController;
+use App\Http\Controllers\Admin\SurveySettingController;
 
 // Homepage
 Route::get('/', function () {
@@ -238,13 +241,29 @@ Route::get('/dokumen/{kategori}', function ($kategori) {
     // Jika tidak ditemukan, fallback ke ucwords biasa (barangkali ada dokumen lama yang belum terikat menu)
     $categoryName = $matchedMenu ? $matchedMenu->title : ucwords(str_replace('-', ' ', $kategori));
     
-    $documents = \App\Models\Document::where('category', $categoryName)->latest()->get();
+    $query = \App\Models\Document::where('category', $categoryName);
+    
+    if (request()->filled('year')) {
+        $query->whereYear(\Illuminate\Support\Facades\DB::raw('COALESCE(document_date, created_at)'), request('year'));
+    }
+    
+    $documents = $query->latest()->get();
+    
+    // Ambil tahun yang tersedia untuk kategori ini (tanpa terpengaruh filter year saat ini)
+    $availableYears = \App\Models\Document::where('category', $categoryName)
+        ->selectRaw('YEAR(COALESCE(document_date, created_at)) as year')
+        ->distinct()
+        ->pluck('year')
+        ->filter()
+        ->sort()
+        ->values()
+        ->toArray();
     
     // Fallback view jika frontend.dokumen tidak ada, pakai frontend.document-list (tergantung tema)
     if (view()->exists('frontend.dokumen')) {
-        return view('frontend.dokumen', ['documents' => $documents, 'kategori' => $categoryName]);
+        return view('frontend.dokumen', ['documents' => $documents, 'kategori' => $categoryName, 'availableYears' => $availableYears]);
     }
-    return view('frontend.document-list', ['documents' => $documents, 'categoryName' => $categoryName]);
+    return view('frontend.document-list', ['documents' => $documents, 'categoryName' => $categoryName, 'availableYears' => $availableYears]);
 });
 
 // Generic Page Fallback
@@ -272,13 +291,21 @@ Route::get('/refresh_captcha', function() {
 
 Route::get('/login', function () {
     return view('auth.login');
-})->name('login');
-Route::post('/login', [LoginController::class, 'authenticate'])->name('login.post');
+})->name('login')->middleware('guest');
+Route::post('/login', [LoginController::class, 'authenticate'])->name('login.post')->middleware('guest');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+// Password Reset Routes
+Route::middleware('guest')->group(function () {
+    Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email')->middleware('throttle:6,1');
+    Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
+});
 
 
 // === ROUTES BACKEND ADMIN PANEL ===
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'prevent-back-history'])->prefix('admin')->name('admin.')->group(function () {
     
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
@@ -286,6 +313,17 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // CKEditor 5 Upload Endpoint (Images, PDF, Word, Excel, ZIP)
     Route::post('/ckeditor/upload', function (\Illuminate\Http\Request $request) {
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+            'upload' => 'required|file|mimes:jpg,jpeg,png,webp,gif,pdf,doc,docx,xls,xlsx,zip|max:51200'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'uploaded' => false,
+                'error' => ['message' => 'Format file tidak diizinkan. Hanya menerima Gambar, PDF, Word, Excel, dan ZIP.']
+            ]);
+        }
+
         if ($request->hasFile('upload')) {
             $file = $request->file('upload');
             $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -313,13 +351,21 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::resource('documents', DocumentController::class);
     Route::resource('galleries', GalleryController::class);
     Route::resource('banners', BannerController::class);
+    Route::resource('home-widgets', HomeWidgetController::class)->except(['show']);
+    Route::resource('related-links', \App\Http\Controllers\Admin\RelatedLinkController::class)->except(['show']);
+    Route::resource('survey-settings', SurveySettingController::class)->only(['index', 'store']);
     Route::resource('pages', PageController::class);
+    Route::resource('content-activities', \App\Http\Controllers\Admin\ContentActivityController::class)->only(['index', 'show']);
     Route::get('/instagram', [\App\Http\Controllers\Admin\InstagramPostController::class, 'index'])->name('instagram.index');
     Route::post('/instagram/profile', [\App\Http\Controllers\Admin\InstagramPostController::class, 'updateProfile'])->name('instagram.profile');
     
     // Admin & Superadmin Setting Routes
     Route::resource('contact-settings', ContactSettingController::class)->only(['index', 'store']);
-    
+
+    // Admin Profile (Profil Saya)
+    Route::get('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('profile.update');
+
     // Superadmin Exclusive Routes (Khusus Struktur Navigasi Menu, Settings, & Manajemen User)
     Route::middleware(['role:Superadmin'])->group(function () {
         Route::post('organization-members/upload-photo', [\App\Http\Controllers\Admin\OrganizationMemberController::class, 'uploadPhoto'])->name('organization-members.upload-photo');
@@ -332,8 +378,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::post('/menus/reorder', [\App\Http\Controllers\Admin\MenuController::class, 'reorder'])->name('menus.reorder');
         Route::resource('menus', MenuController::class);
         Route::resource('settings', SettingController::class)->only(['index', 'store']);
-        Route::resource('home-widgets', HomeWidgetController::class)->except(['show']);
-        Route::resource('related-links', \App\Http\Controllers\Admin\RelatedLinkController::class)->except(['show', 'index']);
         Route::resource('users', UserController::class);
         Route::delete('activity-logs/purge-old', [\App\Http\Controllers\Admin\ActivityLogController::class, 'purgeOld'])->name('activity-logs.purge-old');
         Route::resource('activity-logs', \App\Http\Controllers\Admin\ActivityLogController::class)->only(['index', 'show']);
@@ -342,3 +386,5 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::post('/users/{user}/toggle', [UserController::class, 'toggleActive'])->name('users.toggle');
     });
 });
+
+

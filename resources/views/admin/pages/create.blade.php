@@ -68,6 +68,19 @@
         @csrf
         <input type="hidden" name="status" id="status_input" value="publish">
 
+        @if($errors->any())
+            <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded shadow-sm">
+                <div class="flex items-center gap-2 text-red-800 font-bold mb-2">
+                    <i class="fas fa-exclamation-circle"></i> Terdapat kesalahan pada input Anda:
+                </div>
+                <ul class="list-disc list-inside text-sm text-red-700">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <!-- Top Header & Action Bar -->
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-4 z-30 backdrop-blur-md bg-white/95">
             <div class="flex items-center gap-3">
@@ -157,7 +170,7 @@
                             </h4>
 
                             <div class="drag-drop-box border-2 border-dashed border-gray-300 hover:border-emerald-500 rounded-xl p-6 text-center bg-white cursor-pointer" onclick="document.getElementById('image_file_input').click()" id="image_drop_zone">
-                                <input type="file" name="image" id="image_file_input" accept="image/*" class="hidden" onchange="previewImageFile(this)">
+                                <input type="file" name="image" id="image_file_input" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" onchange="previewImageFile(this)">
                                 <input type="hidden" name="cropped_image" id="croppedInput">
                                 
                                 <div id="image_preview_container" class="hidden space-y-3 relative mx-auto w-full max-w-sm aspect-[16/9] overflow-hidden rounded-lg border border-gray-200">
@@ -185,7 +198,7 @@
                             </h4>
 
                             <div class="drag-drop-box border-2 border-dashed border-gray-300 hover:border-red-500 rounded-xl p-6 text-center bg-white cursor-pointer" onclick="document.getElementById('pdf_file_input').click()" id="pdf_drop_zone">
-                                <input type="file" name="pdf_file" id="pdf_file_input" accept=".pdf,.zip,.rar,.7z,.doc,.docx,.xls,.xlsx" class="hidden" onchange="previewPdfFile(this)">
+                                <input type="file" name="pdf_file" id="pdf_file_input" accept="application/pdf" class="hidden" onchange="previewPdfFile(this)">
 
                                 <div id="pdf_preview_container" class="hidden space-y-2">
                                     <i class="fas fa-file-pdf text-4xl text-red-600 block"></i>
@@ -454,8 +467,22 @@
             ['dragenter', 'dragover'].forEach(eventName => {
                 el.addEventListener(eventName, (e) => { e.preventDefault(); el.classList.add('dragover'); }, false);
             });
-            ['dragleave', 'drop'].forEach(eventName => {
+            ['dragleave'].forEach(eventName => {
                 el.addEventListener(eventName, (e) => { e.preventDefault(); el.classList.remove('dragover'); }, false);
+            });
+            ['drop'].forEach(eventName => {
+                el.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    el.classList.remove('dragover');
+                    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                        const fileInput = el.querySelector('input[type="file"]');
+                        if (fileInput) {
+                            fileInput.files = e.dataTransfer.files;
+                            const event = new Event('change');
+                            fileInput.dispatchEvent(event);
+                        }
+                    }
+                }, false);
             });
         });
     });

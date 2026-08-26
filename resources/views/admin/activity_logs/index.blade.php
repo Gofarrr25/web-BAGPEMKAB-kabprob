@@ -136,13 +136,13 @@
                             $status = $props['status'] ?? 200;
                             
                             // Pewarnaan baris khusus untuk aktivitas mencurigakan
-                            $isWarning = in_array($status, [401, 403, 404, 500]) || in_array($type, ['Login Gagal', 'Akses Ditolak', 'Error Server']);
+                            $isWarning = in_array($status, [401, 403, 404, 500]) || in_array($type, ['Login Gagal', 'Login Rate Limit', 'Akses Ditolak', 'Error Server']);
                             
                             $statusColor = 'bg-green-100 text-green-700 border-green-200';
                             if ($status >= 300 && $status < 400) $statusColor = 'bg-blue-100 text-blue-700 border-blue-200';
                             if ($status >= 400 && $status < 500) $statusColor = 'bg-orange-100 text-orange-700 border-orange-200';
                             if ($status >= 500) $statusColor = 'bg-red-100 text-red-700 border-red-200';
-                            if ($type === 'Login Gagal') $statusColor = 'bg-red-100 text-red-700 border-red-200';
+                            if ($type === 'Login Gagal' || $type === 'Login Rate Limit') $statusColor = 'bg-red-100 text-red-700 border-red-200';
                         @endphp
                     <tr class="group transition {{ $isWarning ? 'bg-red-50/40 hover:bg-red-50/80' : 'hover:bg-blue-50/30' }}">
                         <td class="px-5 py-4 text-center font-mono text-xs text-gray-500">

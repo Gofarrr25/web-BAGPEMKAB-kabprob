@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class RelatedLinkController extends Controller
 {
+    public function index()
+    {
+        $related_links = RelatedLink::all();
+        return view('admin.related_links.index', compact('related_links'));
+    }
+
     public function create()
     {
         return view('admin.related_links.create');
@@ -19,8 +25,10 @@ class RelatedLinkController extends Controller
             'name' => 'required|string|max:255',
             'url' => 'required|url|max:255',
             'logo_url' => 'nullable|string|max:2000',
-            'logo_file' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
+            'logo_file' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
             'order' => 'nullable|integer',
+        ], [
+            'logo_file.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
         ]);
 
         $data = $request->only(['name', 'url']);
@@ -50,8 +58,10 @@ class RelatedLinkController extends Controller
             'name' => 'required|string|max:255',
             'url' => 'required|url|max:255',
             'logo_url' => 'nullable|string|max:2000',
-            'logo_file' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
+            'logo_file' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
             'order' => 'nullable|integer',
+        ], [
+            'logo_file.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
         ]);
 
         $data = $request->only(['name', 'url']);

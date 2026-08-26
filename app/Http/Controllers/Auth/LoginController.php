@@ -15,6 +15,7 @@ class LoginController extends Controller
         $throttleKey = Str::transliterate(Str::lower($request->input('username', '')).'|'.$request->ip());
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            event(new \Illuminate\Auth\Events\Lockout($request));
             $seconds = RateLimiter::availableIn($throttleKey);
             return back()->with('error', 'Terlalu banyak percobaan login. Silakan coba lagi dalam '.$seconds.' detik.');
         }
@@ -57,6 +58,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         
-        return redirect('/');
+        return redirect('/login');
     }
 }

@@ -74,7 +74,116 @@ function createCkEditor(selector, customPlaceholder) {
         targetElement.value = newContent;
     }
 
+    function CustomSpacingPlugin(editor) {
+        const elements = ['paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6', 'listItem'];
+        
+        elements.forEach(el => {
+            if (editor.model.schema.isRegistered(el)) {
+                editor.model.schema.extend(el, { allowAttributes: ['lineHeight', 'marginTop', 'marginBottom'] });
+            }
+        });
+
+        const attributes = [
+            { model: 'lineHeight', view: 'line-height' },
+            { model: 'marginTop', view: 'margin-top' },
+            { model: 'marginBottom', view: 'margin-bottom' }
+        ];
+
+        editor.conversion.for('downcast').add(dispatcher => {
+            attributes.forEach(attr => {
+                elements.forEach(el => {
+                    dispatcher.on(`attribute:${attr.model}:${el}`, (evt, data, conversionApi) => {
+                        if (!conversionApi.consumable.consume(data.item, evt.name)) return;
+                        
+                        const viewElement = conversionApi.mapper.toViewElement(data.item);
+                        if (!viewElement) return;
+
+                        if (data.attributeNewValue) {
+                            conversionApi.writer.setStyle(attr.view, data.attributeNewValue, viewElement);
+                        } else {
+                            conversionApi.writer.removeStyle(attr.view, viewElement);
+                        }
+                    });
+                });
+            });
+        });
+
+        attributes.forEach(attr => {
+            editor.conversion.for('upcast').attributeToAttribute({
+                view: { styles: { [attr.view]: /.*/ } },
+                model: {
+                    key: attr.model,
+                    value: viewElement => viewElement.getStyle(attr.view)
+                }
+            });
+        });
+        
+        // Handle legacy classes
+        const legacyClasses = {
+            'ck-line-spacing-10': '1.0',
+            'ck-line-spacing-115': '1.15',
+            'ck-line-spacing-15': '1.5',
+            'ck-line-spacing-20': '2.0'
+        };
+        
+        for (const [cls, val] of Object.entries(legacyClasses)) {
+            editor.conversion.for('upcast').attributeToAttribute({
+                view: { classes: cls },
+                model: { key: 'lineHeight', value: val }
+            });
+        }
+    }
+
+    function FileAttachmentPlugin(editor) {
+        editor.ui.componentFactory.add('insertAttachment', locale => {
+            const view = new CKEDITOR.ui.ButtonView(locale);
+            view.set({
+                label: 'Sisipkan Lampiran (PDF/DOCX/Excel/ZIP)',
+                icon: '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4 1.5A1.5 1.5 0 0 1 5.5 0h5.879a1.5 1.5 0 0 1 1.06.44l4.122 4.12A1.5 1.5 0 0 1 17 5.622V18.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 3 18.5v-17zM5.5 1.5v17h11V6H11V1.5H5.5zM12 1.5V5h3.5L12 1.5z"/></svg>',
+                tooltip: true
+            });
+
+            view.on('execute', () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar,.7z';
+                input.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    const formData = new FormData();
+                    formData.append('upload', file);
+
+                    try {
+                        const response = await fetch("{{ route('admin.ckeditor.upload') }}", {
+                            method: 'POST',
+                            headers: { 'X-CSRF-TOKEN': "{{ csrf_token() }}" },
+                            body: formData
+                        });
+                        const data = await response.json();
+                        if (data.uploaded) {
+                            const ext = file.name.split('.').pop().toLowerCase();
+                            // Sisipkan link khusus agar tidak di-render sebagai <img>
+                            const html = `<a href="${data.url}" class="document-attachment" data-ext="${ext}" target="_blank">${file.name}</a>`;
+                            const viewFragment = editor.data.processor.toView(html);
+                            const modelFragment = editor.data.toModel(viewFragment);
+                            editor.model.insertContent(modelFragment);
+                        } else {
+                            alert(data.error.message || 'Gagal mengunggah file.');
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        alert('Terjadi kesalahan saat mengunggah file.');
+                    }
+                };
+                input.click();
+            });
+            return view;
+        });
+    }
+
     return CKEDITOR.ClassicEditor.create(targetElement, {
+        extraPlugins: [ CustomSpacingPlugin, FileAttachmentPlugin ],
         toolbar: {
             items: [
                 'sourceEditing', 'fullScreen', '|',
@@ -86,7 +195,7 @@ function createCkEditor(selector, customPlaceholder) {
                 'alignment', '|',
                 'bulletedList', 'numberedList', 'todoList', '|',
                 'outdent', 'indent', '|',
-                'link', 'uploadImage', 'insertImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
+                'link', 'uploadImage', 'insertImage', 'insertAttachment', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
                 'specialCharacters', 'horizontalLine', 'pageBreak'
             ],
             shouldNotGroupWhenFull: true
@@ -243,19 +352,16 @@ function createCkEditor(selector, customPlaceholder) {
             
             const block = blocks[0];
             
-            // Baca native htmlAttributes yang dikelola GeneralHtmlSupport
-            const htmlAttributes = block.getAttribute('htmlAttributes') || {};
-            const styles = htmlAttributes.styles || {};
-            
-            let currentLineHeight = styles['line-height'] || '1.15';
+            let currentLineHeight = block.getAttribute('lineHeight') || '1.15';
             if (currentLineHeight === '1' || currentLineHeight === '1.0' || currentLineHeight === '1.00') {
                 currentLineHeight = '1.0';
             }
             if (currentLineHeight === '2' || currentLineHeight === '2.0' || currentLineHeight === '2.00') {
                 currentLineHeight = '2.0';
             }
-            const currentMarginTop = styles['margin-top'] || '0px';
-            const currentMarginBottom = styles['margin-bottom'] || '8px';
+            
+            const currentMarginTop = block.getAttribute('marginTop') || '0px';
+            const currentMarginBottom = block.getAttribute('marginBottom') || '8px';
 
             labelBtn.innerText = 'Spacing: ' + currentLineHeight;
 
@@ -302,29 +408,17 @@ function createCkEditor(selector, customPlaceholder) {
                     blocks.forEach(block => {
                         // Hanya terapkan pada block yang mendukung inline styling
                         if (/^(paragraph|heading[1-6]|listItem)$/.test(block.name)) {
-                            const htmlAttributes = block.getAttribute('htmlAttributes') || {};
-                            const newHtmlAttributes = JSON.parse(JSON.stringify(htmlAttributes));
-                            if (!newHtmlAttributes.styles) newHtmlAttributes.styles = {};
-                            
                             if (action === 'line') {
-                                const val = item.dataset.val;
-                                newHtmlAttributes.styles['line-height'] = val;
+                                writer.setAttribute('lineHeight', item.dataset.val, block);
+                                if (item.dataset.val === '1.0') {
+                                    // Sesuai request: 1.0 tanpa margin paragraf
+                                    writer.setAttribute('marginBottom', '0px', block);
+                                }
                             } else if (action === 'space-before') {
-                                if (state === 'add') {
-                                    newHtmlAttributes.styles['margin-top'] = '12pt';
-                                } else {
-                                    newHtmlAttributes.styles['margin-top'] = '0px';
-                                }
+                                writer.setAttribute('marginTop', state === 'add' ? '12pt' : '0px', block);
                             } else if (action === 'space-after') {
-                                if (state === 'add') {
-                                    newHtmlAttributes.styles['margin-bottom'] = '12pt';
-                                } else {
-                                    newHtmlAttributes.styles['margin-bottom'] = '0px'; 
-                                }
+                                writer.setAttribute('marginBottom', state === 'add' ? '12pt' : '0px', block);
                             }
-                            
-                            // Terapkan kembali ke model
-                            writer.setAttribute('htmlAttributes', newHtmlAttributes, block);
                         }
                     });
                 });

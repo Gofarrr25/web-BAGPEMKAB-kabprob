@@ -48,7 +48,7 @@
                         <i class="fas fa-file-pdf text-red-500"></i>
                     </div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">File Dokumen (.PDF)</label>
-                    <input type="file" name="file" accept=".pdf" class="w-full max-w-sm mx-auto block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 cursor-pointer">
+                    <input type="file" name="file" accept="application/pdf" class="w-full max-w-sm mx-auto block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 cursor-pointer">
                     <p class="text-xs text-gray-500 mt-2 font-medium">Opsional. Maksimal 50MB</p>
                     @error('file') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                 </div>
@@ -58,7 +58,7 @@
                         <i class="fas fa-file-archive text-amber-500"></i>
                     </div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">Arsip Lampiran (.ZIP / .RAR)</label>
-                    <input type="file" name="zip_file" accept=".zip,.rar,.7z" class="w-full max-w-sm mx-auto block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 cursor-pointer">
+                    <input type="file" name="zip_file" accept="application/zip,.zip" class="w-full max-w-sm mx-auto block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 cursor-pointer">
                     <p class="text-xs text-gray-500 mt-2 font-medium">Opsional. Maksimal 50MB</p>
                     @error('zip_file') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                 </div>

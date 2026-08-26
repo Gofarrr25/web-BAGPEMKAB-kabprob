@@ -55,12 +55,15 @@ class PageController extends Controller
             'parent_id' => 'nullable|exists:pages,id',
             'content' => 'nullable|string',
             'external_url' => 'nullable|string|max:500',
-            'image' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:10240',
-            'pdf_file' => 'nullable|file|mimes:pdf,zip,rar,7z,doc,docx,xls,xlsx|max:51200',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif|max:10240',
+            'pdf_file' => 'nullable|file|mimes:pdf|max:51200',
             'order_index' => 'nullable|integer',
             'seo_title' => 'nullable|string|max:255',
             'seo_description' => 'nullable|string',
             'status' => 'required|in:publish,draft',
+        ], [
+            'image.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
+            'pdf_file.mimes' => 'Format file tidak valid. Hanya file PDF yang diperbolehkan.',
         ]);
 
         $imagePath = null;
@@ -123,12 +126,15 @@ class PageController extends Controller
             'parent_id' => 'nullable|exists:pages,id',
             'content' => 'nullable|string',
             'external_url' => 'nullable|string|max:500',
-            'image' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:10240',
-            'pdf_file' => 'nullable|file|mimes:pdf,zip,rar,7z,doc,docx,xls,xlsx|max:51200',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif|max:10240',
+            'pdf_file' => 'nullable|file|mimes:pdf|max:51200',
             'order_index' => 'nullable|integer',
             'seo_title' => 'nullable|string|max:255',
             'seo_description' => 'nullable|string',
             'status' => 'nullable|in:publish,draft',
+        ], [
+            'image.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
+            'pdf_file.mimes' => 'Format file tidak valid. Hanya file PDF yang diperbolehkan.',
         ]);
 
         $baseSlug = Str::slug($request->title);
