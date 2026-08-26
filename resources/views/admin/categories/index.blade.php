@@ -35,10 +35,10 @@
                 <table class="w-full text-left border-collapse min-w-[500px]">
                     <thead>
                         <tr class="bg-white border-b border-gray-100 text-sm text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                            <th class="px-6 py-3 font-semibold w-16">No</th>
-                            <th class="px-6 py-3 font-semibold">Nama Kategori</th>
-                            <th class="px-6 py-3 font-semibold">Slug (URL)</th>
-                            <th class="px-6 py-3 font-semibold text-right">Aksi</th>
+                            <th class="px-6 py-3 font-semibold w-16 whitespace-nowrap">No</th>
+                            <th class="px-6 py-3 font-semibold whitespace-nowrap">Nama Kategori</th>
+                            <th class="px-6 py-3 font-semibold whitespace-nowrap">Slug (URL)</th>
+                            <th class="px-6 py-3 font-semibold text-right whitespace-nowrap">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="text-sm">

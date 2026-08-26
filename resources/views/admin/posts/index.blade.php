@@ -16,11 +16,11 @@
         <table class="w-full text-left border-collapse min-w-[800px]">
             <thead>
                 <tr class="bg-white border-b border-gray-100 text-sm text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                    <th class="px-6 py-4 font-semibold w-24">Thumbnail</th>
-                    <th class="px-6 py-4 font-semibold">Judul Berita</th>
-                    <th class="px-6 py-4 font-semibold">Kategori</th>
-                    <th class="px-6 py-4 font-semibold">Status</th>
-                    <th class="px-6 py-4 font-semibold text-right">Aksi</th>
+                    <th class="px-6 py-4 font-semibold w-24 whitespace-nowrap">Thumbnail</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">Judul Berita</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">Kategori</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">Status</th>
+                    <th class="px-6 py-4 font-semibold text-right whitespace-nowrap">Aksi</th>
                 </tr>
             </thead>
             <tbody class="text-sm">
@@ -51,7 +51,7 @@
                             <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold">Draft</span>
                         @endif
                     </td>
-                    <td class="px-6 py-4 text-right space-x-2">
+                    <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
                         <a href="{{ route('admin.posts.edit', $post->id) }}" class="text-blue-500 hover:text-blue-700 font-bold px-2 py-1 rounded border border-blue-200 hover:bg-blue-50 transition" title="Edit">
                             <i class="fas fa-pen"></i>
                         </a>

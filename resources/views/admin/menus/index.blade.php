@@ -50,8 +50,10 @@
             </select>
 
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama menu utama..." class="px-3 py-2 border border-gray-300 rounded-lg outline-none w-48 font-semibold">
-            <button type="submit" class="px-3 py-2 bg-gray-800 text-white rounded-lg font-bold">Cari</button>
-            <a href="{{ route('admin.menus.index') }}" class="px-3 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300 rounded-lg font-bold transition">Reset</a>
+            <div class="flex gap-2 whitespace-nowrap">
+                <button type="submit" class="px-3 py-2 bg-gray-800 text-white rounded-lg font-bold">Cari</button>
+                <a href="{{ route('admin.menus.index') }}" class="px-3 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300 rounded-lg font-bold transition">Reset</a>
+            </div>
         </form>
 
         <span class="text-gray-500 font-bold">Total: {{ $menus->total() }} Menu Utama</span>
@@ -63,12 +65,12 @@
         <table class="w-full text-left border-collapse min-w-[800px]">
                 <thead>
                     <tr class="bg-gray-50 border-b border-gray-100 text-xs font-bold text-gray-600 uppercase tracking-wider whitespace-nowrap">
-                        <th class="px-6 py-4 text-center w-16">Urutan</th>
-                        <th class="px-6 py-4">Menu Utama & Ikon</th>
-                        <th class="px-6 py-4 text-center">Posisi</th>
-                        <th class="px-6 py-4 text-center">Jumlah Submenu</th>
-                        <th class="px-6 py-4 text-center">Status</th>
-                        <th class="px-6 py-4 text-right">Aksi Management</th>
+                        <th class="px-6 py-4 text-center w-16 whitespace-nowrap">Urutan</th>
+                        <th class="px-6 py-4 whitespace-nowrap">Menu Utama & Ikon</th>
+                        <th class="px-6 py-4 text-center whitespace-nowrap">Posisi</th>
+                        <th class="px-6 py-4 text-center whitespace-nowrap">Jumlah Submenu</th>
+                        <th class="px-6 py-4 text-center whitespace-nowrap">Status</th>
+                        <th class="px-6 py-4 text-right whitespace-nowrap">Aksi Management</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 text-sm font-semibold text-gray-800">
@@ -122,7 +124,7 @@
                         </td>
 
                         <!-- Aksi Management -->
-                        <td class="px-6 py-4 text-right space-x-1.5">
+                        <td class="px-6 py-4 text-right space-x-1.5 whitespace-nowrap">
                             @if($menu->trashed())
                                 <form action="{{ route('admin.menus.restore', $menu->id) }}" method="POST" class="inline-block">
                                     @csrf

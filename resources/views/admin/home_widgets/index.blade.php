@@ -23,11 +23,11 @@
         <table class="w-full text-left border-collapse min-w-[800px]">
             <thead>
                 <tr class="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider whitespace-nowrap">
-                    <th class="px-4 py-3 font-bold border-b w-16 text-center">Order</th>
-                    <th class="px-4 py-3 font-bold border-b">Widget / Judul</th>
-                    <th class="px-4 py-3 font-bold border-b">Link / URL</th>
-                    <th class="px-4 py-3 font-bold border-b text-center">Status</th>
-                    <th class="px-4 py-3 font-bold border-b text-right">Aksi</th>
+                    <th class="px-4 py-3 font-bold border-b w-16 text-center whitespace-nowrap">Order</th>
+                    <th class="px-4 py-3 font-bold border-b whitespace-nowrap">Widget / Judul</th>
+                    <th class="px-4 py-3 font-bold border-b whitespace-nowrap">Link / URL</th>
+                    <th class="px-4 py-3 font-bold border-b text-center whitespace-nowrap">Status</th>
+                    <th class="px-4 py-3 font-bold border-b text-right whitespace-nowrap">Aksi</th>
                 </tr>
             </thead>
             <tbody class="text-sm">
@@ -64,7 +64,7 @@
                             <span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">Nonaktif</span>
                         @endif
                     </td>
-                    <td class="px-4 py-3 text-right">
+                    <td class="px-4 py-3 text-right whitespace-nowrap">
                         <div class="flex justify-end gap-2">
                             <a href="{{ route('admin.home-widgets.edit', $widget->id) }}" class="w-8 h-8 rounded bg-yellow-100 text-yellow-600 flex items-center justify-center hover:bg-yellow-200 transition" title="Edit">
                                 <i class="fas fa-edit"></i>

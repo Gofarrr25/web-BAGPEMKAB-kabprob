@@ -66,11 +66,11 @@
             <table class="w-full text-left border-collapse min-w-[800px]">
                 <thead>
                     <tr class="bg-gray-50/50 border-b border-gray-100 text-[10px] uppercase tracking-wider text-gray-500">
-                        <th class="px-5 py-3.5 font-extrabold rounded-tl-xl w-12 text-center">No</th>
-                        <th class="px-5 py-3.5 font-extrabold w-48">Tanggal / Waktu</th>
-                        <th class="px-5 py-3.5 font-extrabold">Modul / Konten</th>
-                        <th class="px-5 py-3.5 font-extrabold w-48">Aktivitas</th>
-                        <th class="px-5 py-3.5 font-extrabold w-48 rounded-tr-xl">Penulis / Pelaksana</th>
+                        <th class="px-5 py-3.5 font-extrabold rounded-tl-xl w-12 text-center whitespace-nowrap">No</th>
+                        <th class="px-5 py-3.5 font-extrabold w-48 whitespace-nowrap">Tanggal / Waktu</th>
+                        <th class="px-5 py-3.5 font-extrabold whitespace-nowrap">Modul / Konten</th>
+                        <th class="px-5 py-3.5 font-extrabold w-48 whitespace-nowrap">Aktivitas</th>
+                        <th class="px-5 py-3.5 font-extrabold w-48 rounded-tr-xl whitespace-nowrap">Penulis / Pelaksana</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">

@@ -33,13 +33,13 @@
         <table class="w-full text-left border-collapse min-w-[800px]">
                 <thead>
                     <tr class="bg-gray-100/70 border-b border-gray-200 text-[11px] font-extrabold text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                        <th class="px-4 py-3.5 w-10 text-center align-middle">No</th>
-                        <th class="px-4 py-3.5 align-middle">Judul Halaman</th>
-                        <th class="px-4 py-3.5 align-middle">Kelompok Menu</th>
-                        <th class="px-4 py-3.5 align-middle">Submenu Dari</th>
-                        <th class="px-4 py-3.5 align-middle">Dokumen & Lampiran</th>
-                        <th class="px-4 py-3.5 align-middle">Tautan URL Publik</th>
-                        <th class="px-4 py-3.5 text-center align-middle">Navigasi</th>
+                        <th class="px-4 py-3.5 w-10 text-center align-middle whitespace-nowrap">No</th>
+                        <th class="px-4 py-3.5 align-middle whitespace-nowrap">Judul Halaman</th>
+                        <th class="px-4 py-3.5 align-middle whitespace-nowrap">Kelompok Menu</th>
+                        <th class="px-4 py-3.5 align-middle whitespace-nowrap">Submenu Dari</th>
+                        <th class="px-4 py-3.5 align-middle whitespace-nowrap">Dokumen & Lampiran</th>
+                        <th class="px-4 py-3.5 align-middle whitespace-nowrap">Tautan URL Publik</th>
+                        <th class="px-4 py-3.5 text-center align-middle whitespace-nowrap">Navigasi</th>
                         <th class="px-4 py-3.5 text-center align-middle whitespace-nowrap min-w-[200px]">Aksi</th>
                     </tr>
                 </thead>

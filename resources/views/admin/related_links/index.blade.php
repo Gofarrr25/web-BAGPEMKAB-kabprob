@@ -20,11 +20,11 @@
         <table class="w-full text-left border-collapse min-w-[800px]">
             <thead>
                 <tr class="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider whitespace-nowrap">
-                    <th class="px-4 py-3 font-bold border-b w-16 text-center">No</th>
-                    <th class="px-4 py-3 font-bold border-b">Nama Link / Instansi</th>
-                    <th class="px-4 py-3 font-bold border-b">Logo</th>
-                    <th class="px-4 py-3 font-bold border-b">URL</th>
-                    <th class="px-4 py-3 font-bold border-b text-right w-28">Aksi</th>
+                    <th class="px-4 py-3 font-bold border-b w-16 text-center whitespace-nowrap">No</th>
+                    <th class="px-4 py-3 font-bold border-b whitespace-nowrap">Nama Link / Instansi</th>
+                    <th class="px-4 py-3 font-bold border-b whitespace-nowrap">Logo</th>
+                    <th class="px-4 py-3 font-bold border-b whitespace-nowrap">URL</th>
+                    <th class="px-4 py-3 font-bold border-b text-right w-28 whitespace-nowrap">Aksi</th>
                 </tr>
             </thead>
             <tbody class="text-sm">
@@ -48,7 +48,7 @@
                     <td class="px-4 py-3">
                         <a href="{{ $link->url }}" target="_blank" class="text-blue-500 hover:underline text-xs">{{ $link->url }}</a>
                     </td>
-                    <td class="px-4 py-3 text-right">
+                    <td class="px-4 py-3 text-right whitespace-nowrap">
                         <div class="flex justify-end gap-2">
                             <a href="{{ route('admin.related-links.edit', $link->id) }}" class="w-8 h-8 rounded bg-yellow-100 text-yellow-600 flex items-center justify-center hover:bg-yellow-200 transition" title="Edit">
                                 <i class="fas fa-edit"></i>

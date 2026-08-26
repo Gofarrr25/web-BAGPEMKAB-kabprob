@@ -70,7 +70,7 @@
                                     <p class="text-sm text-gray-600 bg-gray-50 p-2 rounded border border-gray-100">{{ $agenda->description }}</p>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 text-right align-top">
+                            <td class="px-6 py-4 text-right align-top whitespace-nowrap">
                                 <form action="{{ route('admin.agendas.destroy', $agenda->id) }}" method="POST" onsubmit="return confirm('Hapus agenda ini?');">
                                     @csrf
                                     @method('DELETE')

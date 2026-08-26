@@ -16,11 +16,11 @@
         <table class="w-full text-left border-collapse min-w-[800px]">
             <thead>
                 <tr class="bg-white border-b border-gray-100 text-sm text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                    <th class="px-6 py-4 font-semibold">Nama Lengkap</th>
-                    <th class="px-6 py-4 font-semibold">Username / Email</th>
-                    <th class="px-6 py-4 font-semibold">Role</th>
-                    <th class="px-6 py-4 font-semibold text-center">Status Akses</th>
-                    <th class="px-6 py-4 font-semibold text-right">Aksi</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">Nama Lengkap</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">Username / Email</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">Role</th>
+                    <th class="px-6 py-4 font-semibold text-center whitespace-nowrap">Status Akses</th>
+                    <th class="px-6 py-4 font-semibold text-right whitespace-nowrap">Aksi</th>
                 </tr>
             </thead>
             <tbody class="text-sm">
@@ -63,7 +63,7 @@
                             <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold"><i class="fas fa-ban mr-1"></i> Diblokir</span>
                         @endif
                     </td>
-                    <td class="px-6 py-4 text-right space-x-2">
+                    <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
                         <!-- Tombol Edit Admin & Ubah Password -->
                         <a href="{{ route('admin.users.edit', $user->id) }}" class="text-blue-600 hover:text-blue-800 font-bold px-2 py-1.5 rounded border border-blue-200 hover:bg-blue-50 transition inline-block text-xs" title="Edit Admin & Ubah Password">
                             <i class="fas fa-edit mr-1"></i> Edit

@@ -86,11 +86,11 @@
             <table class="w-full text-left border-collapse min-w-[500px]">
                 <thead>
                     <tr class="border-b border-gray-100 text-sm text-gray-500 whitespace-nowrap">
-                        <th class="px-6 py-3 font-semibold">Judul Konten / Aktivitas</th>
-                        <th class="px-6 py-3 font-semibold">Tipe</th>
-                        <th class="px-6 py-3 font-semibold">Aksi</th>
-                        <th class="px-6 py-3 font-semibold">Penulis</th>
-                        <th class="px-6 py-3 font-semibold">Tanggal</th>
+                        <th class="px-6 py-3 font-semibold whitespace-nowrap">Judul Konten / Aktivitas</th>
+                        <th class="px-6 py-3 font-semibold whitespace-nowrap">Tipe</th>
+                        <th class="px-6 py-3 font-semibold whitespace-nowrap">Aksi</th>
+                        <th class="px-6 py-3 font-semibold whitespace-nowrap">Penulis</th>
+                        <th class="px-6 py-3 font-semibold whitespace-nowrap">Tanggal</th>
                     </tr>
                 </thead>
                 <tbody class="text-sm">

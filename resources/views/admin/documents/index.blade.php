@@ -19,10 +19,10 @@
         <table class="w-full text-left border-collapse min-w-[800px]">
             <thead>
                 <tr class="bg-white border-b border-gray-100 text-sm text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                    <th class="px-6 py-4 font-semibold">Judul Dokumen / Arsip</th>
-                    <th class="px-6 py-4 font-semibold">Kategori / Klasifikasi</th>
-                    <th class="px-6 py-4 font-semibold">Pengunggah</th>
-                    <th class="px-6 py-4 font-semibold text-right">Aksi</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">Judul Dokumen / Arsip</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">Kategori / Klasifikasi</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">Pengunggah</th>
+                    <th class="px-6 py-4 font-semibold text-right whitespace-nowrap">Aksi</th>
                 </tr>
             </thead>
             <tbody class="text-sm">
@@ -59,7 +59,7 @@
                         </span>
                     </td>
                     <td class="px-6 py-4 text-gray-600 font-semibold">{{ $doc->user->name ?? 'Admin' }}</td>
-                    <td class="px-6 py-4 text-right space-x-2">
+                    <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
                         <a href="{{ route('admin.documents.edit', $doc->id) }}" class="text-amber-600 hover:text-amber-800 font-bold px-3 py-1.5 rounded-lg border border-amber-200 hover:bg-amber-50 transition text-xs inline-flex items-center gap-1" title="Edit Data">
                             <i class="fas fa-edit"></i> Edit
                         </a>

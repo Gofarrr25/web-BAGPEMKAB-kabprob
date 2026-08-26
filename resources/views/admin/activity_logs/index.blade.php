@@ -118,14 +118,14 @@
             <table class="w-full text-left border-collapse min-w-[1200px]">
                 <thead>
                     <tr class="bg-gray-50 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                        <th class="px-5 py-4 w-12 text-center">#</th>
-                        <th class="px-5 py-4">Waktu</th>
-                        <th class="px-5 py-4 min-w-[180px]">User & Role</th>
-                        <th class="px-5 py-4 min-w-[250px]">Modul & Aktivitas</th>
-                        <th class="px-5 py-4">IP Address</th>
-                        <th class="px-5 py-4">Browser/Client</th>
-                        <th class="px-5 py-4 text-center">Status</th>
-                        <th class="px-5 py-4 text-right sticky right-0 bg-gray-50 border-l border-gray-100 shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.05)]">Detail</th>
+                        <th class="px-5 py-4 w-12 text-center whitespace-nowrap">#</th>
+                        <th class="px-5 py-4 whitespace-nowrap">Waktu</th>
+                        <th class="px-5 py-4 min-w-[180px] whitespace-nowrap">User & Role</th>
+                        <th class="px-5 py-4 min-w-[250px] whitespace-nowrap">Modul & Aktivitas</th>
+                        <th class="px-5 py-4 whitespace-nowrap">IP Address</th>
+                        <th class="px-5 py-4 whitespace-nowrap">Browser/Client</th>
+                        <th class="px-5 py-4 text-center whitespace-nowrap">Status</th>
+                        <th class="px-5 py-4 text-right sticky right-0 bg-gray-50 border-l border-gray-100 shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.05)] whitespace-nowrap">Detail</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 text-sm">
@@ -221,7 +221,7 @@
                         </td>
 
                         <!-- Detail Button -->
-                        <td class="px-5 py-4 text-right sticky right-0 {{ $isWarning ? 'bg-[#fef2f2] group-hover:bg-[#fee2e2]' : 'bg-white group-hover:bg-[#eff6ff]' }} border-l border-gray-100 shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.02)] transition-colors duration-200 z-10">
+                        <td class="px-5 py-4 text-right sticky right-0 {{ $isWarning ? 'bg-[#fef2f2] group-hover:bg-[#fee2e2]' : 'bg-white group-hover:bg-[#eff6ff]' }} border-l border-gray-100 shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.02)] transition-colors duration-200 z-10 whitespace-nowrap">
                             <button onclick="openDetailModal('{{ $log->id }}')" class="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-blue-600 rounded-lg text-xs font-bold transition shadow-sm flex items-center gap-1.5 ml-auto">
                                 <i class="fas fa-eye"></i> Detail
                             </button>

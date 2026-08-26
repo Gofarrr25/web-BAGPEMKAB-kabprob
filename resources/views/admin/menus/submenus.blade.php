@@ -46,11 +46,11 @@
         <table class="w-full text-left border-collapse min-w-[800px]">
                 <thead>
                     <tr class="bg-white border-b border-gray-100 text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                        <th class="px-6 py-4 text-center w-16">Urutan</th>
-                        <th class="px-6 py-4">Nama Submenu</th>
-                        <th class="px-6 py-4">Halaman / Link Tujuan</th>
-                        <th class="px-6 py-4 text-center">Status</th>
-                        <th class="px-6 py-4 text-right">Aksi Submenu</th>
+                        <th class="px-6 py-4 text-center w-16 whitespace-nowrap">Urutan</th>
+                        <th class="px-6 py-4 whitespace-nowrap">Nama Submenu</th>
+                        <th class="px-6 py-4 whitespace-nowrap">Halaman / Link Tujuan</th>
+                        <th class="px-6 py-4 text-center whitespace-nowrap">Status</th>
+                        <th class="px-6 py-4 text-right whitespace-nowrap">Aksi Submenu</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 text-sm font-semibold text-gray-800">
@@ -98,7 +98,7 @@
                         </td>
 
                         <!-- Aksi Submenu -->
-                        <td class="px-6 py-4 text-right space-x-1.5">
+                        <td class="px-6 py-4 text-right space-x-1.5 whitespace-nowrap">
                             <!-- Edit Button -->
                             <button type="button"
                                     data-id="{{ $sub->id }}"
