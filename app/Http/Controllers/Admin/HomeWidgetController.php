@@ -51,7 +51,7 @@ class HomeWidgetController extends Controller
 
         HomeWidget::create($data);
 
-        return redirect()->route('admin.settings.index')->with('success', 'Widget berhasil ditambahkan!');
+        return redirect()->route('admin.home-widgets.index')->with('success', 'Widget berhasil ditambahkan!');
     }
 
     public function edit(HomeWidget $home_widget)
@@ -97,7 +97,7 @@ class HomeWidgetController extends Controller
 
         $home_widget->update($data);
 
-        return redirect()->route('admin.settings.index')->with('success', 'Widget berhasil diperbarui!');
+        return redirect()->route('admin.home-widgets.index')->with('success', 'Widget berhasil diperbarui!');
     }
 
     public function destroy(HomeWidget $home_widget)
@@ -108,6 +108,6 @@ class HomeWidgetController extends Controller
         
         $home_widget->delete();
 
-        return redirect()->route('admin.settings.index')->with('success', 'Widget berhasil dihapus!');
+        return redirect()->route('admin.home-widgets.index')->with('success', 'Widget berhasil dihapus!');
     }
 }

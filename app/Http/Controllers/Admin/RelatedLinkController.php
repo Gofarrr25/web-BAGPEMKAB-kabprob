@@ -44,7 +44,7 @@ class RelatedLinkController extends Controller
 
         RelatedLink::create($data);
 
-        return redirect()->route('admin.settings.index')->with('success', 'Link Terkait berhasil ditambahkan!');
+        return redirect()->route('admin.related-links.index')->with('success', 'Link Terkait berhasil ditambahkan!');
     }
 
     public function edit(RelatedLink $related_link)
@@ -77,13 +77,13 @@ class RelatedLinkController extends Controller
 
         $related_link->update($data);
 
-        return redirect()->route('admin.settings.index')->with('success', 'Link Terkait berhasil diperbarui!');
+        return redirect()->route('admin.related-links.index')->with('success', 'Link Terkait berhasil diperbarui!');
     }
 
     public function destroy(RelatedLink $related_link)
     {
         $related_link->delete();
 
-        return redirect()->route('admin.settings.index')->with('success', 'Link Terkait berhasil dihapus!');
+        return redirect()->route('admin.related-links.index')->with('success', 'Link Terkait berhasil dihapus!');
     }
 }
