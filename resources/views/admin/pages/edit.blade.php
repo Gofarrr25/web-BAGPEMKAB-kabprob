@@ -217,7 +217,7 @@
                                 <div id="pdf_placeholder" class="{{ $page->pdf_file ? 'hidden' : '' }} space-y-2">
                                     <i class="fas fa-file-upload text-4xl text-red-500 block"></i>
                                     <span class="text-xs font-bold text-gray-700 block">Klik atau Seret & Lepas Berkas PDF ke Sini</span>
-                                    <span class="text-[11px] text-gray-400 block">Format: PDF, Word, Excel, ZIP (Maksimal 50MB)</span>
+                                    <span class="text-[11px] text-gray-400 block">Format: PDF (Maksimal 100MB)</span>
                                 </div>
                             </div>
                         </div>

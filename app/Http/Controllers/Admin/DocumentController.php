@@ -58,10 +58,11 @@ class DocumentController extends Controller
                 }
             }],
             'document_date' => 'nullable|date',
-            'file' => 'nullable|file|mimes:pdf|max:51200', // Max 50MB PDF
+            'file' => 'nullable|file|mimes:pdf|max:102400', // Max 100MB PDF
             'zip_file' => 'nullable|file|mimes:zip|max:51200', // Max 50MB ZIP
         ], [
             'file.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima file PDF. Silakan pilih file dengan format .pdf.',
+            'file.max' => '⚠️ Ukuran file PDF maksimal 100 MB.',
             'zip_file.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima file ZIP.',
         ]);
 
@@ -112,10 +113,11 @@ class DocumentController extends Controller
                 }
             }],
             'document_date' => 'nullable|date',
-            'file' => 'nullable|file|mimes:pdf|max:51200',
+            'file' => 'nullable|file|mimes:pdf|max:102400',
             'zip_file' => 'nullable|file|mimes:zip|max:51200',
         ], [
             'file.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima file PDF. Silakan pilih file dengan format .pdf.',
+            'file.max' => '⚠️ Ukuran file PDF maksimal 100 MB.',
             'zip_file.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima file ZIP.',
         ]);
 

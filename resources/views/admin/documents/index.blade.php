@@ -8,7 +8,7 @@
     <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
         <div>
             <h3 class="font-bold text-gray-800">Daftar Dokumen Information & Paket Berkas ZIP</h3>
-            <p class="text-xs text-gray-500">Mendukung format .PDF, .ZIP, .RAR, .7Z, .DOCX, .XLSX hingga 50MB.</p>
+            <p class="text-xs text-gray-500">Mendukung format .PDF, .ZIP, .RAR, .7Z, .DOCX, .XLSX hingga 100MB.</p>
         </div>
         <a href="{{ route('admin.documents.create') }}" class="bg-brand-blue hover:bg-brand-blue-hover text-white font-bold py-2 px-4 rounded-lg text-sm transition shadow-sm flex items-center gap-1.5">
             <i class="fas fa-upload"></i> Unggah Dokumen / Zip Baru

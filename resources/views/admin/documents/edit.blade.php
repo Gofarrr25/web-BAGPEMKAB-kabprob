@@ -8,7 +8,7 @@
     <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
         <h3 class="font-bold text-gray-800">Form Edit Dokumen & Arsip Berkas (.PDF / .ZIP)</h3>
             <a href="{{ route('admin.documents.index') }}" class="text-gray-500 hover:text-gray-700 text-sm font-semibold transition flex items-center justify-center gap-1 bg-white border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50"><i class="fas fa-arrow-left"></i> Kembali</a>
-        <span class="text-xs bg-brand-blue-light text-brand-blue px-3 py-1 rounded-full font-bold">Maks. 50MB</span>
+        <span class="text-xs bg-brand-blue-light text-brand-blue px-3 py-1 rounded-full font-bold">Maks. 100MB</span>
     </div>
     
     <div class="p-4 md:p-6">

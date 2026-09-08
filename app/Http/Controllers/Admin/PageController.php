@@ -59,12 +59,13 @@ class PageController extends Controller
             'content' => 'nullable|string',
             'external_url' => 'nullable|string|max:500',
             'image' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:10240',
-            'pdf_file' => 'nullable|file|mimes:pdf|max:51200',
+            'pdf_file' => 'nullable|file|mimes:pdf|max:102400',
             'order_index' => 'nullable|integer',
             'status' => 'required|in:publish,draft',
         ], [
             'image.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima JPG, JPEG, PNG, atau WEBP.',
             'pdf_file.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima file PDF. Silakan pilih file dengan format .pdf.',
+            'pdf_file.max' => '⚠️ Ukuran file PDF maksimal 100 MB.',
         ]);
 
         $imagePath = null;
@@ -128,12 +129,13 @@ class PageController extends Controller
             'content' => 'nullable|string',
             'external_url' => 'nullable|string|max:500',
             'image' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:10240',
-            'pdf_file' => 'nullable|file|mimes:pdf|max:51200',
+            'pdf_file' => 'nullable|file|mimes:pdf|max:102400',
             'order_index' => 'nullable|integer',
             'status' => 'nullable|in:publish,draft',
         ], [
             'image.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima JPG, JPEG, PNG, atau WEBP.',
             'pdf_file.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima file PDF. Silakan pilih file dengan format .pdf.',
+            'pdf_file.max' => '⚠️ Ukuran file PDF maksimal 100 MB.',
         ]);
 
         $baseSlug = Str::slug($request->title);

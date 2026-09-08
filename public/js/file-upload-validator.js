@@ -127,7 +127,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // 3. Validasi Size
             const maxSizeStr = input.getAttribute('data-max-size');
-            let maxSize = 50 * 1024 * 1024; // Default 50MB
+            let maxSize = 50 * 1024 * 1024; // Default 50MB untuk file umum
+            
+            // Khusus PDF menjadi 100MB jika tidak ada data-max-size eksplisit
+            if (ext === 'pdf' || file.type === 'application/pdf' || (input.getAttribute('accept') && input.getAttribute('accept').includes('pdf'))) {
+                maxSize = 100 * 1024 * 1024; 
+            }
+
             if (maxSizeStr) {
                 maxSize = parseInt(maxSizeStr) * 1024 * 1024;
             }

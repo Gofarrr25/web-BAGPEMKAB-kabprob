@@ -8,7 +8,7 @@
     <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
         <h3 class="font-bold text-gray-800">Form Upload Dokumen & Arsip Berkas (.PDF / .ZIP)</h3>
             <a href="{{ route('admin.documents.index') }}" class="text-gray-500 hover:text-gray-700 text-sm font-semibold transition flex items-center justify-center gap-1 bg-white border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50"><i class="fas fa-arrow-left"></i> Kembali</a>
-        <span class="text-xs bg-brand-blue-light text-brand-blue px-3 py-1 rounded-full font-bold">Maks. 50MB</span>
+        <span class="text-xs bg-brand-blue-light text-brand-blue px-3 py-1 rounded-full font-bold">Maks. 100MB</span>
     </div>
     
     <div class="p-4 md:p-6">
@@ -49,7 +49,7 @@
                     </div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">File Dokumen (.PDF)</label>
                     <input type="file" name="file" accept="application/pdf" class="w-full max-w-sm mx-auto block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 cursor-pointer">
-                    <p class="text-xs text-gray-500 mt-2 font-medium">Opsional. Maksimal 50MB</p>
+                    <p class="text-xs text-gray-500 mt-2 font-medium">Opsional. Maksimal 100MB</p>
                     @error('file') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
