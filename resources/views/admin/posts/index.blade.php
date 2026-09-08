@@ -7,7 +7,7 @@
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
         <h3 class="font-bold text-gray-800">Daftar Berita Instansi</h3>
-        <a href="{{ route('admin.posts.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm transition shadow-sm">
+        <a href="{{ route('admin.posts.create') }}" class="bg-brand-blue hover:bg-brand-blue-hover text-white font-bold py-2 px-4 rounded text-sm transition shadow-sm">
             <i class="fas fa-edit mr-1"></i> Tulis Berita Baru
         </a>
     </div>
@@ -19,7 +19,8 @@
                     <th class="px-6 py-4 font-semibold w-24 whitespace-nowrap">Thumbnail</th>
                     <th class="px-6 py-4 font-semibold whitespace-nowrap">Judul Berita</th>
                     <th class="px-6 py-4 font-semibold whitespace-nowrap">Kategori</th>
-                    <th class="px-6 py-4 font-semibold whitespace-nowrap">Status</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">Publikasi</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap text-center">Status</th>
                     <th class="px-6 py-4 font-semibold text-right whitespace-nowrap">Aksi</th>
                 </tr>
             </thead>
@@ -46,22 +47,43 @@
                     </td>
                     <td class="px-6 py-4">
                         @if($post->is_published)
-                            <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Publik</span>
+                            <span class="bg-brand-blue-light text-brand-blue px-2 py-1 rounded text-xs font-bold">Publik</span>
                         @else
                             <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold">Draft</span>
                         @endif
                     </td>
+                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                        @if($post->is_active)
+                            <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full"><i class="fas fa-check-circle mr-1 text-green-500"></i> Aktif</span>
+                        @else
+                            <span class="px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full"><i class="fas fa-times-circle mr-1 text-red-500"></i> Nonaktif</span>
+                        @endif
+                    </td>
                     <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
-                        <a href="{{ route('admin.posts.edit', $post->id) }}" class="text-blue-500 hover:text-blue-700 font-bold px-2 py-1 rounded border border-blue-200 hover:bg-blue-50 transition" title="Edit">
+                        @php
+                            $canEditDelete = !auth()->user()->hasRole('Staf') || $post->user_id === auth()->id();
+                        @endphp
+                        @if($canEditDelete)
+                        <form action="{{ route('admin.posts.toggle', $post->id) }}" method="POST" class="inline-block">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="{{ $post->is_active ? 'text-red-500 hover:text-red-700 border-red-200 hover:bg-red-50' : 'text-green-500 hover:text-green-700 border-green-200 hover:bg-green-50' }} font-bold px-2 py-1 rounded border transition" title="{{ $post->is_active ? 'Nonaktifkan Berita' : 'Aktifkan Berita' }}">
+                                <i class="fas {{ $post->is_active ? 'fa-ban' : 'fa-check' }}"></i>
+                            </button>
+                        </form>
+                        <a href="{{ route('admin.posts.edit', $post->id) }}" class="text-brand-blue hover:text-brand-blue-hover font-bold px-2 py-1 rounded border border-brand-blue-light hover:bg-brand-blue-light transition" title="Edit">
                             <i class="fas fa-pen"></i>
                         </a>
-                        <form action="{{ route('admin.posts.destroy', $post->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Hapus berita ini?');">
+                        <form action="{{ route('admin.posts.destroy', $post->id) }}" method="POST" class="inline-block" onsubmit="event.preventDefault(); confirmDelete(this, 'Berita/Artikel', 'Data Terpilih', true);">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="text-red-500 hover:text-red-700 font-bold px-2 py-1 rounded border border-red-200 hover:bg-red-50 transition" title="Hapus">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </form>
+                        @else
+                        <span class="text-gray-400 text-xs italic"><i class="fas fa-lock mr-1"></i>Akses Terbatas</span>
+                        @endif
                     </td>
                 </tr>
                 @endforeach

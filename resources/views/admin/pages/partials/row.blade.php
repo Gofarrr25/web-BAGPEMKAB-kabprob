@@ -8,7 +8,11 @@
     $url = $url ?? '';
 
     // Identifikasi eksplist dari database
-    if ($moduleType === 'posts') {
+    if (isset($parentTitle) && strtoupper($parentTitle) === 'DOKUMEN') {
+        $isSpecial = true;
+        $specialModule = 'Dokumen PPID';
+        $specialRoute = route('admin.documents.index');
+    } elseif ($moduleType === 'posts') {
         $isSpecial = true;
         $specialModule = 'Berita & Artikel';
         $specialRoute = route('admin.posts.index');
@@ -67,7 +71,7 @@
         }
     }
 @endphp
-<tr class="hover:bg-blue-50/40 transition searchable-row" data-search="{{ strtolower($page->title) }} {{ strtolower($page->slug) }}">
+<tr class="hover:bg-brand-blue-light/40 transition searchable-row" data-search="{{ strtolower($page->title) }} {{ strtolower($page->slug) }}">
     <td class="px-4 py-4 text-center font-bold text-gray-400 align-middle">
         @if($isSubmenu)
             <i class="fas fa-level-up-alt rotate-90 text-gray-300"></i>
@@ -77,12 +81,12 @@
     </td>
     <td class="px-4 py-4 font-extrabold text-gray-900 align-middle">
         <div class="flex items-center gap-2 {{ $isSubmenu ? 'ml-4' : '' }}">
-            <i class="{{ $menu->icon ?? 'fas fa-file-alt' }} text-blue-600 text-sm w-4 text-center"></i>
+            <i class="{{ $menu->icon ?? 'fas fa-file-alt' }} text-brand-blue text-sm w-4 text-center"></i>
             <span class="truncate max-w-[200px]" title="{{ $page->title }}">{{ $page->title }}</span>
         </div>
     </td>
     <td class="px-4 py-4 align-middle">
-        <span class="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md font-bold text-[11px] border border-blue-200 uppercase tracking-wider whitespace-nowrap">
+        <span class="bg-brand-blue-light text-brand-blue px-2.5 py-1 rounded-md font-bold text-[11px] border border-brand-blue-light uppercase tracking-wider whitespace-nowrap">
             {{ $isSubmenu ? $parentTitle : ($menu->title ?? '-') }}
         </span>
     </td>
@@ -110,10 +114,10 @@
     </td>
     <td class="px-4 py-4 align-middle">
         <div class="flex items-center gap-1.5">
-            <a href="{{ url('/page/' . $page->slug) }}" target="_blank" class="text-[11px] bg-slate-50 hover:bg-slate-100 text-blue-600 font-mono font-semibold border border-slate-200 px-2 py-1 rounded-md transition truncate max-w-[150px] inline-block" title="/page/{{ $page->slug }}">
+            <a href="{{ url('/page/' . $page->slug) }}" target="_blank" class="text-[11px] bg-slate-50 hover:bg-slate-100 text-brand-blue font-mono font-semibold border border-slate-200 px-2 py-1 rounded-md transition truncate max-w-[150px] inline-block" title="/page/{{ $page->slug }}">
                 /page/{{ $page->slug }}
             </a>
-            <a href="{{ url('/page/' . $page->slug) }}" target="_blank" class="text-gray-400 hover:text-blue-600 transition" title="Buka Halaman Publik">
+            <a href="{{ url('/page/' . $page->slug) }}" target="_blank" class="text-gray-400 hover:text-brand-blue-hover transition" title="Buka Halaman Publik">
                 <i class="fas fa-external-link-alt text-[10px]"></i>
             </a>
         </div>
@@ -141,7 +145,7 @@
                 <a href="{{ url('/page/' . $page->slug) }}" target="_blank" class="inline-flex justify-center items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white font-bold rounded-lg border border-emerald-200 transition text-[11px] shadow-sm whitespace-nowrap">
                     <i class="fas fa-eye"></i> Preview
                 </a>
-                <a href="{{ route('admin.pages.edit', $page->id) }}" class="inline-flex justify-center items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white font-bold rounded-lg border border-blue-200 transition text-[11px] shadow-sm whitespace-nowrap">
+                <a href="{{ route('admin.pages.edit', $page->id) }}" class="inline-flex justify-center items-center gap-1.5 px-3 py-1.5 bg-brand-blue-light text-brand-blue hover:bg-brand-blue-hover hover:text-white font-bold rounded-lg border border-brand-blue-light transition text-[11px] shadow-sm whitespace-nowrap">
                     <i class="fas fa-edit"></i> Edit Konten
                 </a>
             </div>

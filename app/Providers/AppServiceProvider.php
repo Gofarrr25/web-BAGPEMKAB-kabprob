@@ -56,9 +56,6 @@ class AppServiceProvider extends ServiceProvider
                 try {
                     return Menu::whereNull('parent_id')
                         ->where('is_active', true)
-                        ->where(function($q) {
-                            $q->where('position', 'navbar')->orWhereNull('position');
-                        })
                         ->with([
                             'page',
                             'children' => function($q) {
@@ -80,30 +77,8 @@ class AppServiceProvider extends ServiceProvider
                 }
             });
 
-            $footerNavMenus = \Illuminate\Support\Facades\Cache::remember('footer_nav_menus', 3600, function () {
-                try {
-                    return Menu::whereNull('parent_id')
-                        ->where('is_active', true)
-                        ->where('position', 'footer')
-                        ->with([
-                            'page',
-                            'children' => function($q) {
-                                $q->where('is_active', true)->orderBy('order_index');
-                            },
-                            'children.page',
-                            'children.parent'
-                        ])
-                        ->orderBy('order_index')
-                        ->get()
-                        ->toArray();
-                } catch (\Throwable $e) {
-                    return [];
-                }
-            });
-
             $view->with('siteSettings', $cachedSettings);
             $view->with('headerNavMenus', json_decode(json_encode($headerNavMenus)));
-            $view->with('footerNavMenus', json_decode(json_encode($footerNavMenus)));
         });
     }
 }

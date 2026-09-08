@@ -34,7 +34,7 @@
         </div>
         <div class="w-full md:w-1/2 flex">
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Judul Dokumen..." class="w-full border border-gray-300 px-4 py-2 text-gray-700 outline-none rounded-l text-sm">
-            <button type="submit" class="bg-brand-blue text-white px-6 py-2 hover:bg-blue-700 transition rounded-r">
+            <button type="submit" class="bg-brand-blue text-white px-6 py-2 hover:bg-brand-blue-hover transition rounded-r">
                 <i class="fas fa-search"></i>
             </button>
         </div>
@@ -93,7 +93,7 @@
                         }
                     }
                 @endphp
-                <tr class="{{ $index % 2 == 0 ? 'bg-gray-50/60' : 'bg-white' }} border-b border-gray-100 hover:bg-blue-50/50 transition">
+                <tr class="{{ $index % 2 == 0 ? 'bg-gray-50/60' : 'bg-white' }} border-b border-gray-100 hover:bg-brand-blue-light/50 transition">
                     <td class="px-4 py-4 text-center text-gray-600 border-r border-gray-100 font-mono text-xs whitespace-nowrap">{{ $documents->firstItem() + $index }}</td>
                     
                     <!-- Judul Dokumen (Klik langsung buka PDF Modal) -->
@@ -104,7 +104,7 @@
                                 <span>{{ $doc->title }}</span>
                             @elseif($isPdf)
                                 <i class="fas fa-file-pdf text-red-500 text-base"></i>
-                                <span data-pdf-url="{{ $pdfUrl }}" data-pdf-title="{{ $doc->title }}" onclick="openPdfModalFromEl(this)" class="cursor-pointer hover:text-blue-600 hover:underline font-semibold text-gray-900 transition">
+                                <span data-pdf-url="{{ $pdfUrl }}" data-pdf-title="{{ $doc->title }}" onclick="openPdfModalFromEl(this)" class="cursor-pointer hover:text-brand-blue-hover hover:underline font-semibold text-gray-900 transition">
                                     {{ $doc->title }}
                                 </span>
                             @else
@@ -169,7 +169,7 @@
 </div>
 
 <!-- MODAL PDF VIEWER POP-UP (Persis Sesuai Tampilan Gambar Reference) -->
-<div id="pdfViewerModal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center bg-black/80 p-2 md:p-6 backdrop-blur-xs transition-all duration-300">
+<div id="pdfViewerModal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center bg-black/80 p-2 md:p-4 md:p-6 backdrop-blur-xs transition-all duration-300">
     <div class="bg-white w-full max-w-6xl rounded-lg shadow-2xl overflow-hidden flex flex-col h-[92vh] relative border border-gray-700">
         
         <!-- Modal Header Bar -->
@@ -198,7 +198,7 @@
         <!-- Modal Footer Bar (Sesuai Tombol "Baca" Kuning & "Close" Biru pada Gambar) -->
         <div class="bg-gray-100 px-6 py-3 border-t border-gray-200 flex items-center justify-between flex-shrink-0">
             <div class="text-xs text-gray-500 hidden sm:block">
-                <i class="fas fa-info-circle text-blue-500 mr-1"></i> Klik <strong>Baca</strong> untuk membuka layar penuh di tab baru, atau <strong>Close</strong> untuk menutup modal.
+                <i class="fas fa-info-circle text-brand-blue mr-1"></i> Klik <strong>Baca</strong> untuk membuka layar penuh di tab baru, atau <strong>Close</strong> untuk menutup modal.
             </div>
 
             <div class="flex items-center gap-3 ml-auto">
@@ -208,7 +208,7 @@
                 </button>
 
                 <!-- Tombol "Close" Biru (Sesuai Gambar User) -->
-                <button type="button" onclick="closePdfModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-2 rounded shadow text-sm transition">
+                <button type="button" onclick="closePdfModal()" class="bg-brand-blue hover:bg-brand-blue-hover text-white font-bold px-6 py-2 rounded shadow text-sm transition">
                     Close
                 </button>
             </div>

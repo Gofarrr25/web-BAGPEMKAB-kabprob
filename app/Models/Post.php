@@ -18,8 +18,14 @@ class Post extends Model
         'content',
         'image',
         'is_published',
+        'is_active',
         'created_at',
     ];
+
+    public function postImages()
+    {
+        return $this->hasMany(PostImage::class)->orderBy('order_index');
+    }
 
     public function user()
     {

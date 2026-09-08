@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Jenssegers\Agent\Agent;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,16 +46,24 @@ class ActivityLogger
      */
     protected function logActivity(Request $request, $response, $userBeforeRequest)
     {
-        $agent = new Agent();
-        $agent->setUserAgent($request->userAgent());
-
-        $browser = $agent->browser();
-        $version = $agent->version($browser);
-        $os = $agent->platform();
-        $osVersion = $agent->version($os);
+        $userAgent = $request->userAgent() ?? '';
         
-        $browserStr = $browser ? $browser . ' ' . $version : 'Unknown Browser';
-        $osStr = $os ? $os . ' ' . $osVersion : 'Unknown OS';
+        // Lightweight Browser Detection
+        $browserStr = 'Unknown Browser';
+        if (preg_match('/Edg/i', $userAgent)) $browserStr = 'Edge';
+        elseif (preg_match('/Firefox/i', $userAgent)) $browserStr = 'Firefox';
+        elseif (preg_match('/OPR/i', $userAgent) || preg_match('/Opera/i', $userAgent)) $browserStr = 'Opera';
+        elseif (preg_match('/Chrome/i', $userAgent)) $browserStr = 'Chrome';
+        elseif (preg_match('/Safari/i', $userAgent)) $browserStr = 'Safari';
+
+        // Lightweight OS Detection
+        $osStr = 'Unknown OS';
+        if (preg_match('/Windows NT 11/i', $userAgent)) $osStr = 'Windows 11';
+        elseif (preg_match('/Windows NT 10/i', $userAgent)) $osStr = 'Windows 10';
+        elseif (preg_match('/Mac OS X/i', $userAgent)) $osStr = 'Mac OS';
+        elseif (preg_match('/Linux/i', $userAgent)) $osStr = 'Linux';
+        elseif (preg_match('/Android/i', $userAgent)) $osStr = 'Android';
+        elseif (preg_match('/iPhone|iPad|iPod/i', $userAgent)) $osStr = 'iOS';
 
         $method = $request->method();
         $url = $request->fullUrl();

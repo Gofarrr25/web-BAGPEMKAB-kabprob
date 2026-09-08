@@ -13,11 +13,18 @@ class Gallery extends Model
     protected $fillable = [
         'user_id',
         'title',
+        'description',
         'type',
         'file_path',
         'video_url',
+        'is_active',
         'created_at',
     ];
+
+    public function galleryItems()
+    {
+        return $this->hasMany(GalleryItem::class)->orderBy('order_index');
+    }
 
     public function user()
     {
@@ -26,9 +33,19 @@ class Gallery extends Model
 
     public function getYoutubeIdAttribute()
     {
-        if (!$this->video_url) return null;
+        $videoUrl = $this->video_url;
+        
+        // If the main video_url is null (e.g. video album), get the first item's video_url
+        if (!$videoUrl && $this->type === 'video') {
+            $firstItem = $this->galleryItems()->whereNotNull('video_url')->orderBy('order_index')->first();
+            if ($firstItem) {
+                $videoUrl = $firstItem->video_url;
+            }
+        }
+        
+        if (!$videoUrl) return null;
 
-        $url = trim($this->video_url);
+        $url = trim($videoUrl);
 
         // Comprehensive regex: matches ALL known YouTube URL formats
         // - youtube.com/watch?v=ID

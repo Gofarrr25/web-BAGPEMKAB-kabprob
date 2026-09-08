@@ -14,8 +14,17 @@ class Banner extends Model
         'user_id',
         'title',
         'image_path',
-        'link_url',
+        'is_published',
         'is_active',
+        'start_date',
+        'end_date',
+    ];
+
+    protected $casts = [
+        'is_published' => 'boolean',
+        'is_active' => 'boolean',
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
     ];
 
     public function user()

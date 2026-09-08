@@ -6,31 +6,155 @@
 <div class="bg-gray-100 min-h-screen py-10">
     <div class="container mx-auto px-4 lg:px-8 max-w-6xl">
         
+        <!-- Search Bar -->
+        <div class="bg-white p-4 md:p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 mb-8 flex justify-between items-center">
+            <form action="{{ url('/galeri-video') }}" method="GET" class="w-full flex flex-col md:flex-row gap-4">
+                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari Galeri Video..." class="w-full flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-600 outline-none">
+                <button type="submit" class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-sm shadow transition flex items-center justify-center gap-2">
+                    <i class="fas fa-search"></i> Cari
+                </button>
+            </form>
+        </div>
+
         <!-- Video Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 items-start">
             @forelse($videos as $index => $video)
-                <div class="bg-white rounded-xl shadow-md overflow-hidden group cursor-pointer border border-gray-200 transition transform hover:-translate-y-1 hover:shadow-xl" 
-                     data-index="{{ $index }}"
-                     onclick="openLightbox(Number(this.getAttribute('data-index')))">
+                @php 
+                    $vidCount = ($video->galleryItems ? $video->galleryItems->count() : 0);
+                    if ($video->video_url || $video->file_path) {
+                        $vidCount += 1;
+                    }
                     
-                    <div class="relative w-full h-48 bg-black overflow-hidden">
-                        <img src="{{ $video->thumbnail_url }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition duration-500" alt="{{ $video->title }}">
+                    $isSingleVideo = $vidCount <= 1;
+                    $embedUrl = null;
+                    $isLocal = 0;
+                    $localUrl = null;
+                    
+                    if ($isSingleVideo) {
+                        $targetVideoUrl = $video->video_url;
+                        $targetFilePath = $video->file_path;
                         
-                        <!-- Ikon Play YouTube Merah di Tengah -->
-                        <div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition">
-                            <div class="w-14 h-14 bg-red-600 rounded-full flex items-center justify-center text-white shadow-2xl group-hover:scale-110 transition duration-300">
-                                <i class="fas fa-play text-xl ml-1"></i>
+                        if (!$targetVideoUrl && !$targetFilePath && $video->galleryItems && $video->galleryItems->count() > 0) {
+                            $firstItem = $video->galleryItems->first();
+                            $targetVideoUrl = $firstItem->video_url;
+                            $targetFilePath = $firstItem->file_path;
+                        }
+
+                        if ($targetVideoUrl) {
+                            preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $targetVideoUrl, $matches);
+                            if(isset($matches[1])) {
+                                $embedUrl = "https://www.youtube.com/embed/" . $matches[1];
+                                $youtubeId = $matches[1];
+                            }
+                        } else if ($targetFilePath) {
+                            $isLocal = 1;
+                            $localUrl = asset('storage/' . $targetFilePath);
+                        }
+                    } else {
+                        // Jika album, coba ambil youtube_id dari video pertama untuk thumbnail maxresdefault
+                        if ($video->galleryItems && $video->galleryItems->count() > 0) {
+                            $firstItem = $video->galleryItems->first();
+                            if ($firstItem->video_url) {
+                                preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $firstItem->video_url, $matches);
+                                if(isset($matches[1])) {
+                                    $youtubeId = $matches[1];
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Setup maxresdefault as primary thumbnail if youtubeId exists
+                    $thumbnailUrl = $video->thumbnail_url;
+                    $maxresThumbnailUrl = null;
+                    if (isset($youtubeId) && $youtubeId) {
+                        $maxresThumbnailUrl = "https://img.youtube.com/vi/{$youtubeId}/maxresdefault.jpg";
+                        $hqThumbnailUrl = "https://img.youtube.com/vi/{$youtubeId}/hqdefault.jpg";
+                    } else if ($video->youtube_id) {
+                        $maxresThumbnailUrl = "https://img.youtube.com/vi/{$video->youtube_id}/maxresdefault.jpg";
+                        $hqThumbnailUrl = "https://img.youtube.com/vi/{$video->youtube_id}/hqdefault.jpg";
+                    }
+                @endphp
+
+                @if($isSingleVideo)
+                <div class="group block w-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col">
+                @else
+                <a href="{{ route('frontend.video.detail', $video->id) }}" class="group block w-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col">
+                @endif
+                    
+                    <!-- Thumbnail Area -->
+                    <div class="relative w-full aspect-video shrink-0 bg-gray-100">
+                        @if($isSingleVideo)
+                            <!-- Thumbnail State for Single Video -->
+                            <div class="absolute inset-0 w-full h-full overflow-hidden rounded-t-2xl cursor-pointer" onclick="playVideo('{{ $embedUrl }}', '{{ $isLocal }}', '{{ $localUrl }}')">
+                                @if($maxresThumbnailUrl)
+                                    <img src="{{ $maxresThumbnailUrl }}" onerror="this.onerror=null; this.src='{{ $hqThumbnailUrl }}';" class="w-full h-full object-cover scale-[1.02] group-hover:scale-105 transition-transform duration-500" alt="{{ $video->title }}">
+                                @else
+                                    <img src="{{ $thumbnailUrl }}" class="w-full h-full object-cover scale-[1.02] group-hover:scale-105 transition-transform duration-500" alt="{{ $video->title }}">
+                                @endif
                             </div>
+                            <!-- Ikon Play Bawah Kanan -->
+                            <div class="absolute bottom-4 right-4 w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300 pointer-events-none z-10">
+                                <i class="fas fa-play ml-1"></i>
+                            </div>
+                        @else
+                            <!-- Thumbnail State for Album -->
+                            <div class="absolute inset-0 w-full h-full overflow-hidden rounded-t-2xl">
+                                @if($maxresThumbnailUrl)
+                                    <img src="{{ $maxresThumbnailUrl }}" onerror="this.onerror=null; this.src='{{ $hqThumbnailUrl }}';" class="w-full h-full object-cover scale-[1.02] group-hover:scale-105 transition-transform duration-500" alt="{{ $video->title }}">
+                                @else
+                                    <img src="{{ $thumbnailUrl }}" class="w-full h-full object-cover scale-[1.02] group-hover:scale-105 transition-transform duration-500" alt="{{ $video->title }}">
+                                @endif
+                            </div>
+                            <!-- Ikon Play Bawah Kanan -->
+                            <div class="absolute bottom-4 right-4 w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300 z-10">
+                                <i class="fas fa-play ml-1"></i>
+                            </div>
+                        @endif
+                        
+                        @php
+                            $monthsId = [
+                                1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 
+                                5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 
+                                9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+                            ];
+                            $day = $video->created_at->format('d');
+                            $monthInt = (int)$video->created_at->format('m');
+                            $year = $video->created_at->format('Y');
+                            $monthName = $monthsId[$monthInt];
+                            $formattedDate = strtoupper($day . ' ' . $monthName . ' ' . $year);
+                        @endphp
+                        
+                        <!-- Tanggal (Sesuai Submenu Berita) -->
+                        <div class="absolute -bottom-5 left-6 md:left-7 bg-brand-blue text-white text-[13px] md:text-sm font-bold px-5 py-2.5 shadow-sm whitespace-nowrap z-30 pointer-events-none">
+                            {{ $formattedDate }}
                         </div>
                     </div>
-                    
-                    <div class="p-4">
-                        <h3 class="font-bold text-gray-800 text-sm line-clamp-2 leading-snug group-hover:text-blue-600 transition">{{ $video->title }}</h3>
-                        <p class="text-xs text-gray-400 mt-2 flex items-center gap-1">
-                            <i class="far fa-clock text-amber-600"></i> {{ $video->created_at->format('d M Y') }}
-                        </p>
+
+                    <!-- Content Area -->
+                    <div class="p-6 md:p-7 pt-10 md:pt-10 flex flex-col">
+                        <h3 class="font-bold text-gray-800 text-lg md:text-xl leading-tight mb-0 group-hover:text-red-600 transition-colors duration-300">
+                            @if($isSingleVideo)
+                                <span class="cursor-pointer" onclick="playVideo('{{ $embedUrl }}', '{{ $isLocal }}', '{{ $localUrl }}')">{{ $video->title }}</span>
+                            @else
+                                {{ $video->title }}
+                            @endif
+                        </h3>
+                        
+                        @if($vidCount > 1)
+                            <!-- Album Video Badge (Di Bawah Judul, Bentuk Konsisten Dengan Tanggal) -->
+                            <div class="mt-4 pt-4 border-t border-gray-100 flex items-center">
+                                <div class="bg-red-600 text-white text-[13px] md:text-sm font-bold px-5 py-2.5 shadow-sm flex items-center gap-2">
+                                    <span>Album Video</span>
+                                    <span class="opacity-80 text-xs border-l border-white/30 pl-2">{{ $vidCount }} Video</span>
+                                </div>
+                            </div>
+                        @endif
                     </div>
+                @if($isSingleVideo)
                 </div>
+                @else
+                </a>
+                @endif
             @empty
                 <div class="col-span-full text-center py-16 bg-white rounded-xl border border-gray-200 shadow-sm">
                     <i class="fas fa-video-slash text-5xl text-gray-300 mb-3"></i>
@@ -49,167 +173,76 @@
     </div>
 </div>
 
-<!-- ========================================== -->
-<!-- LIGHTBOX MODAL PLAYER -->
-<!-- ========================================== -->
-<div id="videoLightboxModal" class="fixed inset-0 z-[999] flex items-center justify-center hidden bg-black/90 backdrop-blur-sm p-4 transition-all duration-300">
+<!-- Video Modal -->
+<div id="videoModal" class="fixed inset-0 z-[100] hidden bg-black/95 flex items-center justify-center p-4 md:p-10 opacity-0 transition-opacity duration-300">
     
-    <!-- Tombol Close Top Right -->
-    <button onclick="closeLightbox()" class="absolute top-4 right-6 text-white/80 hover:text-white text-4xl font-bold focus:outline-none z-[1010] transition">
-        &times;
+    <!-- Close Button (Visible on screen top-right) -->
+    <button type="button" onclick="closeVideoModal()" class="absolute top-4 right-4 md:top-8 md:right-8 text-white hover:text-red-500 z-[110] bg-gray-900/80 hover:bg-gray-900 border border-gray-700 rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center transition cursor-pointer shadow-lg">
+        <i class="fas fa-times text-xl md:text-2xl"></i>
     </button>
 
-    <!-- Navigation Arrow Left -->
-    <button onclick="prevVideo()" class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/60 hover:bg-black/90 text-white rounded-full flex items-center justify-center text-xl z-[1010] shadow-xl border border-white/20 transition">
-        <i class="fas fa-chevron-left"></i>
-    </button>
-
-    <!-- Navigation Arrow Right -->
-    <button onclick="nextVideo()" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/60 hover:bg-black/90 text-white rounded-full flex items-center justify-center text-xl z-[1010] shadow-xl border border-white/20 transition">
-        <i class="fas fa-chevron-right"></i>
-    </button>
-
-    <!-- Modal Content -->
-    <div class="w-full max-w-4xl mx-auto z-[1000] relative">
-        <div id="playerContainer" class="relative w-full rounded-2xl overflow-hidden shadow-2xl bg-black border border-gray-800" style="padding-top: 56.25%;">
-            <!-- YouTube Player akan di-render di sini oleh YouTube IFrame API -->
-            <div id="ytPlayerWrapper" class="absolute top-0 left-0 w-full h-full">
-                <div id="ytPlayer"></div>
-            </div>
-
-            <!-- Fallback UI: ditampilkan jika embed gagal -->
-            <div id="embedFallback" class="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 text-white hidden">
-                <img id="fallbackThumb" src="" alt="Video Thumbnail" class="absolute inset-0 w-full h-full object-cover opacity-30">
-                <div class="relative z-10 flex flex-col items-center gap-4 px-6 text-center">
-                    <div class="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center shadow-2xl">
-                        <i class="fab fa-youtube text-4xl text-white"></i>
-                    </div>
-                    <p class="text-lg font-bold">Video tidak dapat diputar di sini</p>
-                    <p class="text-sm text-gray-300 max-w-md">Browser atau jaringan Anda memblokir embed YouTube. Klik tombol di bawah untuk menonton langsung di YouTube.</p>
-                    <a id="fallbackLink" href="#" target="_blank" rel="noopener noreferrer"
-                       class="mt-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow-lg transition transform hover:scale-105 flex items-center gap-2">
-                        <i class="fab fa-youtube text-xl"></i>
-                        Tonton di YouTube
-                    </a>
-                </div>
-            </div>
+    <div class="relative w-full max-w-5xl bg-black rounded-xl overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 border border-gray-800" id="videoModalContent">
+        <!-- Video Container -->
+        <div class="relative w-full aspect-video bg-black" id="videoContainer">
+            <!-- Iframe or Video Tag will be injected here -->
         </div>
-        <h3 id="lightboxTitle" class="text-white font-bold text-base mt-3 text-center px-4 line-clamp-1"></h3>
     </div>
 </div>
 
-@php
-    $formattedVideos = collect($videos->items())->values()->map(function($v, $idx) {
-        $isLocal = !empty($v->file_path) && $v->type === 'video';
-        return [
-            'index' => $idx,
-            'title' => $v->title,
-            'videoId' => $v->youtube_id,
-            'embedUrl' => $v->embed_url ? $v->embed_url . '&autoplay=1' : null,
-            'watchUrl' => $v->watch_url,
-            'thumbnail' => $v->thumbnail_url,
-            'isLocal' => $isLocal,
-            'localUrl' => $isLocal ? asset('storage/' . $v->file_path) : null,
-        ];
-    });
-@endphp
-
-<script id="videoDataJson" type="application/json">
-    @json($formattedVideos)
-</script>
+@endsection
 
 @push('scripts')
 <script>
-    const videoDataElement = document.getElementById('videoDataJson');
-    const videoDataList = videoDataElement ? JSON.parse(videoDataElement.textContent) : [];
-
-    let currentVideoIndex = 0;
-
-    function openLightbox(index) {
-        if (videoDataList.length === 0) return;
-        currentVideoIndex = index;
-        document.getElementById('videoLightboxModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-        loadVideo();
-    }
-
-    function loadVideo() {
-        const item = videoDataList[currentVideoIndex];
-        if (!item) return;
-
-        document.getElementById('lightboxTitle').innerText = item.title;
-
-        // Reset fallback & player
-        document.getElementById('embedFallback').classList.add('hidden');
-        document.getElementById('ytPlayerWrapper').classList.remove('hidden');
-
-        // Setup fallback data
-        document.getElementById('fallbackThumb').src = item.thumbnail;
-        document.getElementById('fallbackLink').href = item.watchUrl || '#';
-
-        const wrapper = document.getElementById('ytPlayerWrapper');
+    function playVideo(embedUrl, isLocal, localUrl) {
+        const modal = document.getElementById('videoModal');
+        const container = document.getElementById('videoContainer');
+        const modalContent = document.getElementById('videoModalContent');
         
-        if (item.isLocal && item.localUrl) {
-            // Putar video lokal dengan HTML5 player
-            wrapper.innerHTML = `<video src="${item.localUrl}" controls autoplay class="w-full h-full outline-none bg-black"></video>`;
-        } else if (item.embedUrl) {
-            // Gunakan iframe langsung untuk YouTube agar lebih stabil
-            wrapper.innerHTML = `<iframe src="${item.embedUrl}" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen onerror="showFallback()"></iframe>`;
-            
-            // Fallback checking: since we can't easily detect cross-origin iframe errors natively in all browsers,
-            // we assume it works if the embedUrl is valid.
+        container.innerHTML = ''; // clear previous
+        
+        if (isLocal === '1' && localUrl) {
+            container.innerHTML = `<video src="${localUrl}" controls autoplay class="w-full h-full object-contain"></video>`;
+        } else if (embedUrl) {
+            container.innerHTML = `<iframe src="${embedUrl}?autoplay=1" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
         } else {
-            // Data video tidak valid
-            showFallback();
+            container.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-gray-500"><i class="fas fa-exclamation-triangle text-4xl mb-3"></i><p>Video tidak valid atau link rusak</p></div>`;
         }
-    }
-
-    function showFallback() {
-        document.getElementById('ytPlayerWrapper').classList.add('hidden');
-        document.getElementById('embedFallback').classList.remove('hidden');
-    }
-
-    function prevVideo() {
-        if (videoDataList.length === 0) return;
-        currentVideoIndex = (currentVideoIndex - 1 + videoDataList.length) % videoDataList.length;
-        loadVideo();
-    }
-
-    function nextVideo() {
-        if (videoDataList.length === 0) return;
-        currentVideoIndex = (currentVideoIndex + 1) % videoDataList.length;
-        loadVideo();
-    }
-
-    function closeLightbox() {
-        document.getElementById('videoLightboxModal').classList.add('hidden');
-        document.body.style.overflow = 'auto';
         
-        // Hapus elemen iframe atau video agar playback berhenti
-        const wrapper = document.getElementById('ytPlayerWrapper');
-        if (wrapper) wrapper.innerHTML = '';
+        modal.classList.remove('hidden');
+        // trigger reflow
+        void modal.offsetWidth;
+        modal.classList.remove('opacity-0');
+        modalContent.classList.remove('scale-95');
+        document.body.style.overflow = 'hidden'; // prevent background scrolling
     }
-
-    // Keyboard Shortcuts (Arrow Left, Arrow Right, ESC)
-    document.addEventListener('keydown', function(e) {
-        const modal = document.getElementById('videoLightboxModal');
-        if (!modal.classList.contains('hidden')) {
-            if (e.key === 'Escape') {
-                closeLightbox();
-            } else if (e.key === 'ArrowLeft') {
-                prevVideo();
-            } else if (e.key === 'ArrowRight') {
-                nextVideo();
-            }
+    
+    function closeVideoModal() {
+        const modal = document.getElementById('videoModal');
+        const container = document.getElementById('videoContainer');
+        const modalContent = document.getElementById('videoModalContent');
+        
+        modal.classList.add('opacity-0');
+        modalContent.classList.add('scale-95');
+        document.body.style.overflow = '';
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            container.innerHTML = ''; // stop playing
+        }, 300);
+    }
+    
+    // Close modal on escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && !document.getElementById('videoModal').classList.contains('hidden')) {
+            closeVideoModal();
         }
     });
-
-    // Close on dark background click
-    document.getElementById('videoLightboxModal').addEventListener('click', function(e) {
+    
+    // Close modal on clicking outside the video
+    document.getElementById('videoModal').addEventListener('click', function(e) {
         if (e.target === this) {
-            closeLightbox();
+            closeVideoModal();
         }
     });
 </script>
 @endpush
-@endsection

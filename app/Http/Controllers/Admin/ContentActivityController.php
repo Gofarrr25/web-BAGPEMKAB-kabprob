@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\Models\Activity;
 
 class ContentActivityController extends Controller
 {
     public function index(Request $request)
     {
-        if (auth()->check() && auth()->user()->hasRole('Superadmin')) {
-            abort(403, 'Akses Ditolak: Superadmin menggunakan menu Log Aktivitas Sistem.');
-        }
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
 
         // Daftar model yang secara ketat diklasifikasikan sebagai "Konten Website"
         // Login, Logout, User, Role, Permission otomatis tidak akan masuk ke sini.
@@ -24,19 +24,31 @@ class ContentActivityController extends Controller
             \App\Models\Banner::class,
             \App\Models\Gallery::class,
             \App\Models\Agenda::class,
-            \App\Models\Announcement::class,
             \App\Models\HomeWidget::class,
             \App\Models\RelatedLink::class,
             \App\Models\InstagramPost::class,
-            \App\Models\OrganizationMember::class,
         ];
 
         $query = Activity::with('causer')
             ->whereIn('subject_type', $contentModels)
-            ->whereHas('causer.roles', function($q) {
-                $q->where('name', '!=', 'Superadmin');
-            })
             ->latest();
+
+        if ($user) {
+            if ($user->hasRole('Staf')) {
+                // Staf: hanya aktivitas dirinya sendiri
+                $query->where('causer_id', $user->id);
+            } elseif ($user->hasRole('Admin OPD') || $user->hasRole('Admin')) {
+                // Admin: dirinya, sesama admin, staf, tapi bukan superadmin
+                $query->where(function($q) {
+                    $q->whereHas('causer', function($causerQ) {
+                        $causerQ->whereDoesntHave('roles', function($roleQ) {
+                            $roleQ->where('name', 'Superadmin');
+                        });
+                    })->orWhereNull('causer_id');
+                });
+            }
+            // Superadmin melihat semuanya
+        }
 
         // Pencarian sederhana
         if ($request->filled('search')) {
@@ -85,10 +97,21 @@ class ContentActivityController extends Controller
 
         $logs = $query->paginate(15)->withQueryString();
         
-        $baseFilterQuery = Activity::whereIn('subject_type', $contentModels)
-            ->whereHas('causer.roles', function($q) {
-                $q->where('name', '!=', 'Superadmin');
-            });
+        $baseFilterQuery = Activity::whereIn('subject_type', $contentModels);
+
+        if ($user) {
+            if ($user->hasRole('Staf')) {
+                $baseFilterQuery->where('causer_id', $user->id);
+            } elseif ($user->hasRole('Admin OPD') || $user->hasRole('Admin')) {
+                $baseFilterQuery->where(function($q) {
+                    $q->whereHas('causer', function($causerQ) {
+                        $causerQ->whereDoesntHave('roles', function($roleQ) {
+                            $roleQ->where('name', 'Superadmin');
+                        });
+                    })->orWhereNull('causer_id');
+                });
+            }
+        }
 
         $types = (clone $baseFilterQuery)->selectRaw("JSON_UNQUOTE(JSON_EXTRACT(properties, '$.type')) as type")->distinct()->pluck('type')->filter();
         $modules = (clone $baseFilterQuery)->selectRaw("JSON_UNQUOTE(JSON_EXTRACT(properties, '$.module')) as module")->distinct()->pluck('module')->filter();
@@ -96,14 +119,22 @@ class ContentActivityController extends Controller
         return view('admin.content_activities.index', compact('logs', 'types', 'modules'));
     }
 
-    public function show($id)
+    public function show(string $id)
     {
-        if (auth()->check() && auth()->user()->hasRole('Superadmin')) {
-            abort(403, 'Akses Ditolak: Superadmin menggunakan menu Log Aktivitas Sistem.');
-        }
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
 
         $log = Activity::with('causer')->findOrFail($id);
         
+        if ($user) {
+            if ($user->hasRole('Staf') && $log->causer_id !== $user->id) {
+                abort(403, 'Akses Ditolak: Anda hanya dapat melihat aktivitas Anda sendiri.');
+            }
+            if (($user->hasRole('Admin OPD') || $user->hasRole('Admin')) && $log->causer && $log->causer->hasRole('Superadmin')) {
+                abort(403, 'Akses Ditolak: Anda tidak dapat melihat aktivitas Super Admin.');
+            }
+        }
+
         // Pastikan admin tidak membuka detail dari restricted models
         $contentModels = [
             \App\Models\Post::class,
@@ -113,11 +144,9 @@ class ContentActivityController extends Controller
             \App\Models\Banner::class,
             \App\Models\Gallery::class,
             \App\Models\Agenda::class,
-            \App\Models\Announcement::class,
             \App\Models\HomeWidget::class,
             \App\Models\RelatedLink::class,
             \App\Models\InstagramPost::class,
-            \App\Models\OrganizationMember::class,
         ];
 
         if (!in_array($log->subject_type, $contentModels)) {

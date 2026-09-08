@@ -32,15 +32,15 @@
     </div>
 @endif
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8">
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-6 md:p-4 md:p-8">
     <form action="{{ route('admin.contact-settings.store') }}" method="POST">
         @csrf
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-8">
             <!-- Data Alamat & Kontak Dasar -->
             <div class="space-y-4">
                 <h4 class="font-bold text-gray-700 border-b pb-2 mb-4 text-sm flex items-center gap-2">
-                    <i class="fas fa-info-circle text-blue-500"></i> Informasi Dasar
+                    <i class="fas fa-info-circle text-brand-blue"></i> Informasi Dasar
                 </h4>
                 
                 <div>
@@ -68,12 +68,12 @@
                 <p class="text-xs text-gray-500 mb-3">Kosongkan link jika Anda tidak ingin menampilkan ikon platform tersebut di halaman Kontak website.</p>
                 
                 <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1"><i class="fab fa-facebook text-blue-600 w-4"></i> Facebook (URL)</label>
+                    <label class="block text-xs font-bold text-gray-700 mb-1"><i class="fab fa-facebook text-brand-blue w-4"></i> Facebook (URL)</label>
                     <input type="url" name="facebook_url" value="{{ $settings['facebook_url'] ?? '' }}" placeholder="https://facebook.com/..." class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-xs font-mono">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1"><i class="fab fa-twitter text-blue-400 w-4"></i> Twitter / X (URL)</label>
+                    <label class="block text-xs font-bold text-gray-700 mb-1"><i class="fab fa-twitter text-brand-blue-pale w-4"></i> Twitter / X (URL)</label>
                     <input type="url" name="twitter_url" value="{{ $settings['twitter_url'] ?? '' }}" placeholder="https://twitter.com/..." class="w-full px-3.5 py-2 border border-gray-300 rounded-lg text-xs font-mono">
                 </div>
 
@@ -97,7 +97,7 @@
             
             <div class="relative mb-4">
                 <div class="flex gap-2">
-                    <input type="text" id="mapSearchInput" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contoh: Kantor Bupati Probolinggo..." autocomplete="off">
+                    <input type="text" id="mapSearchInput" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-blue" placeholder="Contoh: Kantor Bupati Probolinggo..." autocomplete="off">
                     <button type="button" id="btnSearchMap" class="px-5 py-2 bg-gray-800 text-white font-bold rounded-lg hover:bg-gray-700 text-sm whitespace-nowrap transition flex items-center gap-2">
                         <i class="fas fa-search"></i> Cari
                     </button>
@@ -117,7 +117,7 @@
         </div>
 
         <div class="border-t border-gray-100 pt-5">
-            <button type="submit" class="w-full md:w-auto px-8 py-3 bg-brand-blue text-white font-bold rounded-lg hover:bg-blue-700 transition shadow text-sm flex items-center justify-center gap-2">
+            <button type="submit" class="w-full md:w-auto px-8 py-3 bg-brand-blue text-white font-bold rounded-lg hover:bg-brand-blue-hover transition shadow text-sm flex items-center justify-center gap-2">
                 <i class="fas fa-save"></i> Simpan Pengaturan Kontak
             </button>
         </div>
@@ -141,22 +141,35 @@
             btnSearch.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Tunggu...';
             btnSearch.disabled = true;
             
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=id`)
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=id&limit=5`, {
+                headers: {
+                    'Accept-Language': 'id-ID,id;q=0.9'
+                }
+            })
                 .then(res => res.json())
                 .then(data => {
                     btnSearch.innerHTML = '<i class="fas fa-search"></i> Cari';
                     btnSearch.disabled = false;
                     resultsContainer.innerHTML = '';
                     
-                    if (data.length === 0) {
-                        resultsContainer.innerHTML = '<div class="p-3 text-sm text-gray-500">Lokasi tidak ditemukan. Coba kata kunci lain atau masukkan nama kota/kecamatan.</div>';
-                    } else {
+                    // Opsi pencarian langsung persis dengan kata kunci (Akurat menggunakan engine Google Maps)
+                    const exactDiv = document.createElement('div');
+                    exactDiv.className = 'p-3 hover:bg-gray-100 cursor-pointer border-b border-gray-200 text-sm font-bold text-brand-blue transition flex items-center gap-2';
+                    exactDiv.innerHTML = `<i class="fas fa-map-marker-alt"></i> Gunakan kata kunci "${query}" (Pencarian Akurat)`;
+                    exactDiv.onclick = function() {
+                        selectLocation(query, query);
+                    };
+                    resultsContainer.appendChild(exactDiv);
+                    
+                    if (data.length > 0) {
                         data.forEach(place => {
                             const div = document.createElement('div');
-                            div.className = 'p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 text-sm text-gray-700 transition';
-                            div.innerHTML = `<strong>${place.name}</strong><br><span class="text-xs text-gray-500">${place.display_name}</span>`;
+                            div.className = 'p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 text-sm text-gray-700 transition';
+                            const title = place.name ? place.name : query;
+                            div.innerHTML = `<strong>${title}</strong><br><span class="text-xs text-gray-500">${place.display_name}</span>`;
                             div.onclick = function() {
-                                selectLocation(place.lat, place.lon, place.name);
+                                // Pass coordinates and name for precise placement
+                                selectLocationByCoords(place.lat, place.lon, title);
                             };
                             resultsContainer.appendChild(div);
                         });
@@ -166,25 +179,52 @@
                 .catch(err => {
                     btnSearch.innerHTML = '<i class="fas fa-search"></i> Cari';
                     btnSearch.disabled = false;
-                    console.error('Nominatim API error:', err);
+                    
+                    // Fallback
+                    resultsContainer.innerHTML = '';
+                    const exactDiv = document.createElement('div');
+                    exactDiv.className = 'p-3 hover:bg-gray-100 cursor-pointer border-b border-gray-200 text-sm font-bold text-brand-blue transition flex items-center gap-2';
+                    exactDiv.innerHTML = `<i class="fas fa-map-marker-alt"></i> Gunakan kata kunci "${query}" (Pencarian Akurat)`;
+                    exactDiv.onclick = function() {
+                        selectLocation(query, query);
+                    };
+                    resultsContainer.appendChild(exactDiv);
+                    resultsContainer.classList.remove('hidden');
                 });
         }
 
-        function selectLocation(lat, lon, name) {
+        function selectLocation(searchQuery, displayTitle) {
             resultsContainer.classList.add('hidden');
-            searchInput.value = name;
+            searchInput.value = displayTitle;
             
-            // Build embed URL using Coordinates for Google Maps
-            const iframeHtml = `<iframe src="https://maps.google.com/maps?q=${lat},${lon}&hl=id&z=16&output=embed" class="w-full h-full border-0" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+            // Build embed URL using text query - allows Google to perfectly resolve the exact location
+            const iframeHtml = `<iframe src="https://maps.google.com/maps?q=${encodeURIComponent(searchQuery)}&hl=id&z=16&output=embed" class="w-full h-full border-0" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
             
             hiddenIframeInput.value = iframeHtml;
             mapPreview.innerHTML = iframeHtml;
             
-            // Highlight to user that they need to save
+            triggerSaveAnimation();
+        }
+        
+        function selectLocationByCoords(lat, lon, shortName) {
+            resultsContainer.classList.add('hidden');
+            searchInput.value = shortName;
+            
+            // Build embed URL using coordinates with label
+            const queryData = `${lat},${lon}(${encodeURIComponent(shortName)})`;
+            const iframeHtml = `<iframe src="https://maps.google.com/maps?q=${queryData}&hl=id&z=16&output=embed" class="w-full h-full border-0" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+            
+            hiddenIframeInput.value = iframeHtml;
+            mapPreview.innerHTML = iframeHtml;
+            
+            triggerSaveAnimation();
+        }
+
+        function triggerSaveAnimation() {
             const saveBtn = document.querySelector('button[type="submit"]');
-            saveBtn.classList.add('ring-4', 'ring-blue-300', 'animate-pulse');
+            saveBtn.classList.add('ring-4', 'ring-brand-blue-pale', 'animate-pulse');
             setTimeout(() => {
-                saveBtn.classList.remove('ring-4', 'ring-blue-300', 'animate-pulse');
+                saveBtn.classList.remove('ring-4', 'ring-brand-blue-pale', 'animate-pulse');
             }, 3000);
         }
 

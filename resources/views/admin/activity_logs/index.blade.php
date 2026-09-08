@@ -7,18 +7,18 @@
 <div class="space-y-6">
 
     <!-- Overview & Filters -->
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 space-y-6">
+    <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 space-y-6">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h3 class="font-extrabold text-gray-900 text-lg uppercase tracking-tight flex items-center gap-2">
-                    <i class="fas fa-history text-blue-600"></i> Log Aktivitas Sistem
+                    <i class="fas fa-history text-brand-blue"></i> Log Aktivitas Sistem
                 </h3>
                 <p class="text-xs text-gray-500 mt-1">Pantau seluruh aktivitas yang terjadi di dalam sistem oleh Admin dan Super Admin. Fitur ini merekam secara otomatis jejak keamanan dan perubahan data.</p>
             </div>
             
             @if(auth()->user()->hasRole('Superadmin'))
             <div>
-                <form action="{{ route('admin.activity-logs.purge-old') }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus permanen {{ $oldLogsCount }} log aktivitas yang berusia lebih dari 3 bulan?\n\nTindakan ini tidak dapat dibatalkan.');">
+                <form action="{{ route('admin.activity-logs.purge-old') }}" method="POST" onsubmit="event.preventDefault(); confirmDelete(this, 'Log Aktivitas', 'Data Terpilih', false);">
                     @csrf
                     @method('DELETE')
                     <button type="submit" @if($oldLogsCount == 0) disabled @endif class="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed border border-red-200 rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-sm">
@@ -39,24 +39,24 @@
                     <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1.5">Pencarian Universal</label>
                     <div class="relative">
                         <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="IP, URL, User, Deskripsi..." class="w-full pl-8 pr-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-blue-500 text-xs transition shadow-sm">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="IP, URL, User, Deskripsi..." class="w-full pl-8 pr-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-brand-blue text-xs transition shadow-sm">
                     </div>
                 </div>
 
                 <!-- Tanggal -->
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1.5">Dari Tanggal</label>
-                    <input type="date" name="date_from" value="{{ request('date_from') }}" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-blue-500 text-xs transition shadow-sm">
+                    <input type="date" name="date_from" value="{{ request('date_from') }}" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-brand-blue text-xs transition shadow-sm">
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1.5">Sampai Tanggal</label>
-                    <input type="date" name="date_to" value="{{ request('date_to') }}" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-blue-500 text-xs transition shadow-sm">
+                    <input type="date" name="date_to" value="{{ request('date_to') }}" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-brand-blue text-xs transition shadow-sm">
                 </div>
 
                 <!-- Filter Role -->
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1.5">Filter Role</label>
-                    <select name="role" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-blue-500 text-xs transition shadow-sm">
+                    <select name="role" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-brand-blue text-xs transition shadow-sm">
                         <option value="">Semua Role</option>
                         @foreach($roles as $role)
                             <option value="{{ $role }}" {{ request('role') == $role ? 'selected' : '' }}>{{ $role }}</option>
@@ -67,7 +67,7 @@
                 <!-- Filter Status -->
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1.5">Filter Status HTTP</label>
-                    <select name="status" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-blue-500 text-xs transition shadow-sm">
+                    <select name="status" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-brand-blue text-xs transition shadow-sm">
                         <option value="">Semua Status</option>
                         <option value="200" {{ request('status') == '200' ? 'selected' : '' }}>200 OK</option>
                         <option value="201" {{ request('status') == '201' ? 'selected' : '' }}>201 Created</option>
@@ -83,7 +83,7 @@
                 <!-- Filter User -->
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1.5">Filter Pengguna</label>
-                    <select name="user_id" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-blue-500 text-xs transition shadow-sm">
+                    <select name="user_id" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-brand-blue text-xs transition shadow-sm">
                         <option value="">Semua Pengguna</option>
                         @foreach($users as $user)
                             <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>{{ $user->name }} ({{ $user->email }})</option>
@@ -94,7 +94,7 @@
                 <!-- Filter Aktivitas -->
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1.5">Jenis Aktivitas</label>
-                    <select name="type" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-blue-500 text-xs transition shadow-sm">
+                    <select name="type" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-brand-blue text-xs transition shadow-sm">
                         <option value="">Semua Jenis</option>
                         @foreach($types as $type)
                             <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>{{ $type }}</option>
@@ -139,12 +139,12 @@
                             $isWarning = in_array($status, [401, 403, 404, 500]) || in_array($type, ['Login Gagal', 'Login Rate Limit', 'Akses Ditolak', 'Error Server']);
                             
                             $statusColor = 'bg-green-100 text-green-700 border-green-200';
-                            if ($status >= 300 && $status < 400) $statusColor = 'bg-blue-100 text-blue-700 border-blue-200';
+                            if ($status >= 300 && $status < 400) $statusColor = 'bg-brand-blue-light text-brand-blue border-brand-blue-light';
                             if ($status >= 400 && $status < 500) $statusColor = 'bg-orange-100 text-orange-700 border-orange-200';
                             if ($status >= 500) $statusColor = 'bg-red-100 text-red-700 border-red-200';
                             if ($type === 'Login Gagal' || $type === 'Login Rate Limit') $statusColor = 'bg-red-100 text-red-700 border-red-200';
                         @endphp
-                    <tr class="group transition {{ $isWarning ? 'bg-red-50/40 hover:bg-red-50/80' : 'hover:bg-blue-50/30' }}">
+                    <tr class="group transition {{ $isWarning ? 'bg-red-50/40 hover:bg-red-50/80' : 'hover:bg-brand-blue-light/30' }}">
                         <td class="px-5 py-4 text-center font-mono text-xs text-gray-500">
                             {{ $logs->firstItem() + $index }}
                         </td>
@@ -158,7 +158,7 @@
                         <!-- User & Role -->
                         <td class="px-5 py-4 whitespace-nowrap">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs flex-shrink-0">
+                                <div class="w-8 h-8 rounded-full bg-brand-blue-light text-brand-blue flex items-center justify-center font-bold text-xs flex-shrink-0">
                                     {{ substr($log->causer ? $log->causer->name : ($props['username'] ?? 'G'), 0, 1) }}
                                 </div>
                                 <div>
@@ -167,7 +167,7 @@
                                     @else
                                         <div class="font-bold text-gray-600 text-[13px]">{{ $props['username'] ?? 'Guest' }}</div>
                                     @endif
-                                    <div class="text-[9px] uppercase font-bold text-blue-600 mt-0.5 tracking-wider bg-blue-50 inline-block px-1.5 py-0.5 rounded">{{ $props['role'] ?? 'Unknown' }}</div>
+                                    <div class="text-[9px] uppercase font-bold text-brand-blue mt-0.5 tracking-wider bg-brand-blue-light inline-block px-1.5 py-0.5 rounded">{{ $props['role'] ?? 'Unknown' }}</div>
                                 </div>
                             </div>
                         </td>
@@ -178,7 +178,7 @@
                                 <div class="flex items-center gap-2 whitespace-nowrap">
                                     @php
                                         $level = $props['level'] ?? 'INFO';
-                                        $levelColor = 'bg-blue-100 text-blue-700 border-blue-200';
+                                        $levelColor = 'bg-brand-blue-light text-brand-blue border-brand-blue-light';
                                         if ($level === 'WARNING') $levelColor = 'bg-orange-100 text-orange-700 border-orange-200';
                                         if ($level === 'CRITICAL') $levelColor = 'bg-red-100 text-red-700 border-red-200';
                                     @endphp
@@ -222,7 +222,7 @@
 
                         <!-- Detail Button -->
                         <td class="px-5 py-4 text-right sticky right-0 {{ $isWarning ? 'bg-[#fef2f2] group-hover:bg-[#fee2e2]' : 'bg-white group-hover:bg-[#eff6ff]' }} border-l border-gray-100 shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.02)] transition-colors duration-200 z-10 whitespace-nowrap">
-                            <button onclick="openDetailModal('{{ $log->id }}')" class="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-blue-600 rounded-lg text-xs font-bold transition shadow-sm flex items-center gap-1.5 ml-auto">
+                            <button onclick="openDetailModal('{{ $log->id }}')" class="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-brand-blue-hover rounded-lg text-xs font-bold transition shadow-sm flex items-center gap-1.5 ml-auto">
                                 <i class="fas fa-eye"></i> Detail
                             </button>
                         </td>
@@ -250,13 +250,13 @@
     <div class="bg-white rounded-2xl max-w-3xl w-full shadow-2xl flex flex-col overflow-hidden max-h-[90vh]">
         <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
             <h3 class="font-extrabold text-gray-800 flex items-center gap-2">
-                <i class="fas fa-search-location text-blue-600"></i> Detail Aktivitas
+                <i class="fas fa-search-location text-brand-blue"></i> Detail Aktivitas
             </h3>
             <button onclick="closeDetailModal()" class="text-gray-400 hover:text-red-500 transition"><i class="fas fa-times text-xl"></i></button>
         </div>
         
-        <div class="p-6 overflow-y-auto" id="detailModalContent">
-            <div class="flex justify-center py-8"><i class="fas fa-circle-notch fa-spin text-3xl text-blue-500"></i></div>
+        <div class="p-4 md:p-6 overflow-y-auto" id="detailModalContent">
+            <div class="flex justify-center py-8"><i class="fas fa-circle-notch fa-spin text-3xl text-brand-blue"></i></div>
         </div>
         
         <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end">
@@ -285,7 +285,7 @@
         document.getElementById('detailModal').classList.add('hidden');
         document.getElementById('detailModal').classList.remove('flex');
         setTimeout(() => {
-            document.getElementById('detailModalContent').innerHTML = '<div class="flex justify-center py-8"><i class="fas fa-circle-notch fa-spin text-3xl text-blue-500"></i></div>';
+            document.getElementById('detailModalContent').innerHTML = '<div class="flex justify-center py-8"><i class="fas fa-circle-notch fa-spin text-3xl text-brand-blue"></i></div>';
         }, 300);
     }
 </script>

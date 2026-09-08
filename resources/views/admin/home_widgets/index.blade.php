@@ -3,7 +3,7 @@
 @section('page_title', 'Kelola Widget Home')
 
 @section('content')
-<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+<div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100">
     <div class="flex justify-between items-center mb-6">
         <div>
             <h2 class="text-xl font-bold text-gray-800">Daftar Widget Home</h2>
@@ -50,7 +50,7 @@
                     </td>
                     <td class="px-4 py-3">
                         @if($widget->link_url)
-                            <a href="{{ $widget->link_url }}" target="_blank" class="text-blue-500 hover:underline text-xs flex items-center gap-1">
+                            <a href="{{ $widget->link_url }}" target="_blank" class="text-brand-blue hover:underline text-xs flex items-center gap-1">
                                 {{ Str::limit($widget->link_url, 30) }} <i class="fas fa-external-link-alt text-[10px]"></i>
                             </a>
                         @else
@@ -69,7 +69,7 @@
                             <a href="{{ route('admin.home-widgets.edit', $widget->id) }}" class="w-8 h-8 rounded bg-yellow-100 text-yellow-600 flex items-center justify-center hover:bg-yellow-200 transition" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form action="{{ route('admin.home-widgets.destroy', $widget->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus widget ini?');">
+                            <form action="{{ route('admin.home-widgets.destroy', $widget->id) }}" method="POST" onsubmit="event.preventDefault(); confirmDelete(this, 'Widget', 'Data Terpilih', true);">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="w-8 h-8 rounded bg-red-100 text-red-600 flex items-center justify-center hover:bg-red-200 transition" title="Hapus">

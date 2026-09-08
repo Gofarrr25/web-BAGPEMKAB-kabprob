@@ -15,12 +15,12 @@
 
 @section('content')
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 max-w-3xl">
-    <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
-        <h3 class="font-bold text-gray-800">Formulir Pendaftaran Admin Baru</h3>
+    <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex flex-wrap justify-between items-center gap-3">
+        <h3 class="font-bold text-gray-800 w-full sm:w-auto">Formulir Pendaftaran Admin Baru</h3>
         <a href="{{ route('admin.users.index') }}" class="text-gray-500 hover:text-gray-700 text-sm font-semibold transition flex items-center justify-center gap-1 bg-white border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50"><i class="fas fa-arrow-left"></i> Kembali</a>
     </div>
     
-    <div class="p-6">
+    <div class="p-4 md:p-6">
         <form action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
@@ -50,13 +50,13 @@
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">Nama <span class="text-red-500">*</span></label>
                         <input type="text" name="name" required value="{{ old('name') }}"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition">
                         @error('name') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">Role <span class="text-red-500">*</span></label>
-                        <select name="role" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                        <select name="role" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition">
                             <option value="">-- Pilih Role --</option>
                             @foreach($roles as $r)
                                 <option value="{{ $r->name }}" {{ old('role') == $r->name ? 'selected' : '' }}>{{ $r->name }}</option>
@@ -70,7 +70,7 @@
             <div class="mb-4">
                 <label class="block text-sm font-bold text-gray-700 mb-2">Username <span class="text-red-500">*</span></label>
                 <input type="text" name="username" required value="{{ old('username') }}"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition">
                 <p class="text-xs text-gray-500 mt-1">Gunakan huruf kecil tanpa spasi (contoh: admin_kominfo)</p>
                 @error('username') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
             </div>
@@ -78,7 +78,7 @@
             <div class="mb-4">
                 <label class="block text-sm font-bold text-gray-700 mb-2">Email <span class="text-red-500">*</span></label>
                 <input type="email" name="email" required value="{{ old('email') }}"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition">
                 <p class="text-xs text-gray-500 mt-1">Alamat email resmi akun website (digunakan untuk reset password/notifikasi)</p>
                 @error('email') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
             </div>
@@ -88,8 +88,8 @@
                     <label class="block text-sm font-bold text-gray-700 mb-2">Password Website <span class="text-red-500">*</span></label>
                     <div class="relative">
                         <input type="password" name="password" id="password" required 
-                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition pr-10">
-                        <button type="button" onclick="togglePasswordVisibility('password', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-blue-600 focus:outline-none cursor-pointer" title="Tampilkan/Sembunyikan Password">
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition pr-10">
+                        <button type="button" onclick="togglePasswordVisibility('password', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-brand-blue-hover focus:outline-none cursor-pointer" title="Tampilkan/Sembunyikan Password">
                             <i class="fas fa-eye text-sm"></i>
                         </button>
                     </div>
@@ -99,8 +99,8 @@
                     <label class="block text-sm font-bold text-gray-700 mb-2">Konfirmasi Password <span class="text-red-500">*</span></label>
                     <div class="relative">
                         <input type="password" name="password_confirmation" id="password_confirmation" required 
-                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition pr-10">
-                        <button type="button" onclick="togglePasswordVisibility('password_confirmation', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-blue-600 focus:outline-none cursor-pointer" title="Tampilkan/Sembunyikan Password">
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition pr-10">
+                        <button type="button" onclick="togglePasswordVisibility('password_confirmation', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-brand-blue-hover focus:outline-none cursor-pointer" title="Tampilkan/Sembunyikan Password">
                             <i class="fas fa-eye text-sm"></i>
                         </button>
                     </div>
@@ -112,7 +112,7 @@
 
             <div class="border-t border-gray-100 pt-6 flex gap-4 mt-6">
                 
-                <button type="submit" class="px-6 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 transition shadow-md">Simpan Admin Baru</button>
+                <button type="submit" class="px-6 py-2 bg-brand-blue text-white font-bold rounded hover:bg-brand-blue-hover transition shadow-md">Simpan Admin Baru</button>
             </div>
         </form>
     </div>
@@ -130,7 +130,7 @@
         </div>
         <div class="px-4 py-3 border-t flex justify-end gap-3 bg-gray-50">
             <button type="button" onclick="closeCropper()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded font-bold hover:bg-gray-300 transition text-sm">Batal</button>
-            <button type="button" onclick="applyCrop()" class="px-4 py-2 bg-blue-600 text-white rounded font-bold hover:bg-blue-700 transition text-sm">Gunakan Foto</button>
+            <button type="button" onclick="applyCrop()" class="px-4 py-2 bg-brand-blue text-white rounded font-bold hover:bg-brand-blue-hover transition text-sm">Gunakan Foto</button>
         </div>
     </div>
 </div>

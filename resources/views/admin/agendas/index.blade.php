@@ -4,38 +4,38 @@
 @section('page_title', 'Manajemen Agenda Kegiatan')
 
 @section('content')
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
     
     <!-- Kolom Kiri: Form Tambah Agenda -->
     <div class="lg:col-span-1">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-24">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-6 sticky top-24">
             <h3 class="font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2">Buat Jadwal Agenda Baru</h3>
             <form action="{{ route('admin.agendas.store') }}" method="POST">
                 @csrf
                 <div class="mb-4">
                     <label class="block text-sm font-bold text-gray-700 mb-2">Nama Agenda/Kegiatan <span class="text-red-500">*</span></label>
                     <input type="text" name="title" required value="{{ old('title') }}" placeholder="Rapat Koordinasi..."
-                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition">
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue outline-none transition">
                 </div>
                 
                 <div class="mb-4">
                     <label class="block text-sm font-bold text-gray-700 mb-2">Tanggal & Waktu <span class="text-red-500">*</span></label>
                     <input type="datetime-local" name="event_date" required value="{{ old('event_date') }}"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition">
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue outline-none transition">
                 </div>
                 
                 <div class="mb-4">
                     <label class="block text-sm font-bold text-gray-700 mb-2">Lokasi Acara</label>
                     <input type="text" name="location" value="{{ old('location') }}" placeholder="Ruang Rapat Bupati..."
-                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition">
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue outline-none transition">
                 </div>
                 
                 <div class="mb-5">
                     <label class="block text-sm font-bold text-gray-700 mb-2">Deskripsi (Opsional)</label>
-                    <textarea name="description" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition">{{ old('description') }}</textarea>
+                    <textarea name="description" id="ck-agenda-editor" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue outline-none transition">{{ old('description') }}</textarea>
                 </div>
                 
-                <button type="submit" class="w-full py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 transition shadow-md">
+                <button type="submit" class="w-full py-2 bg-brand-blue text-white font-bold rounded hover:bg-brand-blue-hover transition shadow-md">
                     <i class="fas fa-calendar-check mr-1"></i> Simpan Agenda
                 </button>
             </form>
@@ -67,11 +67,11 @@
                                     <p><i class="fas fa-map-marker-alt w-4"></i> {{ $agenda->location ?? 'Tidak ada lokasi' }}</p>
                                 </div>
                                 @if($agenda->description)
-                                    <p class="text-sm text-gray-600 bg-gray-50 p-2 rounded border border-gray-100">{{ $agenda->description }}</p>
+                                    <div class="text-sm text-gray-600 bg-gray-50 p-3 rounded border border-gray-100 prose prose-sm max-w-none prose-p:my-1 prose-ul:my-1">{!! $agenda->description !!}</div>
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-right align-top whitespace-nowrap">
-                                <form action="{{ route('admin.agendas.destroy', $agenda->id) }}" method="POST" onsubmit="return confirm('Hapus agenda ini?');">
+                                <form action="{{ route('admin.agendas.destroy', $agenda->id) }}" method="POST" onsubmit="event.preventDefault(); confirmDelete(this, 'Agenda', 'Data Terpilih', false);">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-500 hover:text-red-700 font-bold px-2 py-1 rounded border border-red-200 hover:bg-red-50 transition" title="Hapus">
@@ -93,4 +93,11 @@
 </div>
 @endsection
 
-
+@push('scripts')
+@include('admin.partials.ckeditor-script')
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        createCkEditor('#ck-agenda-editor', 'Tuliskan detail agenda...');
+    });
+</script>
+@endpush

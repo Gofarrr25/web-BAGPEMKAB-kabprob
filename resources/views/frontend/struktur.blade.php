@@ -71,30 +71,15 @@
 <div class="bg-wave-pattern py-16 relative overflow-hidden min-h-[60vh]">
     <div class="container mx-auto px-4 relative z-10 w-full">
         
-        @if(!isset($mode) || $mode == 'dynamic')
-            <div class="org-tree">
-                <ul>
-                    @forelse($members as $member)
-                        @include('frontend.partials.org_node', ['member' => $member, 'level' => 1])
-                    @empty
-                        <div class="text-center py-20 text-gray-500 w-full">
-                            <i class="fas fa-sitemap text-6xl mb-4 text-gray-300 block"></i>
-                            <p class="font-bold">Struktur organisasi belum dikonfigurasi.</p>
-                        </div>
-                    @endforelse
-                </ul>
+        @if(isset($photo) && $photo)
+            <div class="w-full overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200 p-4">
+                <img src="{{ asset('storage/' . $photo) }}" alt="Struktur Organisasi" class="w-full max-w-none h-auto object-contain block mx-auto" style="min-width: 800px;">
             </div>
-        @elseif($mode == 'photo')
-            @if(isset($photo) && $photo)
-                <div class="w-full overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200 p-4">
-                    <img src="{{ asset('storage/' . $photo) }}" alt="Struktur Organisasi" class="w-full max-w-none h-auto object-contain block mx-auto" style="min-width: 800px;">
-                </div>
-            @else
-                <div class="text-center py-20 text-gray-500 w-full bg-white rounded-xl shadow border border-gray-200">
-                    <i class="fas fa-image text-6xl mb-4 text-gray-300 block"></i>
-                    <p class="font-bold">Foto Struktur organisasi belum diunggah.</p>
-                </div>
-            @endif
+        @else
+            <div class="text-center py-20 text-gray-500 w-full bg-white rounded-xl shadow border border-gray-200">
+                <i class="fas fa-image text-6xl mb-4 text-gray-300 block"></i>
+                <p class="font-bold">Foto Struktur organisasi belum diunggah.</p>
+            </div>
         @endif
 
     </div>

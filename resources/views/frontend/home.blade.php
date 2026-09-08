@@ -18,17 +18,17 @@
                     </div>
                     
                     <!-- Content Container -->
-                    <div class="container mx-auto h-full px-6 md:px-16 flex items-center relative z-20">
-                        <div class="max-w-3xl text-white space-y-4">
+                    <div class="container mx-auto h-full pl-20 pr-6 md:pl-32 md:pr-16 flex items-center relative z-20">
+                        <div class="max-w-4xl text-white">
                             @if($index === 0)
-                                <h2 class="text-3xl md:text-5xl font-extrabold leading-tight textToRead drop-shadow-md">
+                                <h2 class="text-2xl sm:text-3xl md:text-[44px] font-['Poppins'] font-bold text-white leading-tight textToRead drop-shadow-lg mb-2 md:mb-3">
                                     Selamat Datang di Website
                                 </h2>
-                                <h3 class="text-2xl md:text-4xl font-bold text-amber-300 leading-snug textToRead drop-shadow">
+                                <h3 class="text-base sm:text-xl md:text-2xl font-['Poppins'] font-bold text-white leading-snug textToRead drop-shadow-md">
                                     {{ $siteSettings['site_name'] ?? 'Bagian Pemerintahan Kabupaten Probolinggo' }}
                                 </h3>
                             @else
-                                <h2 class="text-2xl md:text-4xl font-extrabold leading-tight textToRead drop-shadow-md">
+                                <h2 class="text-2xl sm:text-3xl md:text-[44px] font-['Poppins'] font-bold text-white leading-tight textToRead drop-shadow-lg">
                                     {{ $banner->title }}
                                 </h2>
                             @endif
@@ -42,12 +42,12 @@
                 <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://diskominfo.probolinggokab.go.id/slider_img/slider_sae.png');">
                     <div class="absolute inset-0 bg-black/40"></div>
                 </div>
-                <div class="container mx-auto h-full px-6 md:px-16 flex items-center relative z-20">
-                    <div class="max-w-3xl text-white space-y-4">
-                        <h2 class="text-3xl md:text-5xl font-extrabold leading-tight textToRead drop-shadow-md">
+                <div class="container mx-auto h-full pl-20 pr-6 md:pl-32 md:pr-16 flex items-center relative z-20">
+                    <div class="max-w-4xl text-white">
+                        <h2 class="text-2xl sm:text-3xl md:text-[44px] font-['Poppins'] font-bold text-white leading-tight textToRead drop-shadow-lg mb-2 md:mb-3">
                             Selamat Datang di Website
                         </h2>
-                        <h3 class="text-2xl md:text-4xl font-bold text-amber-300 leading-snug textToRead drop-shadow">
+                        <h3 class="text-base sm:text-xl md:text-2xl font-['Poppins'] font-bold text-white leading-snug textToRead drop-shadow-md">
                             {{ $siteSettings['site_name'] ?? 'Bagian Pemerintahan Kabupaten Probolinggo' }}
                         </h3>
                     </div>
@@ -58,9 +58,9 @@
                 <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://diskominfo.probolinggokab.go.id/slider_img/slider_kadis_hudan.jpg');">
                     <div class="absolute inset-0 bg-black/40"></div>
                 </div>
-                <div class="container mx-auto h-full px-6 md:px-16 flex items-center relative z-20">
-                    <div class="max-w-3xl text-white space-y-4">
-                        <h2 class="text-2xl md:text-4xl font-extrabold leading-tight textToRead drop-shadow-md">
+                <div class="container mx-auto h-full pl-20 pr-6 md:pl-32 md:pr-16 flex items-center relative z-20">
+                    <div class="max-w-4xl text-white">
+                        <h2 class="text-2xl sm:text-3xl md:text-[44px] font-['Poppins'] font-bold text-white leading-tight textToRead drop-shadow-lg">
                             Bagian Pemerintahan Sekretariat Daerah Kabupaten Probolinggo
                         </h2>
                     </div>
@@ -86,13 +86,13 @@
 </div>
 
 <div class="container mx-auto px-4 py-12">
-    <div class="flex flex-col lg:flex-row gap-8">
+    <div class="flex flex-col lg:flex-row gap-4 md:gap-8">
         
         <!-- Area 70%: Grid Berita -->
-        <div class="lg:w-[70%] bg-white p-6 shadow-sm border border-gray-100 rounded-xl">
-            <div class="flex justify-between items-end mb-6 border-b border-gray-100 pb-4">
-                <h2 class="text-2xl md:text-3xl font-semibold text-[#1a365d] textToRead">Informasi Terbaru</h2>
-                <a href="/informasi" class="text-blue-500 hover:text-blue-700 transition text-sm flex items-center gap-1">Lihat Semua <i class="fas fa-chevron-right text-[10px]"></i></a>
+        <div class="lg:w-[70%] bg-white p-4 md:p-6 shadow-sm border border-gray-100 rounded-xl">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2 mb-6 border-b border-gray-100 pb-4">
+                <h2 class="text-2xl md:text-3xl font-semibold text-brand-blue textToRead">Informasi Terbaru</h2>
+                <a href="/informasi" class="text-brand-blue hover:text-brand-blue-hover transition text-sm flex items-center gap-1">Lihat Semua <i class="fas fa-chevron-right text-[10px]"></i></a>
             </div>
 
             <!-- Grid Berita Dinamis -->
@@ -122,7 +122,7 @@
                                     $monthName = $monthsId[$monthInt];
                                 @endphp
                                 <div class="absolute top-0 left-0 flex shadow">
-                                    <div class="bg-[#2563eb] text-white font-bold text-lg px-3 py-1.5 flex items-center justify-center">
+                                    <div class="bg-brand-blue text-white font-bold text-lg px-3 py-1.5 flex items-center justify-center">
                                         {{ $day }}
                                     </div>
                                     <div class="bg-white text-gray-800 font-bold text-[11px] md:text-xs px-3 py-1.5 flex items-center justify-center tracking-wide">
@@ -131,7 +131,7 @@
                                 </div>
                             </div>
                             <div class="p-5 flex-grow">
-                                <h3 class="font-semibold text-[#1a365d] text-lg leading-snug group-hover:text-blue-600 transition textToRead">
+                                <h3 class="font-medium text-brand-blue text-base md:text-[17px] leading-relaxed group-hover:text-brand-blue-hover transition textToRead">
                                     {{ $lPost->title }}
                                 </h3>
                             </div>
@@ -149,7 +149,7 @@
 
         <!-- Area 30%: Sidebar Widget -->
         <div class="lg:w-[30%] space-y-6">
-            <div class="bg-white shadow-sm border border-gray-100 p-6 rounded-xl">
+            <div class="bg-white shadow-sm border border-gray-100 p-4 md:p-6 rounded-xl">
                 
                 @if(isset($homeWidgets) && count($homeWidgets) > 0)
                     @foreach($homeWidgets as $widget)
@@ -189,64 +189,143 @@
 @if(isset($videos) && count($videos) > 0)
 <div class="bg-gray-900 py-12 text-white">
     <div class="container mx-auto px-4 max-w-6xl">
-        <div class="flex items-center justify-between mb-8">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
             <div>
                 <span class="text-xs font-bold text-red-500 uppercase tracking-widest">DOKUMENTASI DENGAN VIDEO</span>
                 <h2 class="text-2xl md:text-3xl font-bold mt-1 textToRead">Galeri Video Kegiatan</h2>
             </div>
-            <a href="/galeri-video" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-lg transition flex items-center gap-1.5 shadow">
+            <a href="/galeri-video" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-lg transition inline-flex items-center justify-center gap-2 shadow-sm whitespace-nowrap shrink-0 w-full sm:w-auto">
                 Lihat Semua Video <i class="fas fa-arrow-right text-[10px]"></i>
             </a>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            @foreach($videos as $vid)
-                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-700 group cursor-pointer video-home-card" 
-                     data-video-id="{{ $vid->youtube_id }}"
-                     data-watch-url="{{ $vid->watch_url }}"
-                     data-thumbnail="{{ $vid->thumbnail_url }}"
-                     data-title="{{ $vid->title }}">
-                    <div class="relative w-full h-48 bg-black overflow-hidden">
-                        <img src="{{ $vid->thumbnail_url }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition duration-500" alt="{{ $vid->title }}">
-                        <div class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition">
-                            <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition duration-300">
-                                <i class="fas fa-play text-lg ml-0.5"></i>
-                            </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 items-start">
+            @forelse($videos as $video)
+                @php 
+                    $vidCount = ($video->galleryItems ? $video->galleryItems->count() : 0);
+                    if ($video->video_url || $video->file_path) {
+                        $vidCount += 1;
+                    }
+                    
+                    $isSingleVideo = $vidCount <= 1;
+                    $youtubeId = null;
+                    $watchUrl = null;
+                    
+                    if ($isSingleVideo) {
+                        $targetVideoUrl = $video->video_url;
+                        if (!$targetVideoUrl && $video->galleryItems && $video->galleryItems->count() > 0) {
+                            $targetVideoUrl = $video->galleryItems->first()->video_url;
+                        }
+                        // Ekstrak Youtube ID untuk Player Modal Bawaan Home
+                        if ($targetVideoUrl) {
+                            preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $targetVideoUrl, $matches);
+                            if(isset($matches[1])) {
+                                $youtubeId = $matches[1];
+                                $watchUrl = "https://www.youtube.com/watch?v=" . $matches[1];
+                            }
+                        } else {
+                            $youtubeId = $video->youtube_id ?? null;
+                            $watchUrl = $video->watch_url ?? null;
+                        }
+                    } else {
+                        if ($video->galleryItems && $video->galleryItems->count() > 0) {
+                            $firstItem = $video->galleryItems->first();
+                            if ($firstItem->video_url) {
+                                preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $firstItem->video_url, $matches);
+                                if(isset($matches[1])) {
+                                    $youtubeId = $matches[1];
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Setup maxresdefault as primary thumbnail if youtubeId exists
+                    $thumbnailUrl = $video->thumbnail_url;
+                    $maxresThumbnailUrl = null;
+                    if (isset($youtubeId) && $youtubeId) {
+                        $maxresThumbnailUrl = "https://img.youtube.com/vi/{$youtubeId}/maxresdefault.jpg";
+                        $hqThumbnailUrl = "https://img.youtube.com/vi/{$youtubeId}/hqdefault.jpg";
+                    } else if ($video->youtube_id) {
+                        $maxresThumbnailUrl = "https://img.youtube.com/vi/{$video->youtube_id}/maxresdefault.jpg";
+                        $hqThumbnailUrl = "https://img.youtube.com/vi/{$video->youtube_id}/hqdefault.jpg";
+                    }
+                @endphp
+
+                @if($isSingleVideo)
+                <div class="group block w-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col cursor-pointer video-home-card"
+                     data-video-id="{{ $youtubeId }}"
+                     data-watch-url="{{ $watchUrl }}"
+                     data-thumbnail="{{ $video->thumbnail_url }}"
+                     data-title="{{ $video->title }}">
+                @else
+                <a href="{{ route('frontend.video.detail', $video->id) }}" class="group block w-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col">
+                @endif
+                    
+                    <!-- Thumbnail Area -->
+                    <div class="relative w-full aspect-video shrink-0 bg-gray-100">
+                        <div class="absolute inset-0 w-full h-full overflow-hidden rounded-t-2xl">
+                            @if($maxresThumbnailUrl)
+                                <img src="{{ $maxresThumbnailUrl }}" onerror="this.onerror=null; this.src='{{ $hqThumbnailUrl }}';" class="w-full h-full object-cover scale-[1.02] group-hover:scale-105 transition-transform duration-500" alt="{{ $video->title }}">
+                            @else
+                                <img src="{{ $thumbnailUrl }}" class="w-full h-full object-cover scale-[1.02] group-hover:scale-105 transition-transform duration-500" alt="{{ $video->title }}">
+                            @endif
+                        </div>
+                        <div class="absolute bottom-4 right-4 w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300 z-10 pointer-events-none">
+                            <i class="fas fa-play ml-1"></i>
+                        </div>
+                        
+                        @php
+                            $monthsId = [
+                                1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 
+                                5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 
+                                9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+                            ];
+                            $day = $video->created_at->format('d');
+                            $monthInt = (int)$video->created_at->format('m');
+                            $year = $video->created_at->format('Y');
+                            $formattedDate = strtoupper($day . ' ' . $monthsId[$monthInt] . ' ' . $year);
+                        @endphp
+                        
+                        <!-- Badge Tanggal (Sesuai Submenu) -->
+                        <div class="absolute -bottom-5 left-6 md:left-7 bg-brand-blue text-white text-[13px] md:text-sm font-bold px-5 py-2.5 shadow-sm whitespace-nowrap z-30 pointer-events-none">
+                            {{ $formattedDate }}
                         </div>
                     </div>
-                    <div class="p-4">
-                        <h4 class="font-bold text-white text-sm line-clamp-2 group-hover:text-red-400 transition">{{ $vid->title }}</h4>
-                        <p class="text-xs text-gray-400 mt-2"><i class="far fa-clock text-red-400 mr-1"></i> {{ $vid->created_at->format('d M Y') }}</p>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
-</div>
-@endif
 
-<!-- Logo Carousel Section Bawah (Link Terkait) -->
-@if(isset($relatedLinks) && count($relatedLinks) > 0)
-<div class="bg-white py-10 border-t border-gray-100 text-center">
-    <h3 class="text-center font-bold text-gray-400 uppercase tracking-widest text-xs mb-6">LINK TERKAIT</h3>
-    <div class="container mx-auto px-4 flex flex-wrap justify-center gap-8 items-center">
-        @foreach($relatedLinks as $link)
-            @php 
-                $domain = parse_url($link->url, PHP_URL_HOST); 
-                $logoUrl = $link->logo_url ? $link->logo_url : "https://logo.clearbit.com/{$domain}";
-            @endphp
-            <a href="{{ $link->url }}" target="_blank" title="{{ $link->name }}" class="flex items-center justify-center w-48 h-16 md:w-64 md:h-20 filter grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100">
-                <img src="{{ $logoUrl }}" 
-                     class="w-full h-full object-contain" 
-                     alt="{{ $link->name }}"
-                     onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($link->name) }}&background=fff&color=333&size=128';">
-            </a>
-        @endforeach
+                    <!-- Content Area -->
+                    <div class="p-6 md:p-7 pt-10 md:pt-10 flex flex-col">
+                        <h3 class="font-bold text-gray-800 text-lg md:text-xl leading-tight mb-0 group-hover:text-red-600 transition-colors duration-300">
+                            {{ $video->title }}
+                        </h3>
+                        
+                        @if($vidCount > 1)
+                            <!-- Album Video Badge -->
+                            <div class="mt-4 pt-4 border-t border-gray-100 flex items-center">
+                                <div class="bg-red-600 text-white text-[13px] md:text-sm font-bold px-5 py-2.5 shadow-sm flex items-center gap-2">
+                                    <span>Album Video</span>
+                                    <span class="opacity-80 text-xs border-l border-white/30 pl-2">{{ $vidCount }} Video</span>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                @if($isSingleVideo)
+                </div>
+                @else
+                </a>
+                @endif
+            @empty
+                <div class="col-span-full text-center py-16 bg-transparent border-2 border-dashed border-gray-600 rounded-xl">
+                    <i class="fas fa-video-slash text-5xl text-gray-500 mb-3"></i>
+                    <h3 class="font-bold text-gray-400">Belum Ada Video Kegiatan</h3>
+                </div>
+            @endforelse
+        </div>
     </div>
 </div>
 @endif
 
 <!-- INSTAGRAM FEED SECTION (REPLIKA DISKOMINFO PROBOLINGGO) -->
+@if(!isset($siteSettings['instagram_is_active']) || $siteSettings['instagram_is_active'] == '1')
 <div class="bg-gray-50 py-12 border-t border-gray-200">
     <div class="container mx-auto px-4 max-w-6xl">
         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
@@ -277,17 +356,31 @@
         </div>
     </div>
 </div>
+@endif
 
-@push('scripts')
-<script>
-    // Refresh Instagram embed when navigating back/forward or if it fails to load initially
-    document.addEventListener('DOMContentLoaded', function() {
-        if (window.instgrm) {
-            window.instgrm.Embeds.process();
-        }
-    });
-</script>
-@endpush
+<!-- Logo Carousel Section Bawah (Link Terkait) -->
+@if(isset($relatedLinks) && count($relatedLinks) > 0)
+<div class="bg-white py-10 border-t border-gray-100 text-center">
+    <h3 class="text-center font-bold text-gray-400 uppercase tracking-widest text-xs mb-6">LINK TERKAIT</h3>
+    <div class="container mx-auto px-4 flex flex-wrap justify-center gap-4 md:gap-8 items-center">
+        @foreach($relatedLinks as $link)
+            @php 
+                $domain = parse_url($link->url, PHP_URL_HOST); 
+                $logoUrl = $link->logo_url ? $link->logo_url : "https://logo.clearbit.com/{$domain}";
+            @endphp
+            <a href="{{ $link->url }}" target="_blank" title="{{ $link->name }}" class="flex items-center justify-center w-[160px] h-[56px] md:w-[200px] md:h-[70px] filter grayscale hover:grayscale-0 transition opacity-80 hover:opacity-100">
+                <img src="{{ $logoUrl }}" 
+                     class="w-full h-full object-contain" 
+                     alt="{{ $link->name }}"
+                     onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($link->name) }}&background=fff&color=333&size=128';">
+            </a>
+        @endforeach
+    </div>
+</div>
+@endif
+
+
+
 
 
 <!-- Modal Pop-up Video YouTube dengan YouTube IFrame Player API -->

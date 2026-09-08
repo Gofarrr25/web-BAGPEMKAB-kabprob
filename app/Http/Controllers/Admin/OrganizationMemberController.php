@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Setting;
+use Illuminate\Support\Facades\Auth;
 
 class OrganizationMemberController extends Controller
 {
@@ -18,9 +19,10 @@ class OrganizationMemberController extends Controller
     public function uploadPhoto(Request $request)
     {
         $request->validate([
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:5120',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
         ], [
-            'image.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
+            'image.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima JPG, JPEG, PNG, atau WEBP.',
+            'image.image' => 'File harus berupa gambar.',
         ]);
 
         $filePath = null;
@@ -47,9 +49,8 @@ class OrganizationMemberController extends Controller
             $setting->update(['value' => $filePath]);
             
             /** @var \App\Models\User $user */
-            $user = \Illuminate\Support\Facades\Auth::user();
+            $user = Auth::user();
 
-            // Log manually if using setting because Setting model might not have native Spatie trait setup for value change clearly
             activity('admin_log')
                 ->causedBy($user)
                 ->withProperties([
@@ -73,7 +74,7 @@ class OrganizationMemberController extends Controller
             $setting->update(['value' => null]);
             
             /** @var \App\Models\User $user */
-            $user = \Illuminate\Support\Facades\Auth::user();
+            $user = Auth::user();
 
             activity('admin_log')
                 ->causedBy($user)

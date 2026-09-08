@@ -212,8 +212,8 @@
         setupMenuTTS();
     }
 
-    // Bersihkan speech saat user meninggalkan halaman
-    window.addEventListener('beforeunload', function () {
+    // Bersihkan speech saat user meninggalkan halaman (gunakan pagehide sebagai ganti beforeunload/unload)
+    window.addEventListener('pagehide', function () {
         synth.cancel();
     });
 

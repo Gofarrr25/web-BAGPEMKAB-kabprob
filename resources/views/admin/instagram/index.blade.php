@@ -7,7 +7,7 @@
 <div class="space-y-8 max-w-6xl mx-auto">
     
     <!-- Banner Informasi Header -->
-    <div class="bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-700 text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div class="bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-700 text-white rounded-2xl p-4 md:p-6 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
             <div class="flex items-center gap-2">
                 <span class="p-2 bg-white/20 rounded-lg text-white"><i class="fab fa-instagram text-2xl"></i></span>
@@ -24,13 +24,13 @@
         @endif
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
         
         <!-- KOLOM KIRI: SETTING PROFIL & TAMBAH POSTINGAN -->
         <div class="lg:col-span-1 space-y-6">
             
             <!-- FORM 1: SETTING AKUN INSTAGRAM -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 space-y-4">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 md:p-6 space-y-4">
                 <h4 class="font-bold text-gray-800 text-sm flex items-center gap-2 border-b pb-3">
                     <i class="fas fa-link text-pink-600"></i> Tautan Profil Instagram
                 </h4>
@@ -42,6 +42,20 @@
                             Link / URL Instagram Instansi <span class="text-red-500">*</span>
                         </label>
                         <input type="url" name="instagram_url" placeholder="Contoh: https://www.instagram.com/bagpemerintahan_probolinggokab" value="{{ $settings['instagram_url'] ?? 'https://www.instagram.com/bagpemerintahan_probolinggokab' }}" required class="w-full px-3 py-2 border border-gray-300 rounded-xl text-xs font-bold text-gray-800 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-pink-500 outline-none">
+                    </div>
+
+                    <div class="p-3 bg-gray-50 border border-gray-200 rounded-xl">
+                        <label class="block text-xs font-bold text-gray-700 mb-2">Status Penayangan di Beranda</label>
+                        <div class="flex gap-4">
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="instagram_is_active" value="1" class="w-3.5 h-3.5 text-pink-600" {{ (!isset($settings['instagram_is_active']) || $settings['instagram_is_active'] == '1') ? 'checked' : '' }}>
+                                <span class="ml-2 text-xs font-bold text-gray-700">Aktif</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="instagram_is_active" value="0" class="w-3.5 h-3.5 text-pink-600" {{ (isset($settings['instagram_is_active']) && $settings['instagram_is_active'] == '0') ? 'checked' : '' }}>
+                                <span class="ml-2 text-xs font-bold text-gray-700">Nonaktif</span>
+                            </label>
+                        </div>
                     </div>
 
                     <div>
@@ -61,7 +75,7 @@
 
         <div class="lg:col-span-2 space-y-4">
             <!-- PREVIEW WIDGET -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 md:p-6">
                 <h4 class="font-bold text-gray-800 text-sm flex items-center gap-2 border-b pb-3 mb-4">
                     <i class="fas fa-desktop text-pink-600"></i> Preview Widget Halaman Depan
                 </h4>

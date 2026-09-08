@@ -34,9 +34,8 @@ class SettingController extends Controller
 
         $request->validate([
             'site_name' => 'nullable|string|max:255',
-            'site_logo' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
-            'footer_logo' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
-            'survey_qr_image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
+            'site_logo' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
+            'footer_logo' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
             'office_address' => 'nullable|string',
             'phone' => 'nullable|string',
             'email' => 'nullable|string',
@@ -46,18 +45,12 @@ class SettingController extends Controller
             'youtube_url' => 'nullable|string',
             'footer_description' => 'nullable|string',
             'footer_copyright' => 'nullable|string',
-            'survey_title' => 'nullable|string',
-            'survey_link' => 'nullable|string',
-            'org_structure_mode' => 'nullable|in:dynamic,photo',
-            'org_structure_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:5120',
         ], [
-            'site_logo.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
-            'footer_logo.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
-            'survey_qr_image.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
-            'org_structure_photo.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
+            'site_logo.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima JPG, JPEG, PNG, atau WEBP.',
+            'footer_logo.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima JPG, JPEG, PNG, atau WEBP.',
         ]);
 
-        $imageFields = ['site_logo', 'footer_logo', 'survey_qr_image', 'org_structure_photo'];
+        $imageFields = ['site_logo', 'footer_logo'];
         $targetDir = storage_path('app/public/settings');
         if (!file_exists($targetDir)) {
             mkdir($targetDir, 0755, true);

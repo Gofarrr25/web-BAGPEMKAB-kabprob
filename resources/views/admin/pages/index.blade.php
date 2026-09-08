@@ -13,10 +13,10 @@
         <div class="p-5 border-b border-gray-100 bg-gray-50/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
             
             <!-- Quick Search Input -->
-            <div class="relative w-full md:w-80">
+            <div class="relative w-full md:w-full max-w-xs">
                 <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
                 <input type="text" id="searchInput" placeholder="Cari halaman atau URL..." onkeyup="filterPagesTable()"
-                       class="w-full pl-9 pr-4 py-2 bg-white border border-gray-300 rounded-xl text-xs font-semibold text-gray-700 focus:ring-2 focus:ring-blue-500 outline-none transition">
+                       class="w-full pl-9 pr-4 py-2 bg-white border border-gray-300 rounded-xl text-xs font-semibold text-gray-700 focus:ring-2 focus:ring-brand-blue outline-none transition">
             </div>
 
             @role('Superadmin')

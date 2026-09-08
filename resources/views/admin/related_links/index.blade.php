@@ -3,7 +3,7 @@
 @section('page_title', 'Kelola Link Terkait')
 
 @section('content')
-<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+<div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100">
     <div class="flex justify-between items-center mb-6">
         <div>
             <h2 class="text-xl font-bold text-gray-800">Daftar Link Terkait</h2>
@@ -35,25 +35,32 @@
                         <p class="font-bold text-gray-800">{{ $link->name }}</p>
                     </td>
                     <td class="px-4 py-3">
-                        @if($link->logo)
-                        <div class="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden">
-                            <img src="{{ asset('storage/' . $link->logo) }}" alt="Logo" class="max-w-full max-h-full object-contain">
+                        @php 
+                            $domain = parse_url($link->url, PHP_URL_HOST); 
+                            $logoUrl = $link->logo_url ? $link->logo_url : "https://logo.clearbit.com/{$domain}";
+                        @endphp
+                        <div class="w-[200px] h-[70px] bg-white border border-gray-200 rounded flex items-center justify-center overflow-hidden shrink-0 p-1">
+                            <img src="{{ $logoUrl }}" 
+                                 class="w-full h-full object-contain" 
+                                 alt="{{ $link->name }}"
+                                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($link->name) }}&background=f3f4f6&color=4b5563&size=128';">
                         </div>
-                        @else
-                        <div class="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400">
-                            <i class="fas fa-link"></i>
-                        </div>
-                        @endif
                     </td>
                     <td class="px-4 py-3">
-                        <a href="{{ $link->url }}" target="_blank" class="text-blue-500 hover:underline text-xs">{{ $link->url }}</a>
+                        <a href="{{ $link->url }}" target="_blank" class="text-brand-blue hover:underline text-xs">{{ $link->url }}</a>
                     </td>
                     <td class="px-4 py-3 text-right whitespace-nowrap">
-                        <div class="flex justify-end gap-2">
+                        <div class="flex justify-end gap-2 items-center">
+                            <!-- Toggle switch -->
+                            <label class="relative inline-flex items-center cursor-pointer mr-2" title="Aktif/Nonaktifkan Link Terkait">
+                                <input type="checkbox" onchange="toggleRelatedLink('{{ $link->id }}', this)" class="sr-only peer" {{ $link->is_active ? 'checked' : '' }}>
+                                <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-500"></div>
+                            </label>
+                            
                             <a href="{{ route('admin.related-links.edit', $link->id) }}" class="w-8 h-8 rounded bg-yellow-100 text-yellow-600 flex items-center justify-center hover:bg-yellow-200 transition" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form action="{{ route('admin.related-links.destroy', $link->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus link ini?');" class="inline-block m-0 p-0">
+                            <form action="{{ route('admin.related-links.destroy', $link->id) }}" method="POST" onsubmit="event.preventDefault(); confirmDelete(this, 'Link Terkait', 'Data Terpilih', true);" class="inline-block m-0 p-0">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="w-8 h-8 rounded bg-red-100 text-red-600 flex items-center justify-center hover:bg-red-200 transition" title="Hapus">
@@ -77,3 +84,31 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function toggleRelatedLink(id, checkbox) {
+        const isActive = checkbox.checked;
+        fetch(`/admin/related-links/${id}/toggle`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ is_active: isActive })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                checkbox.checked = !isActive;
+                alert('Gagal mengubah status link');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            checkbox.checked = !isActive;
+            alert('Terjadi kesalahan saat mengubah status');
+        });
+    }
+</script>
+@endpush

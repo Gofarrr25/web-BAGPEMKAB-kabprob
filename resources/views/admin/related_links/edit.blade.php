@@ -12,7 +12,7 @@
             
         </div>
         
-        <form action="{{ route('admin.related-links.update', $related_link->id) }}" method="POST" enctype="multipart/form-data" class="p-6">
+        <form action="{{ route('admin.related-links.update', $related_link->id) }}" method="POST" enctype="multipart/form-data" class="p-4 md:p-6">
             @csrf
             @method('PUT')
             
@@ -32,10 +32,10 @@
 
             <!-- Preview Area -->
             <div class="mb-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
-                <label class="block text-sm font-bold text-gray-700 mb-2">Pratinjau Logo</label>
+                <label class="block text-sm font-bold text-gray-700 mb-2">Pratinjau Logo <span class="text-xs font-normal text-brand-blue bg-blue-50 px-2 py-0.5 rounded border border-brand-blue-pale ml-2">Tampilan Aktual: 200 &times; 70 px</span></label>
                 <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 bg-white border border-gray-300 rounded flex items-center justify-center overflow-hidden shrink-0">
-                        <img src="{{ $related_link->logo_url ?? '' }}" id="logoPreview" class="max-w-full max-h-full object-contain {{ $related_link->logo_url ? '' : 'hidden' }}" alt="Logo Preview">
+                    <div class="w-[200px] h-[70px] bg-white border border-dashed border-gray-300 rounded flex items-center justify-center overflow-hidden shrink-0 p-1">
+                        <img src="{{ $related_link->logo_url ?? '' }}" id="logoPreview" class="w-full h-full object-contain {{ $related_link->logo_url ? '' : 'hidden' }}" alt="Logo Preview">
                         <i class="fas fa-image text-gray-300 text-2xl {{ $related_link->logo_url ? 'hidden' : '' }}" id="logoPlaceholder"></i>
                     </div>
                     <div class="flex-1">
@@ -54,15 +54,37 @@
 
             <!-- Manual Upload Area -->
             <div id="manualUploadArea" class="mb-6 p-4 border border-gray-200 bg-gray-50 rounded-lg">
-                <label class="block text-sm font-bold text-gray-700 mb-2">Upload Logo Manual <span class="text-xs text-gray-500 font-normal">(Opsional, akan menimpa logo otomatis)</span></label>
+                <label class="block text-sm font-bold text-gray-700 mb-1">Upload Logo Manual <span class="text-xs text-gray-500 font-normal">(Opsional, akan menimpa logo otomatis)</span></label>
+                <p class="text-xs text-amber-600 font-semibold mb-3"><i class="fas fa-info-circle"></i> Rekomendasi 400 &times; 140 px (rasio 20:7)</p>
                 <div class="flex flex-col gap-2">
-                    <input type="file" name="logo_file" id="logoFileInput" accept="image/jpeg,image/png,image/webp,image/gif" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100 cursor-pointer">
+                    <input type="file" name="logo_file" id="logoFileInput" accept="image/jpeg,image/png,image/webp,image/gif" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-yellow-100 file:text-yellow-700 hover:file:bg-yellow-200 cursor-pointer">
+                    
+                    <!-- Cropper Container -->
+                    <div id="cropperContainer" class="hidden mt-3 p-3 border border-gray-300 rounded bg-white">
+                        <p class="text-xs font-bold text-gray-700 mb-2">Sesuaikan Area Logo</p>
+                        <div class="w-full max-w-md mx-auto mb-3 bg-gray-100 overflow-hidden" style="max-height: 400px;">
+                            <img id="cropperImage" class="max-w-full block" src="">
+                        </div>
+                        <div class="flex justify-center gap-2 mb-3">
+                            <button type="button" id="btnZoomIn" class="px-3 py-1.5 bg-gray-200 text-gray-800 font-semibold rounded shadow-sm hover:bg-gray-300 text-xs"><i class="fas fa-search-plus"></i> Zoom In</button>
+                            <button type="button" id="btnZoomOut" class="px-3 py-1.5 bg-gray-200 text-gray-800 font-semibold rounded shadow-sm hover:bg-gray-300 text-xs"><i class="fas fa-search-minus"></i> Zoom Out</button>
+                        </div>
+                        <div class="flex justify-end gap-2 border-t pt-3">
+                            <button type="button" id="btnCancelCrop" class="px-4 py-2 bg-gray-500 text-white font-bold rounded shadow-sm hover:bg-gray-600 text-sm">Batal</button>
+                            <button type="button" id="btnApplyCrop" class="px-4 py-2 bg-yellow-600 text-white font-bold rounded shadow-sm hover:bg-yellow-700 text-sm">Terapkan Logo</button>
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" name="logo_base64" id="logoBase64Input">
+                    
                     <span class="text-xs text-gray-500 text-center font-bold my-1">ATAU MASUKAN URL LOGO</span>
                     <input type="url" name="logo_url_manual" id="logoUrlManualInput" placeholder="URL Logo Alternatif (misal: https://...)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none transition font-mono text-sm">
                 </div>
             </div>
 
             @push('scripts')
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     const urlInput = document.querySelector('input[name="url"]');
@@ -73,33 +95,101 @@
                     const manualUploadArea = document.getElementById('manualUploadArea');
                     const logoUrlManualInput = document.getElementById('logoUrlManualInput');
                     const logoFileInput = document.getElementById('logoFileInput');
+                    const cropperContainer = document.getElementById('cropperContainer');
+                    const cropperImage = document.getElementById('cropperImage');
+                    const logoBase64Input = document.getElementById('logoBase64Input');
                     
                     let timeout = null;
+                    let cropper = null;
                     let initialUrl = urlInput.value.trim();
                     let initialLogoUrl = hiddenLogoUrl.value;
 
-                    // Handle File Input Change for Live Preview
+                    // Handle File Input Change for Cropper
                     logoFileInput.addEventListener('change', function(e) {
                         const file = e.target.files[0];
                         if (file) {
                             const reader = new FileReader();
                             reader.onload = function(event) {
-                                logoPreview.src = event.target.result;
-                                logoPreview.classList.remove('hidden');
-                                logoPlaceholder.classList.add('hidden');
-                                logoStatusText.innerHTML = '<span class="text-blue-600 font-bold"><i class="fas fa-image mr-1"></i> Preview dari file yang diupload</span>';
+                                cropperImage.src = event.target.result;
+                                cropperContainer.classList.remove('hidden');
+                                
+                                if (cropper) {
+                                    cropper.destroy();
+                                }
+                                
+                                cropper = new Cropper(cropperImage, {
+                                    aspectRatio: 20 / 7,
+                                    viewMode: 1,
+                                    dragMode: 'move',
+                                    autoCropArea: 1,
+                                    restore: false,
+                                    guides: true,
+                                    center: true,
+                                    highlight: false,
+                                    cropBoxMovable: true,
+                                    cropBoxResizable: true,
+                                    toggleDragModeOnDblclick: false,
+                                });
                             };
                             reader.readAsDataURL(file);
                         } else {
-                            // If user cancels file selection, revert to initial/auto logo
-                            if (hiddenLogoUrl.value) {
-                                logoPreview.src = hiddenLogoUrl.value;
-                                logoStatusText.innerHTML = '<span class="text-green-600 font-bold"><i class="fas fa-check-circle mr-1"></i> Logo otomatis/sebelumnya aktif</span>';
-                            } else {
-                                logoPreview.classList.add('hidden');
-                                logoPlaceholder.classList.remove('hidden');
-                                logoStatusText.innerHTML = 'Silakan isi URL atau upload file.';
-                            }
+                            cancelCropping();
+                        }
+                    });
+
+                    document.getElementById('btnZoomIn').addEventListener('click', function() {
+                        if (cropper) cropper.zoom(0.1);
+                    });
+                    
+                    document.getElementById('btnZoomOut').addEventListener('click', function() {
+                        if (cropper) cropper.zoom(-0.1);
+                    });
+                    
+                    document.getElementById('btnCancelCrop').addEventListener('click', function() {
+                        cancelCropping();
+                    });
+
+                    function cancelCropping() {
+                        cropperContainer.classList.add('hidden');
+                        logoFileInput.value = '';
+                        logoBase64Input.value = '';
+                        if (cropper) {
+                            cropper.destroy();
+                            cropper = null;
+                        }
+                        // Revert to initial/auto logo
+                        if (hiddenLogoUrl.value) {
+                            logoPreview.src = hiddenLogoUrl.value;
+                            logoPreview.classList.remove('hidden');
+                            logoPlaceholder.classList.add('hidden');
+                            logoStatusText.innerHTML = '<span class="text-green-600 font-bold"><i class="fas fa-check-circle mr-1"></i> Logo asli/sebelumnya aktif</span>';
+                        } else {
+                            logoPreview.classList.add('hidden');
+                            logoPlaceholder.classList.remove('hidden');
+                            logoStatusText.innerHTML = 'Silakan isi URL atau upload file.';
+                        }
+                    }
+                    
+                    document.getElementById('btnApplyCrop').addEventListener('click', function() {
+                        if (cropper) {
+                            const canvas = cropper.getCroppedCanvas({
+                                width: 400,
+                                height: 140,
+                                fillColor: 'transparent',
+                                imageSmoothingEnabled: true,
+                                imageSmoothingQuality: 'high',
+                            });
+                            
+                            const base64data = canvas.toDataURL('image/png');
+                            logoBase64Input.value = base64data;
+                            
+                            // Update preview utama
+                            logoPreview.src = base64data;
+                            logoPreview.classList.remove('hidden');
+                            logoPlaceholder.classList.add('hidden');
+                            logoStatusText.innerHTML = '<span class="text-brand-blue font-bold"><i class="fas fa-crop-alt mr-1"></i> Hasil Crop Logo diterapkan</span>';
+                            
+                            cropperContainer.classList.add('hidden');
                         }
                     });
 

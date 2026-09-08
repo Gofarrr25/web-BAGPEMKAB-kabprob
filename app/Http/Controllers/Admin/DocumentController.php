@@ -10,32 +10,59 @@ use Illuminate\Support\Str;
 
 class DocumentController extends Controller
 {
+    private function checkOwnership(Document $model)
+    {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+        if ($user && $user->hasRole('Staf') && $model->user_id !== $user->id) {
+            abort(403, 'Akses Ditolak: Anda tidak diizinkan mengubah/menghapus konten milik orang lain.');
+        }
+    }
+
     public function index()
     {
         $documents = Document::latest()->paginate(10);
         return view('admin.documents.index', compact('documents'));
     }
 
+    private function getDocumentCategories()
+    {
+        // Cari ID Menu Dokumen murni berdasarkan judul (tanpa ID hardcoded)
+        $menuDokumen = \App\Models\Menu::where('title', 'DOKUMEN')->first();
+
+        if ($menuDokumen) {
+            // Ambil semua anak/submenu dari Menu Dokumen tersebut
+            return \App\Models\Menu::where('parent_id', $menuDokumen->id)
+                ->orderBy('order_index')
+                ->get();
+        }
+
+        return collect();
+    }
+
     public function create()
     {
-        $categories = \App\Models\Menu::whereNotNull('parent_id')
-            ->where('module_type', 'documents')
-            ->orderBy('order_index')
-            ->get();
+        $categories = $this->getDocumentCategories();
         return view('admin.documents.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
+        $validCategories = $this->getDocumentCategories()->pluck('title')->toArray();
+
         $request->validate([
             'title' => 'required|string|max:255',
-            'category' => 'required|string|max:100',
+            'category' => ['required', 'string', 'max:100', function ($attribute, $value, $fail) use ($validCategories) {
+                if (!in_array($value, $validCategories)) {
+                    $fail('Klasifikasi tidak valid. Harap pilih klasifikasi yang tersedia di bawah Menu Dokumen.');
+                }
+            }],
             'document_date' => 'nullable|date',
             'file' => 'nullable|file|mimes:pdf|max:51200', // Max 50MB PDF
             'zip_file' => 'nullable|file|mimes:zip|max:51200', // Max 50MB ZIP
         ], [
-            'file.mimes' => 'Format file tidak valid. Hanya file PDF yang diperbolehkan.',
-            'zip_file.mimes' => 'Format file tidak valid. Hanya file ZIP yang diperbolehkan.',
+            'file.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima file PDF. Silakan pilih file dengan format .pdf.',
+            'zip_file.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima file ZIP.',
         ]);
 
         $filePath = null;
@@ -62,25 +89,34 @@ class DocumentController extends Controller
 
     public function edit(Document $document)
     {
-        $categories = \App\Models\Menu::whereNotNull('parent_id')
-            ->where('module_type', 'documents')
-            ->orderBy('order_index')
-            ->get();
+        $this->checkOwnership($document);
+        $categories = $this->getDocumentCategories();
         return view('admin.documents.edit', compact('document', 'categories'));
     }
 
     public function update(Request $request, Document $document)
     {
+        $this->checkOwnership($document);
+
+        $validCategories = $this->getDocumentCategories()->pluck('title')->toArray();
+        // Izinkan kategori lama tetap valid saat diedit jika sebelumnya sudah ada
+        if (!empty($document->category)) {
+            $validCategories[] = $document->category;
+        }
 
         $request->validate([
             'title' => 'required|string|max:255',
-            'category' => 'required|string|max:100',
+            'category' => ['required', 'string', 'max:100', function ($attribute, $value, $fail) use ($validCategories) {
+                if (!in_array($value, $validCategories)) {
+                    $fail('Klasifikasi tidak valid. Harap pilih klasifikasi yang tersedia di bawah Menu Dokumen.');
+                }
+            }],
             'document_date' => 'nullable|date',
             'file' => 'nullable|file|mimes:pdf|max:51200',
             'zip_file' => 'nullable|file|mimes:zip|max:51200',
         ], [
-            'file.mimes' => 'Format file tidak valid. Hanya file PDF yang diperbolehkan.',
-            'zip_file.mimes' => 'Format file tidak valid. Hanya file ZIP yang diperbolehkan.',
+            'file.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima file PDF. Silakan pilih file dengan format .pdf.',
+            'zip_file.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima file ZIP.',
         ]);
 
         $filePath = $document->file_path;
@@ -112,7 +148,16 @@ class DocumentController extends Controller
 
     public function destroy(Document $document)
     {
-        
+        $this->checkOwnership($document);
+
+        if ($document->file_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($document->file_path)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($document->file_path);
+        }
+
+        if ($document->zip_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($document->zip_path)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($document->zip_path);
+        }
+
         $document->delete();
         return redirect()->route('admin.documents.index')->with('success', 'Dokumen berhasil dihapus');
     }

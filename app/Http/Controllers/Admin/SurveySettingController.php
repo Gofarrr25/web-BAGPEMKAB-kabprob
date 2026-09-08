@@ -23,9 +23,9 @@ class SurveySettingController extends Controller
         $request->validate([
             'survey_title' => 'nullable|string',
             'survey_link' => 'nullable|string',
-            'survey_qr_image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
+            'survey_qr_image' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
-            'survey_qr_image.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
+            'survey_qr_image.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima JPG, JPEG, PNG, atau WEBP.',
         ]);
 
         if ($request->hasFile('survey_qr_image')) {
@@ -60,14 +60,14 @@ class SurveySettingController extends Controller
         activity('admin_log')
             ->causedBy($user)
             ->withProperties([
-                'module' => 'Link Survey / QR SKM',
+                'module' => 'Links Survey',
                 'type' => 'Edit Data',
                 'role' => $user->roles->pluck('name')->first() ?? 'User',
                 'ip' => request()->ip(),
                 'user_agent' => request()->userAgent()
             ])
-            ->log('Memperbarui Link Survey / QR SKM');
+            ->log('Memperbarui Links Survey');
 
-        return redirect()->route('admin.survey-settings.index')->with('success', 'Link Survey / QR SKM berhasil diperbarui.');
+        return redirect()->route('admin.survey-settings.index')->with('success', 'Links Survey berhasil diperbarui.');
     }
 }

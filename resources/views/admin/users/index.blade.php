@@ -7,7 +7,7 @@
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
         <h3 class="font-bold text-gray-800">Daftar Admin OPD Terdaftar</h3>
-        <a href="{{ route('admin.users.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm transition">
+        <a href="{{ route('admin.users.create') }}" class="bg-brand-blue hover:bg-brand-blue-hover text-white font-bold py-2 px-4 rounded text-sm transition">
             <i class="fas fa-plus mr-1"></i> Tambah Admin Baru
         </a>
     </div>
@@ -40,7 +40,7 @@
                                     }
                                     $initials = strtoupper($initials);
                                 @endphp
-                                <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs shadow-sm">
+                                <div class="w-8 h-8 rounded-full bg-brand-blue-light text-brand-blue flex items-center justify-center font-bold text-xs shadow-sm">
                                     {{ $initials }}
                                 </div>
                             @endif
@@ -65,7 +65,7 @@
                     </td>
                     <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
                         <!-- Tombol Edit Admin & Ubah Password -->
-                        <a href="{{ route('admin.users.edit', $user->id) }}" class="text-blue-600 hover:text-blue-800 font-bold px-2 py-1.5 rounded border border-blue-200 hover:bg-blue-50 transition inline-block text-xs" title="Edit Admin & Ubah Password">
+                        <a href="{{ route('admin.users.edit', $user->id) }}" class="text-brand-blue hover:text-brand-blue-hover font-bold px-2 py-1.5 rounded border border-brand-blue-light hover:bg-brand-blue-light transition inline-block text-xs" title="Edit Admin & Ubah Password">
                             <i class="fas fa-edit mr-1"></i> Edit
                         </a>
 
@@ -78,7 +78,7 @@
                         </form>
                         
                         <!-- Tombol Hapus -->
-                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus admin ini secara permanen?');">
+                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="inline-block" onsubmit="event.preventDefault(); confirmDelete(this, 'User Admin', 'Data Terpilih', true);">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="text-red-500 hover:text-red-700 font-bold px-2 py-1 rounded border border-red-200 hover:bg-red-50 transition" title="Hapus Permanen">

@@ -18,16 +18,16 @@
         </div>
     @endif
 
-    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+    <div class="bg-white border border-gray-200 rounded-xl p-4 md:p-6 shadow-sm">
         <form action="{{ route('admin.organization-members.upload-photo') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
             @csrf
             
-            <div class="flex flex-col md:flex-row gap-8 items-start">
+            <div class="flex flex-col md:flex-row gap-4 md:gap-8 items-start">
                 <!-- Kolom Upload -->
                 <div class="flex-1 w-full space-y-4">
                     <label class="block text-sm font-bold text-gray-700">Upload Foto Struktur Organisasi</label>
                     
-                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:bg-gray-50 transition relative">
+                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 md:p-8 text-center hover:bg-gray-50 transition relative">
                         <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3"></i>
                         <p class="text-gray-600 font-medium mb-1">Pilih Gambar Struktur Organisasi</p>
                         <p class="text-xs text-gray-400 mb-4">Format: JPG, PNG, WEBP (Max 5MB)</p>
@@ -35,26 +35,26 @@
                         <input type="file" name="image" id="imageInput" accept="image/jpeg,image/png,image/webp,image/gif" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" @if(!$photo) required @endif>
                         <input type="hidden" name="cropped_image" id="croppedInput">
                         
-                        <button type="button" class="px-4 py-2 bg-blue-50 text-blue-600 border border-blue-200 rounded-lg text-sm font-bold">
+                        <button type="button" class="px-4 py-2 bg-brand-blue-light text-brand-blue border border-brand-blue-light rounded-lg text-sm font-bold">
                             Jelajahi File
                         </button>
                     </div>
 
-                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 flex items-start gap-3">
-                        <i class="fas fa-info-circle text-blue-500 mt-0.5"></i>
-                        <div class="text-xs text-blue-800 space-y-1">
+                    <div class="bg-brand-blue-light p-4 rounded-lg border border-brand-blue-light flex items-start gap-3">
+                        <i class="fas fa-info-circle text-brand-blue mt-0.5"></i>
+                        <div class="text-xs text-brand-blue space-y-1">
                             <p><strong>Rekomendasi:</strong> Gunakan ukuran minimal <strong>1920 &times; 1080 px</strong> agar gambar tidak pecah saat di-zoom oleh pengunjung.</p>
                             <p>Anda dapat memotong (crop) gambar setelah memilih file, atau mencentang opsi "Gunakan Ukuran Asli" jika struktur organisasi Anda memanjang ke bawah (vertikal) atau memiliki rasio bebas.</p>
                         </div>
                     </div>
 
                     <div class="pt-4 border-t border-gray-100 flex gap-3">
-                        <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold shadow-sm transition">
+                        <button type="submit" class="px-6 py-2.5 bg-brand-blue text-white rounded-lg hover:bg-brand-blue-hover font-bold shadow-sm transition">
                             <i class="fas fa-save mr-2"></i> Simpan Gambar
                         </button>
                         
                         @if($photo)
-                        <button type="button" onclick="if(confirm('Apakah Anda yakin ingin menghapus struktur organisasi ini?')) document.getElementById('deletePhotoForm').submit();" class="px-6 py-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 font-bold border border-red-200 transition">
+                        <button type="button" onclick="confirmDelete(document.getElementById('deletePhotoForm'), 'Struktur', 'Gambar Struktur Organisasi', true);" class="px-6 py-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 font-bold border border-red-200 transition">
                             <i class="fas fa-trash-alt mr-2"></i> Hapus
                         </button>
                         @endif
@@ -92,7 +92,7 @@
 <div id="cropModal" class="fixed inset-0 bg-black/80 z-[9999] hidden items-center justify-center p-4">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-5xl flex flex-col overflow-hidden max-h-[90vh]">
         <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
-            <h3 class="font-bold text-gray-800"><i class="fas fa-crop text-blue-600 mr-2"></i> Sesuaikan Gambar Struktur Organisasi</h3>
+            <h3 class="font-bold text-gray-800"><i class="fas fa-crop text-brand-blue mr-2"></i> Sesuaikan Gambar Struktur Organisasi</h3>
             <button type="button" id="closeCropModal" class="text-gray-400 hover:text-red-500 transition">
                 <i class="fas fa-times text-xl"></i>
             </button>
@@ -104,14 +104,14 @@
         </div>
         <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex flex-wrap justify-between items-center gap-4">
             <div class="flex items-center gap-2">
-                <input type="checkbox" id="bypassCropCheckbox" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                <input type="checkbox" id="bypassCropCheckbox" class="w-4 h-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue">
                 <label for="bypassCropCheckbox" class="text-sm font-bold text-gray-700 cursor-pointer">Gunakan Ukuran Asli Gambar (Lewati Crop)</label>
             </div>
             <div class="flex gap-2">
                 <button type="button" id="btnResetCrop" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-bold transition">
                     <i class="fas fa-sync-alt mr-1"></i> Reset
                 </button>
-                <button type="button" id="btnSaveCrop" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold shadow-sm transition">
+                <button type="button" id="btnSaveCrop" class="px-6 py-2 bg-brand-blue text-white rounded-lg hover:bg-brand-blue-hover font-bold shadow-sm transition">
                     <i class="fas fa-check mr-1"></i> Terapkan
                 </button>
             </div>

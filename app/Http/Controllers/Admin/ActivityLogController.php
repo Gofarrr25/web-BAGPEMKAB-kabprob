@@ -6,6 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
 use App\Models\User;
+use App\Models\Post;
+use App\Models\Page;
+use App\Models\Document;
+use App\Models\Banner;
+use App\Models\HomeWidget;
+use App\Models\Category;
+use App\Models\RelatedLink;
 
 class ActivityLogController extends Controller
 {
@@ -26,15 +33,15 @@ class ActivityLogController extends Controller
                               ->orWhere('email', 'like', "%{$search}%");
                   })
                   ->orWhereHasMorph('subject', [
-                      \App\Models\Post::class, 
-                      \App\Models\Page::class,
-                      \App\Models\Document::class,
-                      \App\Models\Banner::class,
-                      \App\Models\HomeWidget::class
+                      Post::class, 
+                      Page::class,
+                      Document::class,
+                      Banner::class,
+                      HomeWidget::class
                   ], function($subjectQ) use ($search) {
                       $subjectQ->where('title', 'like', "%{$search}%");
                   })
-                  ->orWhereHasMorph('subject', [\App\Models\Category::class, \App\Models\RelatedLink::class], function($subjectQ) use ($search) {
+                  ->orWhereHasMorph('subject', [Category::class, RelatedLink::class], function($subjectQ) use ($search) {
                       $subjectQ->where('name', 'like', "%{$search}%");
                   });
             });
@@ -93,7 +100,7 @@ class ActivityLogController extends Controller
         return view('admin.activity_logs.index', compact('logs', 'users', 'modules', 'types', 'roles', 'levels', 'oldLogsCount'));
     }
 
-    public function show($id)
+    public function show(string $id)
     {
         $log = Activity::with('causer')->findOrFail($id);
         

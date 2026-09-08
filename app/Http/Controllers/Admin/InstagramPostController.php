@@ -25,8 +25,9 @@ class InstagramPostController extends Controller
             'instagram_name' => 'nullable|string|max:255',
             'instagram_followers' => 'nullable|string|max:100',
             'instagram_posts_count' => 'nullable|string|max:100',
-            'instagram_avatar' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
+            'instagram_avatar' => 'nullable|image|mimetypes:image/jpeg,image/png,image/webp,image/gif|extensions:jpg,jpeg,png,webp,gif|max:2048',
             'instagram_embed_script' => 'nullable|string',
+            'instagram_is_active' => 'nullable|in:0,1',
         ]);
 
         $config = InstagramService::updateAccountConfig($request->instagram_url);
@@ -42,6 +43,9 @@ class InstagramPostController extends Controller
         }
         if ($request->has('instagram_embed_script')) {
             Setting::updateOrCreate(['key' => 'instagram_embed_script'], ['value' => $request->instagram_embed_script]);
+        }
+        if ($request->has('instagram_is_active')) {
+            Setting::updateOrCreate(['key' => 'instagram_is_active'], ['value' => $request->instagram_is_active]);
         }
 
         if ($request->hasFile('instagram_avatar')) {

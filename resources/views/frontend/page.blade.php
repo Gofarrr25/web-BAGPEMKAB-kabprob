@@ -14,6 +14,24 @@
         <meta property="og:image" content="{{ asset('storage/' . $page->image) }}">
     @endif
 @endif
+    <style>
+        /* Paksa semua gambar dan figure di dalam konten agar responsif 100% mengikuti lebar layar HP/Tablet */
+        .prose figure, .prose img, .prose .image {
+            max-width: 100% !important;
+            height: auto !important;
+            width: auto !important; /* Timpa width absolute dari CKEditor */
+            overflow: hidden; /* Cegah horizontal scroll */
+        }
+        /* Style interaktif untuk gambar yang bisa diperbesar */
+        .zoomable-image {
+            cursor: zoom-in;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .zoomable-image:hover {
+            transform: scale(1.01);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
 @endpush
 
 @push('scripts')
@@ -48,7 +66,7 @@
                     return '
                     <div class="mb-8 w-full">
                         <div class="flex">
-                            <div class="_df_button bg-[#729b48] hover:bg-[#5f8439] text-white px-5 py-2.5 flex items-center justify-center font-semibold text-sm cursor-pointer transition shadow-sm" source="'.$src.'" style="min-width: 150px;">
+                            <div class="_df_button bg-brand-blue hover:bg-brand-blue-hover text-white px-5 py-2.5 flex items-center justify-center font-semibold text-sm cursor-pointer transition shadow-sm" source="'.$src.'" style="min-width: 150px;">
                                 <div class="flex items-center gap-2 pointer-events-none">
                                     <i class="fas fa-book-reader"></i> Baca (Klik)
                                 </div>
@@ -60,9 +78,9 @@
                     </div>';
                 } elseif (in_array($ext, ['doc', 'docx'])) {
                     return '
-                    <div class="mb-8 p-4 border border-blue-200 bg-blue-50/50 rounded-xl flex items-center justify-between shadow-sm">
+                    <div class="mb-8 p-4 border border-brand-blue-light bg-brand-blue-light/50 rounded-xl flex items-center justify-between shadow-sm">
                         <div class="flex items-center gap-4">
-                            <div class="p-3 bg-blue-100 rounded-lg text-blue-600">
+                            <div class="p-3 bg-brand-blue-light rounded-lg text-brand-blue">
                                 <i class="fas fa-file-word text-2xl"></i>
                             </div>
                             <div>
@@ -70,7 +88,7 @@
                                 <div class="text-xs text-gray-500 mt-0.5">'.$filename.'</div>
                             </div>
                         </div>
-                        <a href="'.$src.'" download class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-bold text-sm shadow-sm transition-all flex items-center gap-2">
+                        <a href="'.$src.'" download class="bg-brand-blue hover:bg-brand-blue-hover text-white px-5 py-2.5 rounded-lg font-bold text-sm shadow-sm transition-all flex items-center gap-2">
                             <i class="fas fa-download"></i> <span class="hidden sm:inline">Unduh</span>
                         </a>
                     </div>';
@@ -111,7 +129,7 @@
             };
         @endphp
 
-        <div class="bg-white p-6 md:p-10 rounded-lg shadow-xl border border-gray-100 @if(!isset($page) || !$page->pdf_file) min-h-[40vh] @endif">
+        <div class="bg-white p-4 md:p-6 md:p-10 rounded-lg shadow-xl border border-gray-100 @if(!isset($page) || !$page->pdf_file) min-h-[40vh] @endif">
             
             @if(isset($page) && $page->pdf_file)
                 @php 
@@ -145,7 +163,7 @@
             @if(isset($page) && $page)
                 @if($page->image && !Str::endsWith(strtolower($page->image), '.pdf'))
                     <div class="w-full mb-8 mt-4 text-center flex justify-center">
-                        <img src="{{ asset('storage/' . $page->image) }}" class="max-w-full h-auto rounded shadow-sm border border-gray-100" alt="{{ $title }}">
+                        <img src="{{ asset('storage/' . $page->image) }}" class="max-w-full h-auto rounded shadow-sm border border-gray-100 zoomable-image" alt="{{ $title }}" onclick="openImageLightbox(`{{ asset('storage/' . $page->image) }}`)" title="Klik untuk memperbesar gambar">
                     </div>
                 @endif
                 
@@ -159,7 +177,7 @@
                                 return '
                                 <div class="mb-8 w-full">
                                     <div class="flex">
-                                        <div class="_df_button bg-[#729b48] hover:bg-[#5f8439] text-white px-5 py-2.5 flex items-center justify-center font-semibold text-sm cursor-pointer transition shadow-sm" source="'.$src.'" style="min-width: 150px;">
+                                        <div class="_df_button bg-brand-blue hover:bg-brand-blue-hover text-white px-5 py-2.5 flex items-center justify-center font-semibold text-sm cursor-pointer transition shadow-sm" source="'.$src.'" style="min-width: 150px;">
                                             <div class="flex items-center gap-2 pointer-events-none">
                                                 <i class="fas fa-book-reader"></i> Baca (Klik)
                                             </div>
@@ -171,9 +189,9 @@
                                 </div>';
                             } elseif (in_array($ext, ['doc', 'docx'])) {
                                 return '
-                                <div class="mb-8 p-4 border border-blue-200 bg-blue-50/50 rounded-xl flex items-center justify-between shadow-sm">
+                                <div class="mb-8 p-4 border border-brand-blue-light bg-brand-blue-light/50 rounded-xl flex items-center justify-between shadow-sm">
                                     <div class="flex items-center gap-4">
-                                        <div class="p-3 bg-blue-100 rounded-lg text-blue-600">
+                                        <div class="p-3 bg-brand-blue-light rounded-lg text-brand-blue">
                                             <i class="fas fa-file-word text-2xl"></i>
                                         </div>
                                         <div>
@@ -181,7 +199,7 @@
                                             <div class="text-xs text-gray-500 mt-0.5">'.$filename.'</div>
                                         </div>
                                     </div>
-                                    <a href="'.$src.'" download class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-bold text-sm shadow-sm transition-all flex items-center gap-2">
+                                    <a href="'.$src.'" download class="bg-brand-blue hover:bg-brand-blue-hover text-white px-5 py-2.5 rounded-lg font-bold text-sm shadow-sm transition-all flex items-center gap-2">
                                         <i class="fas fa-download"></i> <span class="hidden sm:inline">Unduh</span>
                                     </a>
                                 </div>';
@@ -227,9 +245,21 @@
                             $ext = strtolower(pathinfo(parse_url($src, PHP_URL_PATH), PATHINFO_EXTENSION));
                             $filename = basename(parse_url($src, PHP_URL_PATH));
                             
-                            // Jika format yang valid untuk image, biarkan sebagai image
+                            // Jika format yang valid untuk image, bersihkan inline width/height agar responsive
                             if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
-                                return $matches[0];
+                                $imgHtml = $matches[0];
+                                // Hapus atribut width dan height bawaan dari CKEditor yang menyebabkan overflow horizontal
+                                $imgHtml = preg_replace('/\s+width=["\'][^"\']+["\']/i', '', $imgHtml);
+                                $imgHtml = preg_replace('/\s+height=["\'][^"\']+["\']/i', '', $imgHtml);
+                                // Hapus inline CSS width dan height
+                                $imgHtml = preg_replace('/width\s*:\s*[^;"]+;?/i', '', $imgHtml);
+                                $imgHtml = preg_replace('/height\s*:\s*[^;"]+;?/i', '', $imgHtml);
+                                
+                                // Injeksi class zoomable dan event onClick ke tag img
+                                $replacement = '<' . 'img onclick="openImageLightbox(&quot;'.$src.'&quot;)" class="zoomable-image rounded shadow-sm" title="Klik untuk memperbesar"';
+                                $imgHtml = preg_replace('/<img/i', $replacement, $imgHtml);
+                                
+                                return $imgHtml;
                             }
                             
                             $ui = $generateAttachmentUI($src, $filename, $ext);
@@ -277,7 +307,7 @@
                     </div>
                 @endif
             @else
-                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded text-yellow-800">
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 md:p-6 rounded text-yellow-800">
                     <h3 class="font-bold text-lg mb-2"><i class="fas fa-tools mr-2"></i>Status Pengembangan</h3>
                     <p>Halaman <strong>{{ $title }}</strong> ini belum dibuat di sistem CMS Admin.</p>
                     <p class="mt-2 text-sm text-yellow-600">Silakan login sebagai Admin, buka menu <strong>Halaman Statis</strong>, lalu kelola isi konten untuk URL: <code>{{ $slug }}</code></p>
@@ -288,3 +318,76 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<!-- Image Lightbox Modal untuk melihat gambar Struktur Organisasi/diagram dengan lebih jelas di HP -->
+<div id="imageLightbox" class="fixed inset-0 z-[9999] hidden bg-black/95 flex items-center justify-center p-2 sm:p-4 transition-opacity" onclick="closeImageLightbox()">
+    <button class="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/80 hover:text-white z-50 p-2 focus:outline-none" onclick="closeImageLightbox()">
+        <i class="fas fa-times text-2xl sm:text-3xl"></i>
+    </button>
+    
+    <!-- Container gambar (Scrollable jika di-zoom) -->
+    <div class="relative w-full h-full flex items-center justify-center overflow-auto" style="scrollbar-width: none;">
+        <img id="lightboxImage" src="" class="max-w-none md:max-w-full max-h-none md:max-h-full object-contain cursor-zoom-in transition-transform duration-200" alt="Fullscreen Image" onclick="event.stopPropagation(); toggleZoom(event)">
+    </div>
+    
+    <!-- Instruksi Zoom (Floating di bawah) -->
+    <div class="absolute bottom-6 left-0 right-0 text-center text-white/80 text-xs sm:text-sm pointer-events-none">
+        <span class="bg-black/60 px-4 py-2 rounded-full backdrop-blur-sm"><i class="fas fa-search-plus mr-1.5"></i>Klik gambar untuk memperbesar/memperkecil</span>
+    </div>
+</div>
+
+<script>
+    let isZoomed = false;
+    
+    function openImageLightbox(src) {
+        const lightbox = document.getElementById('imageLightbox');
+        const img = document.getElementById('lightboxImage');
+        
+        // Reset state
+        img.src = src;
+        img.style.transform = 'scale(1)';
+        img.style.cursor = 'zoom-in';
+        isZoomed = false;
+        
+        // Tampilkan lightbox
+        lightbox.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Kunci scroll halaman belakang
+    }
+
+    function closeImageLightbox() {
+        const lightbox = document.getElementById('imageLightbox');
+        lightbox.classList.add('hidden');
+        document.body.style.overflow = ''; // Buka kembali scroll halaman
+    }
+
+    function toggleZoom(event) {
+        const img = document.getElementById('lightboxImage');
+        isZoomed = !isZoomed;
+        
+        if (isZoomed) {
+            // Aktifkan Zoom 2.5x dan geser transform origin ke arah kursor pengguna
+            const rect = img.getBoundingClientRect();
+            // Hitung persentase posisi klik relatif terhadap dimensi gambar
+            const x = ((event.clientX - rect.left) / rect.width) * 100;
+            const y = ((event.clientY - rect.top) / rect.height) * 100;
+            
+            img.style.transformOrigin = `${x}% ${y}%`;
+            img.style.transform = 'scale(2.5)';
+            img.style.cursor = 'zoom-out';
+        } else {
+            // Kembalikan ke ukuran fit screen
+            img.style.transform = 'scale(1)';
+            img.style.transformOrigin = 'center center';
+            img.style.cursor = 'zoom-in';
+        }
+    }
+    
+    // Support tutup lightbox dengan tombol ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !document.getElementById('imageLightbox').classList.contains('hidden')) {
+            closeImageLightbox();
+        }
+    });
+</script>
+@endpush

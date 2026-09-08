@@ -7,9 +7,12 @@ use App\Models\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\ProcessesBase64;
 
 class PageController extends Controller
 {
+    use ProcessesBase64;
+
     public function index()
     {
         // 0. Auto-sync: Jika ada menu yang punya url ke /page/slug tapi belum ada page_id, relasikan otomatis.
@@ -55,15 +58,13 @@ class PageController extends Controller
             'parent_id' => 'nullable|exists:pages,id',
             'content' => 'nullable|string',
             'external_url' => 'nullable|string|max:500',
-            'image' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif|max:10240',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:10240',
             'pdf_file' => 'nullable|file|mimes:pdf|max:51200',
             'order_index' => 'nullable|integer',
-            'seo_title' => 'nullable|string|max:255',
-            'seo_description' => 'nullable|string',
             'status' => 'required|in:publish,draft',
         ], [
-            'image.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
-            'pdf_file.mimes' => 'Format file tidak valid. Hanya file PDF yang diperbolehkan.',
+            'image.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima JPG, JPEG, PNG, atau WEBP.',
+            'pdf_file.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima file PDF. Silakan pilih file dengan format .pdf.',
         ]);
 
         $imagePath = null;
@@ -93,15 +94,15 @@ class PageController extends Controller
             $count++;
         }
 
+        $cleanContent = $this->processBase64Images($request->content);
+
         $data = [
             'title' => $request->title,
             'slug' => $slug,
-            'content' => $request->content,
+            'content' => $cleanContent,
             'external_url' => $request->external_url,
             'image' => $imagePath,
             'pdf_file' => $pdfPath,
-            'seo_title' => $request->seo_title ?: $request->title,
-            'seo_description' => $request->seo_description ?: Str::limit(strip_tags($request->content ?? ''), 160),
             'status' => $request->status ?? 'publish',
             'is_active' => true,
         ];
@@ -126,15 +127,13 @@ class PageController extends Controller
             'parent_id' => 'nullable|exists:pages,id',
             'content' => 'nullable|string',
             'external_url' => 'nullable|string|max:500',
-            'image' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif|max:10240',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:10240',
             'pdf_file' => 'nullable|file|mimes:pdf|max:51200',
             'order_index' => 'nullable|integer',
-            'seo_title' => 'nullable|string|max:255',
-            'seo_description' => 'nullable|string',
             'status' => 'nullable|in:publish,draft',
         ], [
-            'image.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
-            'pdf_file.mimes' => 'Format file tidak valid. Hanya file PDF yang diperbolehkan.',
+            'image.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima JPG, JPEG, PNG, atau WEBP.',
+            'pdf_file.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima file PDF. Silakan pilih file dengan format .pdf.',
         ]);
 
         $baseSlug = Str::slug($request->title);
@@ -145,13 +144,13 @@ class PageController extends Controller
             $count++;
         }
 
+        $cleanContent = $this->processBase64Images($request->content);
+
         $data = [
             'title' => $request->title,
             'slug' => $slug,
-            'content' => $request->content,
+            'content' => $cleanContent,
             'external_url' => $request->external_url,
-            'seo_title' => $request->seo_title ?: $request->title,
-            'seo_description' => $request->seo_description ?: Str::limit(strip_tags($request->content ?? ''), 160),
             'status' => $request->status ?? 'publish',
         ];
 
@@ -190,6 +189,14 @@ class PageController extends Controller
         $user = Auth::user();
         if ($page->is_in_menu && (!$user || !$user->hasRole('Superadmin'))) {
             return redirect()->route('admin.pages.index')->with('error', 'Anda tidak dapat menghapus halaman yang terhubung dengan menu utama.');
+        }
+
+        if ($page->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($page->image_path)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($page->image_path);
+        }
+
+        if ($page->pdf_file_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($page->pdf_file_path)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($page->pdf_file_path);
         }
 
         $page->delete();

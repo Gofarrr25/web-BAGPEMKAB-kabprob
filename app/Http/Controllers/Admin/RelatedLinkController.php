@@ -25,17 +25,25 @@ class RelatedLinkController extends Controller
             'name' => 'required|string|max:255',
             'url' => 'required|url|max:255',
             'logo_url' => 'nullable|string|max:2000',
-            'logo_file' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
+            'logo_file' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
             'order' => 'nullable|integer',
         ], [
-            'logo_file.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
+            'logo_file.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima JPG, JPEG, PNG, atau WEBP.',
         ]);
 
         $data = $request->only(['name', 'url']);
         $data['is_active'] = $request->has('is_active');
         $data['order'] = $request->order ?? 0;
 
-        if ($request->hasFile('logo_file')) {
+        if ($request->filled('logo_base64')) {
+            $image_parts = explode(";base64,", $request->logo_base64);
+            if (count($image_parts) == 2) {
+                $image_base64 = base64_decode($image_parts[1]);
+                $fileName = 'logo_' . uniqid() . '.png';
+                \Illuminate\Support\Facades\Storage::disk('public')->put('related_links/' . $fileName, $image_base64);
+                $data['logo_url'] = asset('storage/related_links/' . $fileName);
+            }
+        } elseif ($request->hasFile('logo_file')) {
             $path = $request->file('logo_file')->store('related_links', 'public');
             $data['logo_url'] = asset('storage/' . $path);
         } else {
@@ -58,17 +66,25 @@ class RelatedLinkController extends Controller
             'name' => 'required|string|max:255',
             'url' => 'required|url|max:255',
             'logo_url' => 'nullable|string|max:2000',
-            'logo_file' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
+            'logo_file' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
             'order' => 'nullable|integer',
         ], [
-            'logo_file.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
+            'logo_file.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima JPG, JPEG, PNG, atau WEBP.',
         ]);
 
         $data = $request->only(['name', 'url']);
         $data['is_active'] = $request->has('is_active');
         $data['order'] = $request->order ?? 0;
 
-        if ($request->hasFile('logo_file')) {
+        if ($request->filled('logo_base64')) {
+            $image_parts = explode(";base64,", $request->logo_base64);
+            if (count($image_parts) == 2) {
+                $image_base64 = base64_decode($image_parts[1]);
+                $fileName = 'logo_' . uniqid() . '.png';
+                \Illuminate\Support\Facades\Storage::disk('public')->put('related_links/' . $fileName, $image_base64);
+                $data['logo_url'] = asset('storage/related_links/' . $fileName);
+            }
+        } elseif ($request->hasFile('logo_file')) {
             $path = $request->file('logo_file')->store('related_links', 'public');
             $data['logo_url'] = asset('storage/' . $path);
         } else {
@@ -82,8 +98,25 @@ class RelatedLinkController extends Controller
 
     public function destroy(RelatedLink $related_link)
     {
+        if ($related_link->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($related_link->logo_path)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($related_link->logo_path);
+        }
+
         $related_link->delete();
 
         return redirect()->route('admin.related-links.index')->with('success', 'Link Terkait berhasil dihapus!');
+    }
+
+    public function toggleStatus(RelatedLink $related_link)
+    {
+        $related_link->update([
+            'is_active' => !$related_link->is_active
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'is_active' => $related_link->is_active,
+            'message' => 'Status Link Terkait berhasil diperbarui.'
+        ]);
     }
 }

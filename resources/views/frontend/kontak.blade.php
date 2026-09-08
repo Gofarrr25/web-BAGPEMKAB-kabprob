@@ -8,7 +8,7 @@
         
 
 
-        <div class="bg-white p-8 md:p-12 rounded-xl shadow-sm border border-gray-100 flex flex-col lg:flex-row gap-10 items-stretch">
+        <div class="bg-white p-4 md:p-8 md:p-12 rounded-xl shadow-sm border border-gray-100 flex flex-col lg:flex-row gap-6 lg:gap-10 items-stretch">
             
             <!-- Contact Info (Left Side) -->
             <div class="w-full lg:w-1/3 flex flex-col justify-center space-y-6">
@@ -35,7 +35,7 @@
                         <div class="flex items-center gap-3">
                             <i class="fas fa-envelope text-brand-blue"></i>
                             <p class="text-sm text-gray-600">
-                                <span class="font-bold text-gray-800">Mail:</span> <a href="mailto:{{ $siteSettings['email'] ?? 'bagpemerintahan@probolinggokab.go.id' }}" class="text-blue-500 hover:underline">{{ $siteSettings['email'] ?? 'bagpemerintahan@probolinggokab.go.id' }}</a>
+                                <span class="font-bold text-gray-800">Mail:</span> <a href="mailto:{{ $siteSettings['email'] ?? 'bagpemerintahan@probolinggokab.go.id' }}" class="text-brand-blue hover:underline">{{ $siteSettings['email'] ?? 'bagpemerintahan@probolinggokab.go.id' }}</a>
                             </p>
                         </div>
                     </div>
@@ -44,22 +44,22 @@
                 <!-- Social Media -->
                 <div class="flex items-center gap-3 pt-4">
                     @if(!empty($siteSettings['facebook_url']))
-                        <a href="{{ $siteSettings['facebook_url'] }}" target="_blank" class="w-10 h-10 rounded-full bg-brand-blue text-white flex items-center justify-center hover:bg-blue-700 transition shadow-sm">
+                        <a href="{{ $siteSettings['facebook_url'] }}" target="_blank" class="w-10 h-10 rounded-full bg-brand-blue text-white flex items-center justify-center hover:bg-brand-blue-hover transition shadow-sm">
                             <i class="fab fa-facebook-f"></i>
                         </a>
                     @endif
                     @if(!empty($siteSettings['twitter_url']))
-                        <a href="{{ $siteSettings['twitter_url'] }}" target="_blank" class="w-10 h-10 rounded-full bg-brand-blue text-white flex items-center justify-center hover:bg-blue-700 transition shadow-sm">
+                        <a href="{{ $siteSettings['twitter_url'] }}" target="_blank" class="w-10 h-10 rounded-full bg-brand-blue text-white flex items-center justify-center hover:bg-brand-blue-hover transition shadow-sm">
                             <i class="fab fa-twitter"></i>
                         </a>
                     @endif
                     @if(!empty($siteSettings['instagram_url']))
-                        <a href="{{ $siteSettings['instagram_url'] }}" target="_blank" class="w-10 h-10 rounded-full bg-brand-blue text-white flex items-center justify-center hover:bg-blue-700 transition shadow-sm">
+                        <a href="{{ $siteSettings['instagram_url'] }}" target="_blank" class="w-10 h-10 rounded-full bg-brand-blue text-white flex items-center justify-center hover:bg-brand-blue-hover transition shadow-sm">
                             <i class="fab fa-instagram"></i>
                         </a>
                     @endif
                     @if(!empty($siteSettings['tiktok_url']))
-                        <a href="{{ $siteSettings['tiktok_url'] }}" target="_blank" class="w-10 h-10 rounded-full bg-brand-blue text-white flex items-center justify-center hover:bg-blue-700 transition shadow-sm">
+                        <a href="{{ $siteSettings['tiktok_url'] }}" target="_blank" class="w-10 h-10 rounded-full bg-brand-blue text-white flex items-center justify-center hover:bg-brand-blue-hover transition shadow-sm">
                             <i class="fab fa-tiktok"></i>
                         </a>
                     @endif

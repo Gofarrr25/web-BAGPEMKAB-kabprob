@@ -11,14 +11,14 @@
             <a href="{{ route('admin.categories.index') }}" class="text-gray-500 hover:text-gray-700 text-sm font-semibold transition flex items-center justify-center gap-1 bg-white border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50"><i class="fas fa-arrow-left"></i> Kembali</a>
         </div>
         
-        <form action="{{ route('admin.categories.update', $category->id) }}" method="POST" class="p-6">
+        <form action="{{ route('admin.categories.update', $category->id) }}" method="POST" class="p-4 md:p-6">
             @csrf
             @method('PUT')
             
             <div class="mb-4">
                 <label class="block text-sm font-bold text-gray-700 mb-2">Nama Kategori <span class="text-red-500">*</span></label>
                 <input type="text" name="name" required value="{{ old('name', $category->name) }}" placeholder="Misal: Pemerintahan"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue outline-none transition">
                 <p class="text-xs text-gray-500 mt-1">Mengubah nama kategori tidak akan memutus tautannya dengan berita yang sudah ada.</p>
                 @error('name') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
             </div>

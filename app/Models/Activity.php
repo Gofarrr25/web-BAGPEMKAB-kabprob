@@ -28,19 +28,29 @@ class Activity extends SpatieActivity
                 $properties['method'] = Request::method();
             }
 
-            // Parse User Agent properly using Jenssegers/Agent
+            // Parse User Agent properly using lightweight regex to prevent performance bottlenecks
             if (!isset($properties['browser']) || !isset($properties['os'])) {
-                $agent = new \Jenssegers\Agent\Agent();
-                $userAgent = $properties['user_agent'] ?? Request::userAgent();
-                $agent->setUserAgent($userAgent);
+                $userAgent = $properties['user_agent'] ?? Request::userAgent() ?? '';
                 
-                $browser = $agent->browser();
-                $version = $agent->version($browser);
-                $os = $agent->platform();
-                $osVersion = $agent->version($os);
-                
-                $properties['browser'] = $browser ? $browser . ' ' . $version : 'Unknown Browser';
-                $properties['os'] = $os ? $os . ' ' . $osVersion : 'Unknown OS';
+                // Lightweight Browser Detection
+                $browser = 'Unknown Browser';
+                if (preg_match('/Edg/i', $userAgent)) $browser = 'Edge';
+                elseif (preg_match('/Firefox/i', $userAgent)) $browser = 'Firefox';
+                elseif (preg_match('/OPR/i', $userAgent) || preg_match('/Opera/i', $userAgent)) $browser = 'Opera';
+                elseif (preg_match('/Chrome/i', $userAgent)) $browser = 'Chrome';
+                elseif (preg_match('/Safari/i', $userAgent)) $browser = 'Safari';
+
+                // Lightweight OS Detection
+                $os = 'Unknown OS';
+                if (preg_match('/Windows NT 11/i', $userAgent)) $os = 'Windows 11';
+                elseif (preg_match('/Windows NT 10/i', $userAgent)) $os = 'Windows 10';
+                elseif (preg_match('/Mac OS X/i', $userAgent)) $os = 'Mac OS';
+                elseif (preg_match('/Linux/i', $userAgent)) $os = 'Linux';
+                elseif (preg_match('/Android/i', $userAgent)) $os = 'Android';
+                elseif (preg_match('/iPhone|iPad|iPod/i', $userAgent)) $os = 'iOS';
+
+                $properties['browser'] = $browser;
+                $properties['os'] = $os;
             }
 
             // Populate role

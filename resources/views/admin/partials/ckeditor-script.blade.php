@@ -62,17 +62,6 @@ function createCkEditor(selector, customPlaceholder) {
     const targetElement = document.querySelector(selector);
     if (!targetElement) return;
 
-    let content = targetElement.value || '';
-    if (content && !content.includes('<p>') && content.includes('\n')) {
-        let paragraphs = content.split(/\n/);
-        let newContent = '';
-        paragraphs.forEach(p => {
-            if (p.trim() !== '') {
-                newContent += '<p>' + p.trim() + '</p>';
-            }
-        });
-        targetElement.value = newContent;
-    }
 
     function CustomSpacingPlugin(editor) {
         const elements = ['paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6', 'listItem'];
@@ -134,56 +123,8 @@ function createCkEditor(selector, customPlaceholder) {
         }
     }
 
-    function FileAttachmentPlugin(editor) {
-        editor.ui.componentFactory.add('insertAttachment', locale => {
-            const view = new CKEDITOR.ui.ButtonView(locale);
-            view.set({
-                label: 'Sisipkan Lampiran (PDF/DOCX/Excel/ZIP)',
-                icon: '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4 1.5A1.5 1.5 0 0 1 5.5 0h5.879a1.5 1.5 0 0 1 1.06.44l4.122 4.12A1.5 1.5 0 0 1 17 5.622V18.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 3 18.5v-17zM5.5 1.5v17h11V6H11V1.5H5.5zM12 1.5V5h3.5L12 1.5z"/></svg>',
-                tooltip: true
-            });
-
-            view.on('execute', () => {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = '.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar,.7z';
-                input.onchange = async (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-
-                    const formData = new FormData();
-                    formData.append('upload', file);
-
-                    try {
-                        const response = await fetch("{{ route('admin.ckeditor.upload') }}", {
-                            method: 'POST',
-                            headers: { 'X-CSRF-TOKEN': "{{ csrf_token() }}" },
-                            body: formData
-                        });
-                        const data = await response.json();
-                        if (data.uploaded) {
-                            const ext = file.name.split('.').pop().toLowerCase();
-                            // Sisipkan link khusus agar tidak di-render sebagai <img>
-                            const html = `<a href="${data.url}" class="document-attachment" data-ext="${ext}" target="_blank">${file.name}</a>`;
-                            const viewFragment = editor.data.processor.toView(html);
-                            const modelFragment = editor.data.toModel(viewFragment);
-                            editor.model.insertContent(modelFragment);
-                        } else {
-                            alert(data.error.message || 'Gagal mengunggah file.');
-                        }
-                    } catch (err) {
-                        console.error(err);
-                        alert('Terjadi kesalahan saat mengunggah file.');
-                    }
-                };
-                input.click();
-            });
-            return view;
-        });
-    }
-
     return CKEDITOR.ClassicEditor.create(targetElement, {
-        extraPlugins: [ CustomSpacingPlugin, FileAttachmentPlugin ],
+        extraPlugins: [ CustomSpacingPlugin ],
         toolbar: {
             items: [
                 'sourceEditing', 'fullScreen', '|',
@@ -195,7 +136,7 @@ function createCkEditor(selector, customPlaceholder) {
                 'alignment', '|',
                 'bulletedList', 'numberedList', 'todoList', '|',
                 'outdent', 'indent', '|',
-                'link', 'uploadImage', 'insertImage', 'insertAttachment', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
+                'link', 'uploadImage', 'insertImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
                 'specialCharacters', 'horizontalLine', 'pageBreak'
             ],
             shouldNotGroupWhenFull: true
@@ -314,12 +255,61 @@ function createCkEditor(selector, customPlaceholder) {
             </div>
         `;
 
-        const alignBtnGroup = toolbar.querySelector('.ck-dropdown[data-cke-tooltip-text="Text alignment"]');
-        if (alignBtnGroup) {
+        const alignBtnGroup = toolbar.querySelector('.ck-dropdown[data-cke-tooltip-text="Text alignment"]') || toolbar.querySelector('.ck-toolbar__items');
+        if (alignBtnGroup && alignBtnGroup.classList.contains('ck-dropdown')) {
             alignBtnGroup.insertAdjacentHTML('afterend', dropdownHtml);
         } else {
             toolbar.insertAdjacentHTML('beforeend', dropdownHtml);
         }
+
+        // --- INJEKSI CUSTOM UI BUTTON FILE ATTACHMENT ---
+        const btnAttachHtml = `
+            <button type="button" class="ck ck-button ck-off ck-custom-attach-btn" title="Sisipkan Lampiran (PDF/DOCX/Excel/ZIP)" tabindex="-1" style="margin-left: 5px;">
+                <span class="ck ck-icon" style="display: flex; align-items: center; justify-content: center; gap: 3px; color: var(--ck-color-button-default-icon);">
+                    <svg viewBox="0 0 20 20" style="width: 14px; height: 14px; fill: currentColor;" xmlns="http://www.w3.org/2000/svg"><path d="M4 1.5A1.5 1.5 0 0 1 5.5 0h5.879a1.5 1.5 0 0 1 1.06.44l4.122 4.12A1.5 1.5 0 0 1 17 5.622V18.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 3 18.5v-17zM5.5 1.5v17h11V6H11V1.5H5.5zM12 1.5V5h3.5L12 1.5z"/></svg>
+                    <span style="font-size: 11px; font-weight: bold; margin-left:2px; font-family:sans-serif;">Attach</span>
+                </span>
+            </button>
+        `;
+        toolbar.insertAdjacentHTML('beforeend', btnAttachHtml);
+        const btnAttach = toolbar.querySelector('.ck-custom-attach-btn');
+        btnAttach.addEventListener('click', (e) => {
+            e.preventDefault();
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar,.7z';
+            input.onchange = async (ev) => {
+                const file = ev.target.files[0];
+                if (!file) return;
+
+                const formData = new FormData();
+                formData.append('upload', file);
+                try {
+                    const response = await fetch("{{ route('admin.ckeditor.upload') }}", {
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': "{{ csrf_token() }}" },
+                        body: formData
+                    });
+                    const data = await response.json();
+                    if (data.uploaded) {
+                        const ext = file.name.split('.').pop().toLowerCase();
+                        const html = `<a href="${data.url}" class="document-attachment" data-ext="${ext}" target="_blank">${file.name}</a>`;
+                        editor.model.change(writer => {
+                            const viewFragment = editor.data.processor.toView(html);
+                            const modelFragment = editor.data.toModel(viewFragment);
+                            editor.model.insertContent(modelFragment);
+                        });
+                    } else {
+                        Swal.fire({icon: 'error', title: 'Upload Gagal', text: data.error?.message || 'Gagal mengunggah file.', confirmButtonColor: '#3085d6'});
+                    }
+                } catch (err) {
+                    console.error(err);
+                    Swal.fire({icon: 'error', title: 'Upload Gagal', text: 'Terjadi kesalahan saat mengunggah file.', confirmButtonColor: '#3085d6'});
+                }
+            };
+            input.click();
+        });
+
 
         const wrapper = toolbar.querySelector('.ck-custom-spacing-wrapper');
         const btn = wrapper.querySelector('.ck-custom-spacing-btn');
@@ -430,6 +420,40 @@ function createCkEditor(selector, customPlaceholder) {
             });
         });
         
+        // --- INJEKSI AUTO-PARAGRAPH SETELAH GAMBAR ---
+        editor.model.document.on('change:data', () => {
+            const changes = editor.model.document.differ.getChanges();
+            let lastInsertedImage = null;
+
+            for (const change of changes) {
+                if (change.type === 'insert' && (change.name === 'imageBlock' || change.name === 'imageInline' || change.name === 'image')) {
+                    const node = change.position.nodeAfter;
+                    if (node && (node.name === 'imageBlock' || node.name === 'imageInline' || node.name === 'image')) {
+                        lastInsertedImage = node;
+                    }
+                }
+            }
+
+            if (lastInsertedImage) {
+                editor.model.enqueueChange(writer => {
+                    const nextNode = lastInsertedImage.nextSibling;
+                    let paragraphToSelect = null;
+
+                    if (!nextNode || nextNode.name !== 'paragraph') {
+                        paragraphToSelect = writer.createElement('paragraph');
+                        writer.insert(paragraphToSelect, lastInsertedImage, 'after');
+                    } else {
+                        paragraphToSelect = nextNode;
+                    }
+
+                    if (paragraphToSelect) {
+                        writer.setSelection(writer.createPositionAt(paragraphToSelect, 0));
+                    }
+                });
+                editor.editing.view.focus();
+            }
+        });
+
         setTimeout(updateMenuState, 500);
 
     }).catch(error => {

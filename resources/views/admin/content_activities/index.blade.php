@@ -7,11 +7,11 @@
 <div class="space-y-6">
 
     <!-- Overview & Filters -->
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 space-y-6">
+    <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 space-y-6">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h3 class="font-extrabold text-gray-900 text-lg uppercase tracking-tight flex items-center gap-2">
-                    <i class="fas fa-history text-blue-600"></i> Riwayat Aktivitas Konten
+                    <i class="fas fa-history text-brand-blue"></i> Riwayat Aktivitas Konten
                 </h3>
                 <p class="text-xs text-gray-500 mt-1">Pantau seluruh riwayat aktivitas yang berkaitan dengan pengelolaan konten website.</p>
             </div>
@@ -24,14 +24,14 @@
                     <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1.5">Pencarian</label>
                     <div class="relative">
                         <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Judul konten, nama, dll..." class="w-full pl-8 pr-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-blue-500 text-xs transition shadow-sm">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Judul konten, nama, dll..." class="w-full pl-8 pr-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-brand-blue text-xs transition shadow-sm">
                     </div>
                 </div>
 
                 <!-- Modul -->
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1.5">Modul/Konten</label>
-                    <select name="module" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-blue-500 text-xs transition shadow-sm">
+                    <select name="module" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-brand-blue text-xs transition shadow-sm">
                         <option value="">Semua Modul</option>
                         @foreach($modules as $module)
                             <option value="{{ $module }}" {{ request('module') == $module ? 'selected' : '' }}>{{ $module }}</option>
@@ -42,7 +42,7 @@
                 <!-- Aktivitas -->
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1.5">Jenis Aktivitas</label>
-                    <select name="type" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-blue-500 text-xs transition shadow-sm">
+                    <select name="type" class="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg outline-none focus:border-brand-blue text-xs transition shadow-sm">
                         <option value="">Semua Jenis</option>
                         @foreach($types as $type)
                             <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>{{ $type }}</option>
@@ -80,7 +80,7 @@
                         $type = $props['type'] ?? 'Aktivitas';
                         $module = $props['module'] ?? 'Sistem';
                     @endphp
-                    <tr class="hover:bg-blue-50/30 transition">
+                    <tr class="hover:bg-brand-blue-light/30 transition">
                         <!-- No -->
                         <td class="px-5 py-4 text-center">
                             <span class="text-xs font-bold text-gray-400">{{ $logs->firstItem() + $index }}</span>
@@ -108,7 +108,7 @@
 
                         <!-- Aktivitas -->
                         <td class="px-5 py-4 whitespace-nowrap">
-                            <span class="font-bold text-[13px] text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100">
+                            <span class="font-bold text-[13px] text-brand-blue bg-brand-blue-light px-2.5 py-1 rounded-md border border-brand-blue-light">
                                 {{ $type }}
                             </span>
                         </td>

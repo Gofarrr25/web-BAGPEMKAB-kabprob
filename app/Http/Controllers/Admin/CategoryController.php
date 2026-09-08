@@ -11,7 +11,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::withCount('posts')->get();
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -31,8 +31,12 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
+        if ($category->posts()->count() > 0) {
+            return redirect()->route('admin.categories.index')->with('error', 'Kategori sedang digunakan oleh Berita/Artikel dan tidak dapat dihapus.');
+        }
+
         $category->delete();
-        return redirect()->route('admin.categories.index')->with('success', 'Kategori dihapus');
+        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil dihapus');
     }
 
     public function edit(Category $category)
@@ -52,5 +56,15 @@ class CategoryController extends Controller
         ]);
 
         return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil diperbarui');
+    }
+
+    public function toggleStatus(Category $category)
+    {
+        $category->update([
+            'is_active' => !$category->is_active
+        ]);
+
+        $status = $category->is_active ? 'diaktifkan' : 'dinonaktifkan';
+        return redirect()->route('admin.categories.index')->with('success', "Kategori berhasil {$status}.");
     }
 }

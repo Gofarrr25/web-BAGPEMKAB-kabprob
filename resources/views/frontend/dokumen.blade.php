@@ -19,7 +19,7 @@
         margin-left: 8px;
     }
     table.dataTable thead th {
-        background-color: #1d4ed8; /* brand-blue */
+        background-color: #1a365d; /* brand-blue */ /* brand-blue */
         color: white;
         border-bottom: none;
         padding: 12px 18px;
@@ -34,9 +34,9 @@
     }
     .dataTables_wrapper .dataTables_paginate .paginate_button.current, 
     .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-        background: #1d4ed8;
+        background: #1a365d;
         color: white !important;
-        border: 1px solid #1d4ed8;
+        border: 1px solid #1a365d;
     }
     .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
         background: #cbd5e1;
@@ -60,7 +60,7 @@
             <div class="flex gap-4 flex-wrap">
                 <div class="w-56">
                     <div class="relative w-full" id="year-picker-container" data-years="{{ json_encode($availableYears) }}">
-                        <button type="button" id="year-picker-btn" class="w-full flex justify-between items-center px-4 py-2 border border-gray-300 rounded outline-none text-gray-700 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 transition-all">
+                        <button type="button" id="year-picker-btn" class="w-full flex justify-between items-center px-4 py-2 border border-gray-300 rounded outline-none text-gray-700 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-brand-blue transition-all">
                             <span id="year-picker-label" class="font-medium text-sm">
                                 <i class="far fa-calendar-alt mr-2 text-gray-500"></i>
                                 {{ request('year') ? 'Tahun ' . request('year') : 'Semua Tahun' }}
@@ -68,7 +68,7 @@
                             <i class="fas fa-chevron-down text-xs text-gray-400"></i>
                         </button>
                         
-                        <div id="year-picker-dropdown" class="absolute left-0 top-full mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 z-50 hidden opacity-0 transition-opacity duration-200" style="transform-origin: top left;">
+                        <div id="year-picker-dropdown" class="absolute left-0 top-full mt-2 w-full max-w-[18rem] bg-white rounded-lg shadow-xl border border-gray-200 z-50 hidden opacity-0 transition-opacity duration-200" style="transform-origin: top left;">
                             <div class="flex justify-between items-center p-3 bg-gray-50 border-b border-gray-100 rounded-t-lg">
                                 <button type="button" id="yp-prev" class="p-1.5 rounded hover:bg-gray-200 text-gray-600 transition"><i class="fas fa-angle-double-left"></i></button>
                                 <span id="yp-range-label" class="font-bold text-sm text-gray-700 tracking-wide"></span>
@@ -80,7 +80,7 @@
                                     <!-- Tahun di render via JS -->
                                 </div>
                                 <div class="mt-4 pt-3 border-t border-gray-100">
-                                    <button type="button" id="yp-all" class="w-full py-2 bg-blue-50 hover:bg-blue-100 text-[#1d4ed8] font-bold rounded transition text-sm">
+                                    <button type="button" id="yp-all" class="w-full py-2 bg-brand-blue-light hover:bg-brand-blue-light text-brand-blue font-bold rounded transition text-sm">
                                         Tampilkan Semua Tahun
                                     </button>
                                 </div>
@@ -97,14 +97,14 @@
             </div>
             <div class="flex">
                 <input type="text" id="custom-search" placeholder="Search Here..." class="px-4 py-2 border border-gray-300 outline-none w-64">
-                <button id="custom-search-btn" class="bg-[#1d4ed8] text-white px-4 py-2 hover:bg-[#1e40af] transition">
+                <button id="custom-search-btn" class="bg-brand-blue text-white px-4 py-2 hover:bg-brand-blue-hover transition">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
         </div>
 
         <!-- Tabel -->
-        <div class="bg-white p-6 shadow-sm border border-gray-200 rounded-b-lg overflow-x-auto w-full">
+        <div class="bg-white p-4 md:p-6 shadow-sm border border-gray-200 rounded-b-lg overflow-x-auto w-full">
             <table id="dokumenTable" class="w-full text-left border-collapse min-w-[800px]" style="width:100%">
                 <thead>
                     <tr class="whitespace-nowrap">
@@ -147,7 +147,7 @@
                             @endphp
                             <td class="text-center whitespace-nowrap">
                                 @if($pdfUrl)
-                                    <button data-pdf-url="{{ $pdfUrl }}" onclick="openPdfViewer(this.getAttribute('data-pdf-url'))" class="inline-flex items-center justify-center w-8 h-8 bg-[#1d4ed8] hover:bg-[#1e40af] text-white rounded shadow transition" title="Lihat PDF">
+                                    <button data-pdf-url="{{ $pdfUrl }}" onclick="openPdfViewer(this.getAttribute('data-pdf-url'))" class="inline-flex items-center justify-center w-8 h-8 bg-brand-blue hover:bg-brand-blue-hover text-white rounded shadow transition" title="Lihat PDF">
                                         <i class="fas fa-file-pdf"></i>
                                     </button>
                                 @else
@@ -189,7 +189,7 @@
         <button type="button" id="pdf-baca-btn" onclick="triggerFlipbook(this)" data-url="" class="bg-[#eab308] hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded transition shadow flex items-center gap-2">
             <i class="fas fa-book-reader"></i> Baca
         </button>
-        <button onclick="closePdfViewer()" class="bg-[#0056b3] hover:bg-blue-800 text-white font-bold py-2 px-6 rounded transition shadow">
+        <button onclick="closePdfViewer()" class="bg-brand-blue hover:bg-brand-blue-hover text-white font-bold py-2 px-6 rounded transition shadow">
             Close
         </button>
     </div>
@@ -281,9 +281,9 @@
                 btnEl.className = 'py-2 rounded transition font-medium text-center ';
                 
                 if (isSelected) {
-                    btnEl.className += 'bg-[#1d4ed8] text-white shadow-md ';
+                    btnEl.className += 'bg-brand-blue text-white shadow-md ';
                 } else if (isAvailable) {
-                    btnEl.className += 'bg-gray-50 text-gray-700 hover:bg-blue-100 hover:text-blue-700 border border-gray-100 ';
+                    btnEl.className += 'bg-gray-50 text-gray-700 hover:bg-brand-blue-light hover:text-brand-blue-hover border border-gray-100 ';
                     if (isOutOfRange) btnEl.className += 'opacity-60 ';
                 } else {
                     btnEl.className += 'text-gray-300 cursor-not-allowed bg-transparent ';

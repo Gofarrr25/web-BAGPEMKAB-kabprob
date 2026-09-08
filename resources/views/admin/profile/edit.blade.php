@@ -18,12 +18,12 @@
     <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
         <h3 class="font-bold text-gray-800">Kelola Profil Saya</h3>
         <div class="flex items-center gap-2">
-            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1.5 rounded-full font-bold">Profil</span>
+            <span class="bg-brand-blue-light text-brand-blue text-xs px-3 py-1.5 rounded-full font-bold">Profil</span>
             <a href="{{ route('admin.dashboard') }}" class="text-gray-500 hover:text-gray-700 text-sm font-semibold transition flex items-center justify-center gap-1 bg-white border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50"><i class="fas fa-arrow-left"></i> Kembali</a>
         </div>
     </div>
     
-    <div class="p-6">
+    <div class="p-4 md:p-6">
         <form action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
@@ -63,7 +63,7 @@
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">Nama <span class="text-red-500">*</span></label>
                         <input type="text" name="name" required value="{{ old('name', $user->name) }}"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition">
                         @error('name') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                     </div>
                 </div>
@@ -72,21 +72,21 @@
             <div class="mb-4">
                 <label class="block text-sm font-bold text-gray-700 mb-2">Username <span class="text-red-500">*</span></label>
                 <input type="text" name="username" required value="{{ old('username', $user->username) }}"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition">
                 @error('username') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
             </div>
 
             <div class="mb-4">
                 <label class="block text-sm font-bold text-gray-700 mb-2">Email <span class="text-red-500">*</span></label>
                 <input type="email" name="email" required value="{{ old('email', $user->email) }}"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition">
                 <p class="text-xs text-gray-500 mt-1">Alamat email resmi akun website (digunakan untuk reset password/notifikasi)</p>
                 @error('email') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
             </div>
 
             <!-- Ubah Password Area -->
-            <div class="border-t border-b border-gray-100 my-6 py-6 bg-blue-50/30 p-4 rounded-xl">
-                <h4 class="font-bold text-blue-900 text-sm mb-1">Ubah Password Admin</h4>
+            <div class="border-t border-b border-gray-100 my-6 py-6 bg-brand-blue-light/30 p-4 rounded-xl">
+                <h4 class="font-bold text-brand-blue text-sm mb-1">Ubah Password Admin</h4>
                 <p class="text-xs text-gray-500 mb-4">Kosongkan jika tidak ingin mengubah password.</p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -94,8 +94,8 @@
                         <label class="block text-xs font-bold text-gray-700 mb-1">Password Baru (opsional)</label>
                         <div class="relative">
                             <input type="password" name="password" id="password" placeholder="Masukkan password baru..." autocomplete="new-password"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition pr-10 text-sm">
-                            <button type="button" onclick="togglePasswordVisibility('password', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-blue-600 focus:outline-none cursor-pointer" title="Tampilkan/Sembunyikan Password">
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition pr-10 text-sm">
+                            <button type="button" onclick="togglePasswordVisibility('password', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-brand-blue-hover focus:outline-none cursor-pointer" title="Tampilkan/Sembunyikan Password">
                                 <i class="fas fa-eye text-sm"></i>
                             </button>
                         </div>
@@ -105,8 +105,8 @@
                         <label class="block text-xs font-bold text-gray-700 mb-1">Konfirmasi Password Baru</label>
                         <div class="relative">
                             <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Ulangi password baru..." autocomplete="new-password"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition pr-10 text-sm">
-                            <button type="button" onclick="togglePasswordVisibility('password_confirmation', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-blue-600 focus:outline-none cursor-pointer" title="Tampilkan/Sembunyikan Password">
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition pr-10 text-sm">
+                            <button type="button" onclick="togglePasswordVisibility('password_confirmation', this)" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-brand-blue-hover focus:outline-none cursor-pointer" title="Tampilkan/Sembunyikan Password">
                                 <i class="fas fa-eye text-sm"></i>
                             </button>
                         </div>
@@ -118,7 +118,7 @@
             </div>
 
             <div class="flex gap-4">
-                <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition shadow-md text-sm">Simpan Profil Saya</button>
+                <button type="submit" class="px-6 py-2.5 bg-brand-blue text-white font-bold rounded-lg hover:bg-brand-blue-hover transition shadow-md text-sm">Simpan Profil Saya</button>
             </div>
         </form>
     </div>
@@ -136,7 +136,7 @@
         </div>
         <div class="px-4 py-3 border-t flex justify-end gap-3 bg-gray-50">
             <button type="button" onclick="closeCropper()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded font-bold hover:bg-gray-300 transition text-sm">Batal</button>
-            <button type="button" onclick="applyCrop()" class="px-4 py-2 bg-blue-600 text-white rounded font-bold hover:bg-blue-700 transition text-sm">Gunakan Foto</button>
+            <button type="button" onclick="applyCrop()" class="px-4 py-2 bg-brand-blue text-white rounded font-bold hover:bg-brand-blue-hover transition text-sm">Gunakan Foto</button>
         </div>
     </div>
 </div>

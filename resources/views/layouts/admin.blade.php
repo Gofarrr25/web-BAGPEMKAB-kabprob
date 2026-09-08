@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=5.0">
     <title>@yield('title', 'Admin Panel - Diskominfo Probolinggo')</title>
     
     {{-- Favicon --}}
@@ -28,7 +28,43 @@
         #adminSidebar nav::-webkit-scrollbar {
             display: none; /* Chrome, Safari and Opera */
         }
-    </style>
+    
+    /* SweetAlert Compact Style */
+    .compact-swal {
+        width: 360px !important;
+        padding: 1.25rem 1rem 1rem !important;
+        border-radius: 1rem !important;
+    }
+    .compact-swal .swal2-icon {
+        transform: scale(0.65);
+        margin: 0 auto 0.5rem auto !important;
+    }
+    .compact-swal .swal2-title {
+        font-size: 1.15rem !important;
+        margin-bottom: 0.25rem !important;
+        padding: 0 !important;
+    }
+    .compact-swal .swal2-html-container {
+        font-size: 0.85rem !important;
+        margin: 0.25rem 0 0.5rem 0 !important;
+    }
+    .compact-swal .swal2-actions {
+        margin-top: 1rem !important;
+        gap: 0.5rem;
+    }
+    .compact-swal .swal2-styled {
+        padding: 0.5rem 1.25rem !important;
+        font-size: 0.85rem !important;
+        font-weight: 600 !important;
+        border-radius: 0.5rem !important;
+        margin: 0 !important;
+    }
+    
+    /* CKEditor Responsive Fix */
+    .ck-editor__editable img { max-width: 100% !important; height: auto !important; }
+    .ck-editor__editable table { width: 100% !important; max-width: 100% !important; display: block; overflow-x: auto; }
+    .ck-editor__editable { overflow-wrap: break-word; word-wrap: break-word; }
+</style>
 
     <script>
         tailwind.config = {
@@ -36,23 +72,30 @@
                 extend: {
                     fontFamily: { sans: ['Nunito', 'sans-serif'] },
                     colors: { 
-                        brand: { dark: '#003b5c', green: '#849f73', light: '#f4f6f9' },
-                        'brand-blue': '#2563eb'
+                        brand: { dark: '#1a365d', green: '#849f73', light: '#f4f6f9' },
+                        'brand-blue': {
+                            DEFAULT: '#1a365d',
+                            hover: '#112b4d',
+                            light: '#eff6ff',
+                            'light-hover': '#dbeafe',
+                            pale: '#93c5fd',
+                        }
                     }
                 }
             }
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @stack('styles')
 
     </head>
 <body class="bg-brand-light text-gray-800 font-sans antialiased overflow-hidden flex h-screen">
 
     <!-- Mobile Backdrop -->
-    <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-30 hidden lg:hidden transition-opacity"></div>
+    <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-30 hidden xl:hidden transition-opacity"></div>
 
     <!-- Sidebar -->
-    <aside id="adminSidebar" class="bg-brand-dark text-white w-64 flex-shrink-0 flex flex-col transition-all duration-300 fixed lg:relative inset-y-0 left-0 -translate-x-full lg:translate-x-0 z-40 shadow-xl overflow-hidden">
+    <aside id="adminSidebar" class="bg-brand-dark text-white w-64 flex-shrink-0 flex flex-col transition-all duration-300 fixed xl:relative inset-y-0 left-0 -translate-x-full xl:translate-x-0 z-40 shadow-xl overflow-hidden">
         
         <!-- Logo Area -->
         <div class="h-20 flex items-center justify-center border-b border-white/10 px-4 gap-2">
@@ -84,7 +127,7 @@
             </a>
 
             <!-- Content Management (Semua Admin) -->
-            <div x-data="{ open: {{ request()->routeIs('admin.posts.*', 'admin.categories.*', 'admin.documents.*', 'admin.galleries.*', 'admin.banners.*', 'admin.instagram.*', 'admin.pages.*', 'admin.contact-settings.*', 'admin.content-activities.*') ? 'true' : 'false' }} }" class="mt-6">
+            <div x-data="{ open: {{ request()->routeIs('admin.posts.*', 'admin.categories.*', 'admin.documents.*', 'admin.galleries.*', 'admin.banners.*', 'admin.instagram.*', 'admin.pages.*', 'admin.contact-settings.*', 'admin.content-activities.*', 'admin.organization-members.*') ? 'true' : 'false' }} }" class="mt-6">
                 
                 <!-- Toggle Button -->
                 <button @click="open = !open" class="w-full flex items-center justify-between px-3 py-2 text-gray-400 hover:text-white transition-colors focus:outline-none sidebar-text mb-2">
@@ -108,10 +151,12 @@
                         <span class="ml-3 font-semibold text-sm sidebar-text">Berita & Artikel</span>
                     </a>
                     
+                    @unlessrole('Staf')
                     <a href="{{ route('admin.categories.index') }}" class="flex items-center px-3 py-3 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.categories.*') ? 'bg-white/10 text-white font-bold' : '' }}">
                         <i class="fas fa-tags w-6 text-center text-lg"></i>
                         <span class="ml-3 font-semibold text-sm sidebar-text">Kategori Berita</span>
                     </a>
+                    @endunlessrole
 
                     <a href="{{ route('admin.documents.index') }}" class="flex items-center px-3 py-3 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.documents.*') ? 'bg-white/10 text-white font-bold' : '' }}">
                         <i class="fas fa-file-pdf w-6 text-center text-lg"></i>
@@ -123,6 +168,7 @@
                         <span class="ml-3 font-semibold text-sm sidebar-text">Galeri & Video</span>
                     </a>
 
+                    @unlessrole('Staf')
                     <a href="{{ route('admin.instagram.index') }}" class="flex items-center px-3 py-3 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.instagram.*') ? 'bg-white/10 text-white font-bold' : '' }}">
                         <i class="fab fa-instagram w-6 text-center text-lg text-pink-400"></i>
                         <span class="ml-3 font-semibold text-sm sidebar-text">Instagram Feed</span>
@@ -137,17 +183,23 @@
                         <i class="fas fa-address-book w-6 text-center text-lg"></i>
                         <span class="ml-3 font-semibold text-sm sidebar-text">Kontak</span>
                     </a>
+                    @endunlessrole
                     
-                    @unlessrole('Superadmin')
                     <a href="{{ route('admin.content-activities.index') }}" class="flex items-center px-3 py-3 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.content-activities.*') ? 'bg-white/10 text-white font-bold' : '' }}">
                         <i class="fas fa-history w-6 text-center text-lg"></i>
                         <span class="ml-3 font-semibold text-sm sidebar-text">Riwayat Aktivitas Konten</span>
+                    </a>
+                    @unlessrole('Staf')
+                    <a href="{{ route('admin.organization-members.index') }}" class="flex items-center px-3 py-3 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.organization-members.*') ? 'bg-white/10 text-white font-bold' : '' }}">
+                        <i class="fas fa-sitemap w-6 text-center text-lg"></i>
+                        <span class="ml-3 font-semibold text-sm sidebar-text">Struktur Organisasi</span>
                     </a>
                     @endunlessrole
                 </div>
             </div>
             <!-- Konten Beranda (Semua Admin) -->
-            <div x-data="{ open: {{ request()->routeIs('admin.banners.*', 'admin.home-widgets.*', 'admin.related-links.*', 'admin.survey-settings.*') ? 'true' : 'false' }} }" class="mt-6 mb-4">
+            @unlessrole('Staf')
+            <div x-data="{ open: {{ request()->routeIs('admin.banners.*', 'admin.home-widgets.*', 'admin.related-links.*', 'admin.survey-settings.*', 'admin.external-links.*') ? 'true' : 'false' }} }" class="mt-6 mb-4">
                 <button @click="open = !open" class="w-full flex items-center justify-between px-3 py-2 text-gray-400 hover:text-white transition-colors focus:outline-none sidebar-text mb-2">
                     <span class="text-xs font-bold uppercase tracking-wider">Konten Beranda</span>
                     <i class="fas fa-chevron-down text-xs transition-transform duration-300" :class="{'rotate-180': open}"></i>
@@ -171,18 +223,19 @@
                     
                     <a href="{{ route('admin.survey-settings.index') }}" class="flex items-center px-3 py-3 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.survey-settings.*') ? 'bg-white/10 text-white font-bold' : '' }}">
                         <i class="fas fa-qrcode w-6 text-center text-lg"></i>
-                        <span class="ml-3 font-semibold text-sm sidebar-text">Link Survey / QR SKM</span>
+                        <span class="ml-3 font-semibold text-sm sidebar-text">Links Survey</span>
+                    </a>
+                    
+                    <a href="{{ route('admin.external-links.index') }}" class="flex items-center px-3 py-3 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.external-links.*') ? 'bg-white/10 text-white font-bold' : '' }}">
+                        <i class="fas fa-external-link-alt w-6 text-center text-lg"></i>
+                        <span class="ml-3 font-semibold text-sm sidebar-text">Tautan Eksternal</span>
                     </a>
                 </div>
             </div>
+            @endunlessrole
 
             <!-- System Control (Superadmin Eksklusif) -->
             @role('Superadmin')
-            <a href="{{ route('admin.organization-members.index') }}" class="flex items-center px-3 py-3 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.organization-members.*') ? 'bg-white/10 text-white font-bold' : '' }}">
-                <i class="fas fa-sitemap w-6 text-center text-lg"></i>
-                <span class="ml-3 font-semibold text-sm sidebar-text">Struktur Organisasi</span>
-            </a>
-
             <p class="px-3 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 mt-6 sidebar-text">Sistem Kontrol</p>
             
             <a href="{{ route('admin.menus.index') }}" class="flex items-center px-3 py-3 text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.menus.*') ? 'bg-white/10 text-white font-bold' : '' }}">
@@ -228,7 +281,7 @@
             <!-- User Menu -->
             <div class="flex items-center gap-6 relative">
                 
-                <a href="/" target="_blank" class="text-sm font-semibold text-blue-600 hover:text-blue-800 transition flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-md">
+                <a href="/" target="_blank" class="text-sm font-semibold text-brand-blue hover:text-brand-blue-hover transition flex items-center gap-2 bg-brand-blue-light px-3 py-2 rounded-md">
                     <i class="fas fa-external-link-alt"></i> Lihat Website
                 </a>
 
@@ -281,7 +334,7 @@
                             <p class="text-sm text-gray-800 font-bold">Login sebagai:</p>
                             <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email ?? 'admin@email.com' }}</p>
                         </div>
-                        <a href="{{ route('admin.profile.edit') }}" onclick="console.log('Profil clicked → YES');" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition relative z-[10001]">
+                        <a href="{{ route('admin.profile.edit') }}" onclick="console.log('Profil clicked → YES');" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-brand-blue-hover transition relative z-[10001]">
                             <i class="fas fa-user-circle mr-2"></i> Profil Saya
                         </a>
                         <a href="{{ route('logout') }}" onclick="console.log('Logout clicked → YES'); event.preventDefault(); console.log('Logout form submitted → YES'); document.getElementById('logout-form').submit();" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-semibold transition relative z-[10001]">
@@ -296,31 +349,36 @@
         </header>
 
         <!-- Main Content Scrollable Area -->
-        <main class="flex-1 overflow-y-auto bg-brand-light p-6">
+        <main class="flex-1 overflow-y-auto bg-brand-light p-4 md:p-6">
             
-            <!-- Centered Toast Notification -->
+            <!-- SweetAlert Notification -->
             @if(session('success'))
-            <div id="toast-success" class="fixed inset-0 flex items-center justify-center z-[9999] pointer-events-none opacity-0 transition-opacity duration-300">
-                <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 flex flex-col items-center justify-center transform scale-90 transition-transform duration-300 w-[90%] max-w-sm pointer-events-auto border border-gray-100 text-center">
-                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 text-green-500">
-                        <i class="fas fa-check text-3xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Berhasil!</h3>
-                    <p class="text-sm text-gray-500 font-medium">{{ session('success') }}</p>
-                </div>
-            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        customClass: { popup: 'compact-swal' },
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: "{{ session('success') }}",
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
+            </script>
             @endif
 
             @if(session('error'))
-            <div id="toast-error" class="fixed inset-0 flex items-center justify-center z-[9999] pointer-events-none opacity-0 transition-opacity duration-300">
-                <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 flex flex-col items-center justify-center transform scale-90 transition-transform duration-300 w-[90%] max-w-sm pointer-events-auto border border-gray-100 text-center">
-                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4 text-red-500">
-                        <i class="fas fa-times text-3xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Terjadi Kesalahan!</h3>
-                    <p class="text-sm text-gray-500 font-medium">{{ session('error') }}</p>
-                </div>
-            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        customClass: { popup: 'compact-swal' },
+                        icon: 'error',
+                        title: 'Terjadi Kesalahan!',
+                        text: "{{ session('error') }}",
+                        showConfirmButton: true
+                    });
+                });
+            </script>
             @endif
 
             <!-- Dynamic Content -->
@@ -338,7 +396,7 @@
             const backdrop = document.getElementById('sidebarBackdrop');
             
             // Mobile behavior
-            if (window.innerWidth < 1024) {
+            if (window.innerWidth < 1280) {
                 if (sidebar.classList.contains('-translate-x-full')) {
                     sidebar.classList.remove('-translate-x-full');
                     if (backdrop) backdrop.classList.remove('hidden');
@@ -367,7 +425,7 @@
         window.addEventListener('resize', () => {
             const sidebar = document.getElementById('adminSidebar');
             const backdrop = document.getElementById('sidebarBackdrop');
-            if (window.innerWidth >= 1024) {
+            if (window.innerWidth >= 1280) {
                 sidebar.classList.remove('-translate-x-full');
                 if (backdrop) backdrop.classList.add('hidden');
             } else {
@@ -414,12 +472,12 @@
                 input.type = 'text';
                 if (icon) {
                     icon.classList.remove('fa-eye', 'bi-eye-slash', 'text-gray-400');
-                    icon.classList.add('fa-eye-slash', 'bi-eye', 'text-blue-600');
+                    icon.classList.add('fa-eye-slash', 'bi-eye', 'text-brand-blue');
                 }
             } else {
                 input.type = 'password';
                 if (icon) {
-                    icon.classList.remove('fa-eye-slash', 'bi-eye', 'text-blue-600');
+                    icon.classList.remove('fa-eye-slash', 'bi-eye', 'text-brand-blue');
                     icon.classList.add('fa-eye', 'bi-eye-slash', 'text-gray-400');
                 }
             }
@@ -436,44 +494,76 @@
             }
         });
 
-        // Toast Notification Handler
-        document.addEventListener('DOMContentLoaded', function() {
-            const showToast = (id) => {
-                const toast = document.getElementById(id);
-                if (!toast) return;
-                
-                // Trigger animation
-                requestAnimationFrame(() => {
-                    toast.classList.remove('opacity-0');
-                    toast.classList.add('opacity-100');
-                    const innerBox = toast.querySelector('div');
-                    if(innerBox) {
-                        innerBox.classList.remove('scale-90');
-                        innerBox.classList.add('scale-100');
-                    }
-                });
+        
 
-                // Auto hide after 3 seconds
-                setTimeout(() => {
-                    toast.classList.remove('opacity-100');
-                    toast.classList.add('opacity-0');
-                    const innerBox = toast.querySelector('div');
-                    if(innerBox) {
-                        innerBox.classList.remove('scale-100');
-                        innerBox.classList.add('scale-90');
-                    }
-                    // Remove from DOM after transition completes
-                    setTimeout(() => {
-                        toast.remove();
-                    }, 300);
-                }, 3000);
-            };
 
-            showToast('toast-success');
-            showToast('toast-error');
-        });
+
+        // Global Delete Confirmation Function
+        function confirmDelete(formElement, moduleName, itemName, hasFile = false) {
+            let htmlText = 'Apakah Anda yakin ingin menghapus data <strong>"' + itemName + '"</strong>?';
+            
+            if (hasFile) {
+                htmlText += '<br><br><span style="color: #d97706; font-size: 0.85em;"><i class="fas fa-exclamation-triangle"></i> Peringatan: File/gambar fisik yang terkait dengan data ini juga akan dihapus secara permanen dari server.</span>';
+            }
+
+            Swal.fire({
+                        customClass: { popup: 'compact-swal' },
+                title: 'Yakin hapus data?',
+                html: htmlText,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#0d6efd',
+                confirmButtonText: 'Ya',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    formElement.submit();
+                }
+            });
+        }
+
+        // Global Delete Confirmation Function (AJAX/Fetch)
+        function confirmAjaxDelete(callback, itemName = 'Item Ini') {
+            Swal.fire({
+                customClass: { popup: 'compact-swal' },
+                title: 'Yakin hapus data?',
+                html: 'Apakah Anda yakin ingin menghapus <strong>"' + itemName + '"</strong>?<br><span style="color: #d97706; font-size: 0.85em;"><i class="fas fa-exclamation-triangle"></i> Data ini akan dihapus secara permanen.</span>',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#0d6efd',
+                confirmButtonText: 'Ya',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    callback();
+                }
+            });
+        }
+
+        // Global Toggle Confirmation Function
+        function confirmToggle(formElement) {
+            Swal.fire({
+                        customClass: { popup: 'compact-swal' },
+                title: 'Konfirmasi Status',
+                text: 'Apakah Anda yakin ingin mengubah status aktif/nonaktif data ini?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#0d6efd',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Ubah',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    formElement.submit();
+                }
+            });
+        }
     </script>
     @stack('scripts')
+
+        <script src="{{ asset('js/file-upload-validator.js') }}"></script>
 </body>
 </html>
 

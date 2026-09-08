@@ -4,31 +4,27 @@
 @section('page_title', 'Manajemen Banner Slider Depan')
 
 @section('content')
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
     
     <!-- Kolom Kiri: Form -->
     <div class="lg:col-span-1">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-24">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-6 sticky top-24">
             <h3 class="font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2">Tambah Banner Utama</h3>
             <form action="{{ route('admin.banners.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-4">
                     <label class="block text-sm font-bold text-gray-700 mb-2">Judul Banner <span class="text-red-500">*</span></label>
                     <input type="text" name="title" required value="{{ old('title') }}" placeholder="Selamat Datang di Portal..."
-                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition">
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue outline-none transition">
                 </div>
                 
-                <div class="mb-4">
-                    <label class="block text-sm font-bold text-gray-700 mb-2">Tautan URL (Opsional)</label>
-                    <input type="url" name="link_url" value="{{ old('link_url') }}" placeholder="https://..."
-                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition">
-                    <p class="text-xs text-gray-400 mt-1">URL yang akan dibuka saat banner diklik.</p>
-                </div>
+                
                 
                 <div class="mb-5">
                     <label class="block text-sm font-bold text-gray-700 mb-2">Gambar Banner <span class="text-red-500">*</span></label>
-                    <input type="file" name="image" id="imageInput" accept="image/jpeg,image/png,image/webp,image/gif" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                    <input type="file" name="image" id="imageInput" accept="image/jpeg,image/png,image/webp,image/gif" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-blue-light file:text-brand-blue hover:file:bg-brand-blue-light cursor-pointer">
                     <p class="text-xs text-gray-400 mt-2">
+                        Format: JPG/PNG/WEBP (Maks 10 MB)<br>
                         Pilih gambar, lalu Anda dapat menyesuaikan area crop (potong) secara interaktif.<br>
                         <strong>Rekomendasi ukuran: 1920 x 600 px (Rasio Landscape 21:9 atau 3:1). Gambar akan dipotong (crop) secara otomatis agar memenuhi lebar layar tanpa terdistorsi.</strong>
                     </p>
@@ -41,8 +37,37 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Status Publikasi</label>
+                    <div class="flex gap-4">
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="radio" name="is_published" value="1" class="w-4 h-4 text-brand-blue" checked>
+                            <span class="ml-2 text-sm font-semibold text-gray-700">Publik</span>
+                        </label>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="radio" name="is_published" value="0" class="w-4 h-4 text-brand-blue">
+                            <span class="ml-2 text-sm font-semibold text-gray-700">Draft</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-5 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Jadwal Tayang (Opsional)</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Waktu Mulai Tayang</label>
+                            <input type="datetime-local" name="start_date" value="{{ old('start_date') }}" class="w-full px-3 py-1.5 border border-gray-300 rounded text-sm outline-none focus:ring-1 focus:ring-brand-blue">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Waktu Berakhir Tayang</label>
+                            <input type="datetime-local" name="end_date" value="{{ old('end_date') }}" class="w-full px-3 py-1.5 border border-gray-300 rounded text-sm outline-none focus:ring-1 focus:ring-brand-blue">
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">Jika kosong, banner akan terus tayang apabila statusnya Publik.</p>
+                </div>
                 
-                <button type="submit" class="w-full py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 transition shadow-md">
+                <button type="submit" class="w-full py-2 bg-brand-blue text-white font-bold rounded hover:bg-brand-blue-hover transition shadow-md">
                     <i class="fas fa-upload mr-1"></i> Unggah Banner
                 </button>
             </form>
@@ -64,17 +89,42 @@
                     <div class="p-4 flex-1 flex flex-col justify-between">
                         <div>
                             <h4 class="font-bold text-gray-800 text-lg mb-1">{{ $banner->title }}</h4>
-                            @if($banner->link_url)
-                                <a href="{{ $banner->link_url }}" target="_blank" class="text-xs text-blue-500 hover:underline"><i class="fas fa-link"></i> {{ $banner->link_url }}</a>
-                            @endif
                         </div>
                         <div class="flex justify-between items-center mt-4">
-                            <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold border border-green-200">Aktif</span>
+                            <div class="flex flex-col">
+                                <div>
+                                    @if($banner->is_published)
+                                        <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[11px] font-bold border border-green-200">Publik</span>
+                                    @else
+                                        <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-[11px] font-bold border border-gray-200">Draf</span>
+                                    @endif
+                                    
+                                    @if($banner->is_active)
+                                        <span class="bg-blue-100 text-brand-blue px-2 py-1 rounded text-[11px] font-bold border border-blue-200">Aktif</span>
+                                    @else
+                                        <span class="bg-red-100 text-red-700 px-2 py-1 rounded text-[11px] font-bold border border-red-200">Nonaktif</span>
+                                    @endif
+                                </div>
+                                @if($banner->start_date || $banner->end_date)
+                                    <div class="text-[10px] text-gray-500 mt-1">
+                                        <i class="far fa-calendar-alt"></i> 
+                                        {{ $banner->start_date ? $banner->start_date->format('d/m/Y H:i') : 'Sekarang' }} - 
+                                        {{ $banner->end_date ? $banner->end_date->format('d/m/Y H:i') : 'Selamanya' }}
+                                    </div>
+                                @endif
+                            </div>
                             <div class="flex gap-2">
+                                <form action="{{ route('admin.banners.toggle-active', $banner->id) }}" method="POST">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="{{ $banner->is_active ? 'text-gray-500 border-gray-200 hover:bg-gray-50' : 'text-blue-500 border-blue-200 hover:bg-blue-50' }} font-bold px-3 py-1 rounded border transition text-sm">
+                                        <i class="fas {{ $banner->is_active ? 'fa-times' : 'fa-check' }} mr-1"></i> {{ $banner->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                                    </button>
+                                </form>
                                 <a href="{{ route('admin.banners.edit', $banner->id) }}" class="text-yellow-600 hover:text-yellow-700 font-bold px-3 py-1 rounded border border-yellow-200 hover:bg-yellow-50 transition text-sm">
                                     <i class="fas fa-edit mr-1"></i> Edit
                                 </a>
-                                <form action="{{ route('admin.banners.destroy', $banner->id) }}" method="POST" onsubmit="return confirm('Hapus banner ini?');">
+                                <form action="{{ route('admin.banners.destroy', $banner->id) }}" method="POST" onsubmit="event.preventDefault(); confirmDelete(this, 'Banner', 'Data Terpilih', true);">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-500 hover:text-red-700 font-bold px-3 py-1 rounded border border-red-200 hover:bg-red-50 transition text-sm">
@@ -100,7 +150,7 @@
 <div id="cropModal" class="fixed inset-0 bg-black/80 z-[9999] hidden items-center justify-center p-4">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col overflow-hidden max-h-[90vh]">
         <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
-            <h3 class="font-bold text-gray-800"><i class="fas fa-crop text-blue-600 mr-2"></i> Sesuaikan Ukuran Banner</h3>
+            <h3 class="font-bold text-gray-800"><i class="fas fa-crop text-brand-blue mr-2"></i> Sesuaikan Ukuran Banner</h3>
             <button type="button" id="closeCropModal" class="text-gray-400 hover:text-red-500 transition">
                 <i class="fas fa-times text-xl"></i>
             </button>
@@ -118,7 +168,7 @@
                 <button type="button" id="btnResetCrop" class="px-4 py-2 bg-gray-200 text-gray-700 font-bold rounded hover:bg-gray-300 transition text-sm">
                     <i class="fas fa-sync-alt mr-1"></i> Reset
                 </button>
-                <button type="button" id="btnSaveCrop" class="px-5 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 transition shadow text-sm">
+                <button type="button" id="btnSaveCrop" class="px-5 py-2 bg-brand-blue text-white font-bold rounded hover:bg-brand-blue-hover transition shadow text-sm">
                     <i class="fas fa-check mr-1"></i> Terapkan & Simpan
                 </button>
             </div>
@@ -145,6 +195,15 @@
         const files = e.target.files;
         if (files && files.length > 0) {
             const file = files[0];
+            if (file.size > 10 * 1024 * 1024) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({ icon: 'error', title: 'Ukuran File Terlalu Besar', text: 'Ukuran foto maksimal 10 MB.' });
+                } else {
+                    alert('Ukuran foto maksimal 10 MB.');
+                }
+                imageInput.value = '';
+                return;
+            }
             const reader = new FileReader();
             reader.onload = function(event) {
                 cropImage.src = event.target.result;
@@ -191,13 +250,13 @@
         if (!cropper) return;
         
         const canvas = cropper.getCroppedCanvas({
-            width: 1920,
-            height: Math.round(1920 / (21/9)),
+            maxWidth: 2560,
+            maxHeight: 2560,
             imageSmoothingEnabled: true,
             imageSmoothingQuality: 'high',
         });
         
-        const croppedData = canvas.toDataURL('image/jpeg', 0.9);
+        const croppedData = canvas.toDataURL('image/jpeg', 1.0);
         croppedInput.value = croppedData;
         
         previewImage.src = croppedData;

@@ -31,9 +31,9 @@ class ProfileController extends Controller
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
-            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
+            'profile_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
-            'profile_photo.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
+            'profile_photo.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima JPG, JPEG, PNG, atau WEBP.',
         ]);
 
         $data = [

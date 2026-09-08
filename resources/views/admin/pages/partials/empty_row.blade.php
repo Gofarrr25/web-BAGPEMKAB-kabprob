@@ -7,7 +7,11 @@
     $url = $menu->url ?? '';
 
     // Identifikasi eksplist dari database
-    if ($moduleType === 'posts') {
+    if (isset($parentTitle) && strtoupper($parentTitle) === 'DOKUMEN') {
+        $isSpecial = true;
+        $specialModule = 'Dokumen PPID';
+        $specialRoute = route('admin.documents.index');
+    } elseif ($moduleType === 'posts') {
         $isSpecial = true;
         $specialModule = 'Berita & Artikel';
         $specialRoute = route('admin.posts.index');
@@ -81,7 +85,7 @@
         </div>
     </td>
     <td class="px-4 py-4 align-middle">
-        <span class="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md font-bold text-[11px] border border-blue-200 uppercase tracking-wider whitespace-nowrap">
+        <span class="bg-brand-blue-light text-brand-blue px-2.5 py-1 rounded-md font-bold text-[11px] border border-brand-blue-light uppercase tracking-wider whitespace-nowrap">
             {{ $parentTitle }}
         </span>
     </td>

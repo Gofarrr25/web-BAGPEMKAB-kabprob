@@ -8,23 +8,23 @@
     <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
         <h3 class="font-bold text-gray-800">Form Upload Dokumen & Arsip Berkas (.PDF / .ZIP)</h3>
             <a href="{{ route('admin.documents.index') }}" class="text-gray-500 hover:text-gray-700 text-sm font-semibold transition flex items-center justify-center gap-1 bg-white border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50"><i class="fas fa-arrow-left"></i> Kembali</a>
-        <span class="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-bold">Maks. 50MB</span>
+        <span class="text-xs bg-brand-blue-light text-brand-blue px-3 py-1 rounded-full font-bold">Maks. 50MB</span>
     </div>
     
-    <div class="p-6">
+    <div class="p-4 md:p-6">
         <form action="{{ route('admin.documents.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
             <div class="mb-5">
                 <label class="block text-sm font-bold text-gray-700 mb-2">Judul Dokumen / Nama Paket Zip <span class="text-red-500">*</span></label>
                 <input type="text" name="title" required value="{{ old('title') }}" placeholder="Misal: LAKIP Tahun 2025 ATAU Paket Dokumen Lampiran (ZIP)"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue outline-none transition">
                 @error('title') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
             </div>
 
             <div class="mb-5">
                 <label class="block text-sm font-bold text-gray-700 mb-2">Klasifikasi Dokumen / Submenu <span class="text-red-500">*</span></label>
-                <select name="category" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none bg-white font-semibold">
+                <select name="category" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue outline-none bg-white font-semibold">
                     <option value="">-- Pilih Klasifikasi --</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->title }}" {{ old('category') == $cat->title ? 'selected' : '' }}>
@@ -38,7 +38,7 @@
             <div class="mb-5">
                 <label class="block text-sm font-bold text-gray-700 mb-2">Tanggal Dokumen</label>
                 <input type="date" name="document_date" value="{{ old('document_date', date('Y-m-d')) }}"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-blue outline-none transition">
                 @error('document_date') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
             </div>
 
@@ -66,7 +66,7 @@
 
             <div class="border-t border-gray-100 pt-6 flex gap-4">
                 
-                <button type="submit" class="px-6 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 transition shadow-md">
+                <button type="submit" class="px-6 py-2 bg-brand-blue text-white font-bold rounded hover:bg-brand-blue-hover transition shadow-md">
                     <i class="fas fa-upload mr-1"></i> Simpan Dokumen
                 </button>
             </div>

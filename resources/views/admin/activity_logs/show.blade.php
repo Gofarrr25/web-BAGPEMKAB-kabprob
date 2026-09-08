@@ -7,12 +7,12 @@
     
     $isWarning = in_array($status, [401, 403, 404, 500]) || in_array($type, ['Login Gagal', 'Akses Ditolak', 'Error Server']);
     $statusColor = 'text-green-600 bg-green-50 border-green-200';
-    if ($status >= 300 && $status < 400) $statusColor = 'text-blue-600 bg-blue-50 border-blue-200';
+    if ($status >= 300 && $status < 400) $statusColor = 'text-brand-blue bg-brand-blue-light border-brand-blue-light';
     if ($status >= 400 && $status < 500) $statusColor = 'text-orange-600 bg-orange-50 border-orange-200';
     if ($status >= 500) $statusColor = 'text-red-600 bg-red-50 border-red-200';
     if ($type === 'Login Gagal' || $isWarning) $statusColor = 'text-red-600 bg-red-50 border-red-200';
 
-    $levelColor = 'text-blue-600 bg-blue-50 border-blue-200';
+    $levelColor = 'text-brand-blue bg-brand-blue-light border-brand-blue-light';
     if ($level === 'WARNING') $levelColor = 'text-orange-600 bg-orange-50 border-orange-200';
     if ($level === 'CRITICAL') $levelColor = 'text-red-600 bg-red-50 border-red-200';
 @endphp
@@ -34,7 +34,7 @@
                 </div>
                 <div class="flex justify-between">
                     <span class="text-xs text-gray-500">Role Sistem</span>
-                    <span class="text-[10px] font-extrabold text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase">{{ $props['role'] ?? 'Unknown' }}</span>
+                    <span class="text-[10px] font-extrabold text-brand-blue bg-brand-blue-light px-2 py-0.5 rounded uppercase">{{ $props['role'] ?? 'Unknown' }}</span>
                 </div>
             </div>
         </div>
@@ -88,7 +88,7 @@
                 </div>
                 <div>
                     <span class="text-[10px] font-bold text-gray-500 block mb-1">URL / Route yang Diakses:</span>
-                    <div class="p-2 bg-white rounded border border-gray-200 text-[10px] font-mono text-blue-600 break-all">
+                    <div class="p-2 bg-white rounded border border-gray-200 text-[10px] font-mono text-brand-blue break-all">
                         {{ $props['url'] ?? '-' }}
                     </div>
                 </div>
@@ -103,13 +103,13 @@
                     <span class="text-xs text-gray-600">Level & Jenis</span>
                     <div class="flex items-center gap-2">
                         <span class="px-2 py-0.5 border font-bold text-[9px] rounded uppercase {{ $levelColor }}">{{ $level }}</span>
-                        <span class="font-bold text-xs {{ $isWarning ? 'text-red-700' : 'text-blue-700' }}">{{ $type }}</span>
+                        <span class="font-bold text-xs {{ $isWarning ? 'text-red-700' : 'text-brand-blue' }}">{{ $type }}</span>
                     </div>
                 </div>
                 <div>
                     <span class="text-[10px] font-bold text-gray-500 block mb-1">Deskripsi Aktivitas:</span>
                     <div class="flex items-start gap-2">
-                        <i class="fas {{ $isWarning ? 'fa-exclamation-triangle text-red-500' : 'fa-info-circle text-blue-500' }} mt-0.5 text-sm"></i>
+                        <i class="fas {{ $isWarning ? 'fa-exclamation-triangle text-red-500' : 'fa-info-circle text-brand-blue' }} mt-0.5 text-sm"></i>
                         <p class="text-[13px] font-semibold text-gray-800 leading-relaxed">{{ $log->description }}</p>
                     </div>
                 </div>

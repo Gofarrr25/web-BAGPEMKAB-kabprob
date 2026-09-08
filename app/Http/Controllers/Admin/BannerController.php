@@ -11,6 +11,12 @@ class BannerController extends Controller
 {
     public function index()
     {
+        // Auto-deactivate expired banners
+        $expiredBanners = Banner::where('is_active', true)->whereNotNull('end_date')->where('end_date', '<', now())->get();
+        foreach ($expiredBanners as $banner) {
+            $banner->update(['is_active' => false]);
+        }
+
         $banners = Banner::latest()->get();
         return view('admin.banners.index', compact('banners'));
     }
@@ -19,11 +25,14 @@ class BannerController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:10240',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:10240',
             'cropped_image' => 'nullable|string',
-            'link_url' => 'nullable|string|max:255',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
         ], [
-            'image.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
+            'image.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima JPG, JPEG, PNG, atau WEBP.',
+            'image.max' => '⚠️ Ukuran gambar banner maksimal 10 MB.',
+            'end_date.after_or_equal' => '⚠️ Tanggal akhir tayang harus setelah atau sama dengan tanggal mulai.',
         ]);
 
         $imagePath = null;
@@ -47,8 +56,10 @@ class BannerController extends Controller
             'user_id' => Auth::id(),
             'title' => $request->title,
             'image_path' => $imagePath,
-            'link_url' => $request->link_url,
-            'is_active' => true,
+            'is_published' => $request->has('is_published'),
+            'is_active' => true, // default active
+            'start_date' => $request->start_date ? \Carbon\Carbon::parse($request->start_date) : null,
+            'end_date' => $request->end_date ? \Carbon\Carbon::parse($request->end_date) : null,
         ]);
 
         return redirect()->route('admin.banners.index')->with('success', 'Banner berhasil ditambahkan');
@@ -63,16 +74,21 @@ class BannerController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:10240',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:10240',
             'cropped_image' => 'nullable|string',
-            'link_url' => 'nullable|string|max:255',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
         ], [
-            'image.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
+            'image.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima JPG, JPEG, PNG, atau WEBP.',
+            'image.max' => '⚠️ Ukuran gambar banner maksimal 10 MB.',
+            'end_date.after_or_equal' => '⚠️ Tanggal akhir tayang harus setelah atau sama dengan tanggal mulai.',
         ]);
 
         $data = [
             'title' => $request->title,
-            'link_url' => $request->link_url,
+            'is_published' => $request->has('is_published'),
+            'start_date' => $request->start_date ? \Carbon\Carbon::parse($request->start_date) : null,
+            'end_date' => $request->end_date ? \Carbon\Carbon::parse($request->end_date) : null,
         ];
 
         if ($request->filled('cropped_image')) {
@@ -102,9 +118,18 @@ class BannerController extends Controller
 
     public function destroy(Banner $banner)
     {
+        if ($banner->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($banner->image_path)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($banner->image_path);
+        }
         
         $banner->delete();
         return redirect()->route('admin.banners.index')->with('success', 'Banner dihapus');
+    }
+
+    public function toggleActive(Banner $banner)
+    {
+        $banner->update(['is_active' => !$banner->is_active]);
+        return redirect()->route('admin.banners.index')->with('success', 'Status penayangan banner berhasil diubah.');
     }
 
 }

@@ -7,10 +7,10 @@
     <div class="container mx-auto px-4 lg:px-8 mt-8">
         
         <!-- Search & Filter Bar -->
-        <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 mb-8 flex flex-col md:flex-row gap-4 justify-between items-center">
+        <div class="bg-white p-4 md:p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 mb-8 flex flex-col md:flex-row gap-4 justify-between items-center">
             <form action="{{ url('/informasi') }}" method="GET" class="w-full flex flex-col md:flex-row gap-4">
                 <div class="flex-1">
-                    <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari berita atau kata kunci..." class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#7a8b3d] outline-none">
+                    <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari berita atau kata kunci..." class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-blue outline-none">
                 </div>
 
                 <div class="w-full md:w-56">
@@ -22,52 +22,51 @@
                     </select>
                 </div>
 
-                <button type="submit" class="px-6 py-2.5 bg-[#7a8b3d] hover:bg-[#687733] text-white font-bold rounded-lg text-sm shadow transition flex items-center justify-center gap-2">
+                <button type="submit" class="px-6 py-2.5 bg-brand-blue hover:bg-brand-blue-hover text-white font-bold rounded-lg text-sm shadow transition flex items-center justify-center gap-2">
                     <i class="fas fa-search"></i> Cari
                 </button>
             </form>
         </div>
 
         <!-- News Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
             @forelse($posts as $post)
-            <article class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition group flex flex-col">
-                <div class="relative h-48 overflow-hidden bg-gray-100">
-                    @if($post->image)
-                        <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                    @else
-                        <div class="w-full h-full flex items-center justify-center text-gray-300 bg-gray-200">
-                            <i class="fas fa-newspaper text-5xl"></i>
+            <article class="bg-white shadow-sm hover:shadow-md transition group flex flex-col h-full">
+                <a href="{{ url('/informasi/' . $post->slug) }}" class="block flex-grow flex flex-col">
+                    <div class="relative h-60 md:h-64 w-full bg-gray-100">
+                        @if($post->image)
+                            <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-gray-300 bg-gray-200">
+                                <i class="fas fa-newspaper text-5xl"></i>
+                            </div>
+                        @endif
+                        
+                        @php
+                            $monthsId = [
+                                1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 
+                                5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 
+                                9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+                            ];
+                            $day = $post->created_at->format('d');
+                            $monthInt = (int)$post->created_at->format('m');
+                            $year = $post->created_at->format('Y');
+                            $monthName = $monthsId[$monthInt];
+                            $formattedDate = strtoupper($day . ' ' . $monthName . ' ' . $year);
+                        @endphp
+                        
+                        <div class="absolute -bottom-5 left-6 md:left-7 bg-brand-blue text-white text-[13px] md:text-sm font-bold px-5 py-2.5 shadow-sm whitespace-nowrap">
+                            {{ $formattedDate }}
                         </div>
-                    @endif
-                    <span class="absolute top-3 left-3 bg-[#7a8b3d] text-white text-[11px] font-bold px-3 py-1 rounded-full shadow">
-                        {{ $post->category->name ?? 'Informasi' }}
-                    </span>
-                </div>
+                    </div>
 
-                <div class="p-6 flex-1 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center gap-3 text-xs text-gray-500 mb-3">
-                            <span><i class="far fa-clock text-[#7a8b3d] mr-1"></i>{{ $post->created_at->format('d M Y') }}</span>
-                            <span>•</span>
-                            <span><i class="far fa-user text-[#7a8b3d] mr-1"></i>{{ $post->user->name ?? 'admin' }}</span>
-                        </div>
-
-                        <h2 class="text-base font-bold text-[#1a365d] group-hover:text-[#7a8b3d] transition leading-snug mb-3">
-                            <a href="{{ url('/informasi/' . $post->slug) }}">{{ Str::limit($post->title, 70) }}</a>
+                    <div class="p-6 md:p-7 pt-10 md:pt-10 flex-1 flex flex-col">
+                        <p class="text-slate-500 text-[13px] md:text-sm mb-1 font-normal tracking-wide">{{ $post->category->name ?? 'Pemerintahan' }}</p>
+                        <h2 class="text-base md:text-[17px] font-medium text-brand-blue leading-snug group-hover:text-brand-blue-hover transition">
+                            {{ $post->title }}
                         </h2>
-
-                        <p class="text-gray-600 text-xs leading-relaxed line-clamp-3 mb-4">
-                            {{ Str::limit(strip_tags($post->content), 120) }}
-                        </p>
                     </div>
-
-                    <div class="pt-4 border-t border-gray-100 flex items-center justify-between text-xs">
-                        <a href="{{ url('/informasi/' . $post->slug) }}" class="text-[#7a8b3d] font-bold hover:underline flex items-center gap-1">
-                            Baca Selengkapnya <i class="fas fa-arrow-right text-[10px]"></i>
-                        </a>
-                    </div>
-                </div>
+                </a>
             </article>
             @empty
             <div class="col-span-full py-16 text-center bg-white rounded-xl border border-gray-100 shadow-sm">

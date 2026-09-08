@@ -21,9 +21,7 @@ class MenuController extends Controller
             $query->onlyTrashed();
         }
 
-        if ($request->filled('position')) {
-            $query->where('position', $request->position);
-        }
+
 
         if ($request->filled('status')) {
             $query->where('is_active', $request->status == 'active');
@@ -48,33 +46,16 @@ class MenuController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'icon' => 'nullable|string|max:255',
             'parent_id' => 'nullable|exists:menus,id',
             'page_id' => 'nullable|exists:pages,id',
             'url' => 'nullable|string|max:500',
             'target' => 'nullable|in:_self,_blank',
-            'position' => 'nullable|in:navbar,footer',
             'order_index' => 'nullable|integer',
         ]);
 
         $pageId = $request->page_id;
         $url = $request->url;
-        $moduleType = $request->module_type ?? 'page';
-
-        // Tentukan URL otomatis berdasarkan modul yang dipilih
-        if ($moduleType === 'posts') {
-            $url = '/informasi';
-        } elseif ($moduleType === 'documents') {
-            $url = '/dokumen';
-        } elseif ($moduleType === 'agendas') {
-            $url = '/agenda';
-        } elseif ($moduleType === 'galleries') {
-            $url = '/galeri-foto';
-        } elseif ($moduleType === 'members') {
-            $url = '/struktur-organisasi';
-        } elseif ($moduleType === 'contact') {
-            $url = '/kontak-resmi';
-        }
+        $moduleType = 'page'; // Selalu paksa menjadi 'page' karena tidak ada modul lagi untuk navigasi
 
         // Coba resolve page_id dari URL secara otomatis jika url mengarah ke halaman
         if (empty($pageId) && !empty($url) && (Str::startsWith($url, '/page/') || Str::startsWith($url, '/halaman/'))) {
@@ -82,12 +63,11 @@ class MenuController extends Controller
             $existingPage = Page::where('slug', $slug)->first();
             if ($existingPage) {
                 $pageId = $existingPage->id;
-                $moduleType = 'page';
             }
         }
 
-        // Requirement 4: Otomatis Buat Halaman Statis Jika Halaman & URL kosong dan Tipe Modul adalah Halaman (page)
-        if ($moduleType === 'page' && $request->filled('parent_id') && empty($pageId) && empty($url)) {
+        // Otomatis Buat Halaman Statis Jika Halaman & URL kosong
+        if ($request->filled('parent_id') && empty($pageId) && empty($url)) {
             $title = trim($request->title);
             $baseSlug = Str::slug($title);
             $slug = $baseSlug;
@@ -113,13 +93,12 @@ class MenuController extends Controller
 
         Menu::create([
             'title' => trim($request->title),
-            'icon' => $request->icon ? trim($request->icon) : null,
             'parent_id' => $request->parent_id,
             'page_id' => $pageId,
             'url' => $url,
             'module_type' => $moduleType,
             'target' => $request->target ?? '_self',
-            'position' => $request->position ?? 'navbar',
+            'position' => 'navbar', // Force navbar default
             'order_index' => $request->order_index ?? 0,
             'is_active' => $request->has('is_active') ? true : false,
         ]);
@@ -140,12 +119,10 @@ class MenuController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'icon' => 'nullable|string|max:255',
             'parent_id' => 'nullable|exists:menus,id',
             'page_id' => 'nullable|exists:pages,id',
             'url' => 'nullable|string|max:500',
             'target' => 'nullable|in:_self,_blank',
-            'position' => 'nullable|in:navbar,footer',
             'order_index' => 'nullable|integer',
         ]);
 
@@ -158,29 +135,7 @@ class MenuController extends Controller
         $url = $request->has('url') ? $request->url : $menu->url;
         $target = $request->has('target') ? $request->target : $menu->target;
         
-        $moduleType = $request->has('module_type') ? $request->module_type : ($menu->module_type ?? 'page');
-
-        if ($request->has('module_type')) {
-            if ($moduleType === 'posts') {
-                $url = '/informasi';
-                $pageId = null;
-            } elseif ($moduleType === 'documents') {
-                $url = '/dokumen';
-                $pageId = null;
-            } elseif ($moduleType === 'agendas') {
-                $url = '/agenda';
-                $pageId = null;
-            } elseif ($moduleType === 'galleries') {
-                $url = '/galeri-foto';
-                $pageId = null;
-            } elseif ($moduleType === 'members') {
-                $url = '/struktur-organisasi';
-                $pageId = null;
-            } elseif ($moduleType === 'contact') {
-                $url = '/kontak-resmi';
-                $pageId = null;
-            }
-        }
+        $moduleType = 'page'; // Selalu paksa menjadi 'page'
 
         // Coba resolve page_id dari URL secara otomatis jika url mengarah ke halaman
         if (empty($pageId) && !empty($url) && (Str::startsWith($url, '/page/') || Str::startsWith($url, '/halaman/'))) {
@@ -188,12 +143,11 @@ class MenuController extends Controller
             $existingPage = Page::where('slug', $slug)->first();
             if ($existingPage) {
                 $pageId = $existingPage->id;
-                $moduleType = 'page';
             }
         }
 
-        // Jika tipe modul adalah page, halaman & url tetap kosong dan tidak ada relasi page sebelumnya
-        if ($moduleType === 'page' && $parentId && empty($pageId) && empty($url) && !$menu->page_id) {
+        // Jika halaman & url tetap kosong dan tidak ada relasi page sebelumnya (hanya untuk submenu)
+        if ($parentId && empty($pageId) && empty($url) && !$menu->page_id) {
             $title = trim($request->title);
             $baseSlug = Str::slug($title);
             $slug = $baseSlug;
@@ -217,18 +171,24 @@ class MenuController extends Controller
             $url = '/page/' . $page->slug;
         }
 
+        $oldTitle = $menu->title;
+        $newTitle = trim($request->title);
+
         $menu->update([
-            'title' => trim($request->title),
-            'icon' => $request->has('icon') ? trim($request->icon) : $menu->icon,
+            'title' => $newTitle,
             'parent_id' => $parentId,
             'page_id' => $pageId,
             'url' => $url,
             'module_type' => $moduleType,
             'target' => $target ?? '_self',
-            'position' => $request->position ?? $menu->position,
+            'position' => 'navbar', // Force navbar default
             'order_index' => $request->order_index ?? $menu->order_index,
             'is_active' => $request->has('is_active') ? true : false,
         ]);
+
+        if ($oldTitle !== $newTitle) {
+            \App\Models\Document::where('category', $oldTitle)->update(['category' => $newTitle]);
+        }
 
         if ($menu->parent_id) {
             return redirect()->route('admin.menus.submenus', $menu->parent_id)

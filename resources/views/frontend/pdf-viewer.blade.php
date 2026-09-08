@@ -33,14 +33,14 @@
             }
         @endphp
         
-        <div class="bg-white p-6 md:p-10 rounded-lg shadow-xl border border-gray-100 min-h-[40vh]">
+        <div class="bg-white p-4 md:p-6 md:p-10 rounded-lg shadow-xl border border-gray-100 min-h-[40vh]">
             
             @if($pdfUrl)
                 <!-- Jika Halaman Memiliki File PDF, Tampilkan PDF Viewer Interaktif -->
                 <div class="mb-8 w-full">
                     <!-- Tab Baca (Klik) -->
                     <div class="flex">
-                        <div class="_df_button bg-[#729b48] hover:bg-[#5f8439] text-white px-5 py-2.5 flex items-center justify-center font-semibold text-sm cursor-pointer transition shadow-sm" source="{{ $pdfUrl }}" style="min-width: 150px;">
+                        <div class="_df_button bg-brand-blue hover:bg-brand-blue-hover text-white px-5 py-2.5 flex items-center justify-center font-semibold text-sm cursor-pointer transition shadow-sm" source="{{ $pdfUrl }}" style="min-width: 150px;">
                             <div class="flex items-center gap-2 pointer-events-none">
                                 <i class="fas fa-book-reader"></i> Baca (Klik)
                             </div>
@@ -54,7 +54,7 @@
                 </div>
             @else
                 <!-- Fallback jika PDF belum diunggah -->
-                <div class="flex-1 bg-gray-800 p-8 flex flex-col items-center justify-center text-center rounded-lg mb-8">
+                <div class="flex-1 bg-gray-800 p-4 md:p-8 flex flex-col items-center justify-center text-center rounded-lg mb-8">
                     <div class="w-16 h-16 rounded-full bg-yellow-500/20 text-yellow-400 flex items-center justify-center text-3xl mb-4">
                         <i class="fas fa-exclamation-triangle"></i>
                     </div>

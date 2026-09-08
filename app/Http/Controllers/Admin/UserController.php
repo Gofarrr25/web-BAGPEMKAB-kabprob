@@ -92,9 +92,9 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role' => 'required|string|exists:roles,name',
-            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
+            'profile_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
-            'profile_photo.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
+            'profile_photo.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima JPG, JPEG, PNG, atau WEBP.',
         ]);
 
         $photoPath = null;
@@ -163,9 +163,9 @@ class UserController extends Controller
                 'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
                 'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
                 'role' => 'required|string|exists:roles,name',
-                'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
+                'profile_photo' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
             ], [
-                'profile_photo.mimes' => 'Format file tidak valid. Gunakan JPG, PNG, GIF, atau WebP.',
+                'profile_photo.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima JPG, JPEG, PNG, atau WEBP.',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Validation Failed: ', $e->errors());
