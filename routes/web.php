@@ -58,6 +58,8 @@ Route::get('/', function () {
         ->where(function ($q) use ($now) {
             $q->whereNull('end_date')->orWhere('end_date', '>=', $now);
         })
+        ->orderBy('order_index', 'asc')
+        ->latest()
         ->get();
     $dbIgPosts = InstagramPost::where('is_active', true)->orderBy('order_index', 'asc')->latest()->take(6)->get();
     $latestPosts = Post::with('category')->where('is_published', true)->where('is_active', true)->latest()->take(4)->get();

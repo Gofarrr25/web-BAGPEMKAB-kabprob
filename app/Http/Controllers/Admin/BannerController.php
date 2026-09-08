@@ -17,7 +17,7 @@ class BannerController extends Controller
             $banner->update(['is_active' => false]);
         }
 
-        $banners = Banner::latest()->get();
+        $banners = Banner::orderBy('order_index', 'asc')->latest()->get();
         return view('admin.banners.index', compact('banners'));
     }
 
@@ -29,6 +29,7 @@ class BannerController extends Controller
             'cropped_image' => 'nullable|string',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
+            'order_index' => 'required|integer|min:0',
         ], [
             'image.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima JPG, JPEG, PNG, atau WEBP.',
             'image.max' => '⚠️ Ukuran gambar banner maksimal 10 MB.',
@@ -60,6 +61,7 @@ class BannerController extends Controller
             'is_active' => true, // default active
             'start_date' => $request->start_date ? \Carbon\Carbon::parse($request->start_date) : null,
             'end_date' => $request->end_date ? \Carbon\Carbon::parse($request->end_date) : null,
+            'order_index' => $request->order_index ?? 0,
         ]);
 
         return redirect()->route('admin.banners.index')->with('success', 'Banner berhasil ditambahkan');
@@ -78,6 +80,7 @@ class BannerController extends Controller
             'cropped_image' => 'nullable|string',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
+            'order_index' => 'required|integer|min:0',
         ], [
             'image.mimes' => '⚠️ Format file tidak sesuai. Field ini hanya menerima JPG, JPEG, PNG, atau WEBP.',
             'image.max' => '⚠️ Ukuran gambar banner maksimal 10 MB.',
@@ -89,6 +92,7 @@ class BannerController extends Controller
             'is_published' => $request->has('is_published'),
             'start_date' => $request->start_date ? \Carbon\Carbon::parse($request->start_date) : null,
             'end_date' => $request->end_date ? \Carbon\Carbon::parse($request->end_date) : null,
+            'order_index' => $request->order_index ?? 0,
         ];
 
         if ($request->filled('cropped_image')) {

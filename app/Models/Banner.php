@@ -18,6 +18,7 @@ class Banner extends Model
         'is_active',
         'start_date',
         'end_date',
+        'order_index',
     ];
 
     protected $casts = [
@@ -25,6 +26,7 @@ class Banner extends Model
         'is_active' => 'boolean',
         'start_date' => 'datetime',
         'end_date' => 'datetime',
+        'order_index' => 'integer',
     ];
 
     public function user()
