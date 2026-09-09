@@ -33,16 +33,8 @@
 	<body id="kt_body" class="bg-body">
 		<div class="d-flex flex-column flex-root">
 			<div class="d-flex flex-column flex-lg-row flex-column-fluid">
-				<div class="d-flex flex-column flex-lg-row-auto w-xl-600px positon-xl-relative bgi-no-repeat bgi-position-x-right bgi-position-y-bottom" style="background-color: #ffffff; background-image: url('https://diskominfo.probolinggokab.go.id/backend/gambar/smart.jpg');">
-					<div class="d-flex flex-column position-xl-fixed top-0 bottom-0 w-xl-600px scroll-y">
-						<div class="d-flex flex-row-fluid flex-column text-center p-10 pt-lg-20">
-							<a href="#" class="py-2 mb-2">								 
-                                <img src="https://diskominfo.probolinggokab.go.id/backend/gambar/logoprob.png" class="h-100px" style="max-height: 150px !important" alt="Logo"/>
-							</a>	  
-                            <h2>Bagian Pemerintahan</h2>
-                            <h3>Kabupaten Probolinggo</h3> 
-						</div>						 
-					</div>					
+				<div class="d-flex flex-column flex-lg-row-auto w-xl-600px positon-xl-relative bgi-no-repeat" style="background-color: #ffffff; background-image: url('{{ asset('images/bupati_wakil.jpg') }}'); background-size: cover; background-position: center;">
+					<!-- Konten visual logo dan teks bawaan telah dihapus sesuai permintaan agar foto tampil penuh -->
 				</div>				 
 				<div class="d-flex flex-column flex-lg-row-fluid py-10" style="background-color: #f9f6f5">					
 					<div class="d-flex flex-center flex-column flex-column-fluid">						
