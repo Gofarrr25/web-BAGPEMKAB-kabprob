@@ -82,10 +82,6 @@
                                 </div>
                             </div>
                             <div class="fv-row mb-5">
-                                <!-- <div class="d-flex justify-content-between">
-										<label class="form-label">Password</label>
-										<a href="{{ route('password.request') }}" class="link-primary fs-6 fw-bolder">Lupa Password?</a>
-									</div>		 									  -->
                                 <div class="fv-row position-relative mb-3">
                                     <input id="password" type="password" class="form-control form-control-lg form-control-solid pe-12" name="password" required autocomplete="off" />
 
