@@ -63,7 +63,9 @@ Route::get('/', function () {
         ->get();
     $dbIgPosts = InstagramPost::where('is_active', true)->orderBy('order_index', 'asc')->latest()->take(6)->get();
     $latestPosts = Post::with('category')->where('is_published', true)->where('is_active', true)->latest()->take(4)->get();
-    $videos = Gallery::where('type', 'video')->where('is_active', true)->where(function($q) { $q->whereNotNull('video_url')->orHas('galleryItems'); })->latest()->take(3)->get();
+    $videos = Gallery::where('type', 'video')->where('is_active', true)->where(function ($q) {
+        $q->whereNotNull('video_url')->orHas('galleryItems');
+    })->latest()->take(3)->get();
     $homeWidgets = HomeWidget::where('is_active', true)->orderBy('order_index')->get();
     $relatedLinks = RelatedLink::where('is_active', true)->orderBy('order')->get();
     return view('frontend.home', compact('banners', 'dbIgPosts', 'latestPosts', 'videos', 'homeWidgets', 'relatedLinks'));
@@ -72,100 +74,112 @@ Route::get('/', function () {
 // === ROUTES BERITA & ARTIKEL PUBLIK ===
 Route::get('/informasi', function (Request $request) {
     $query = Post::with(['category', 'user'])->where('is_published', true)->where('is_active', true);
-    
+
     if ($request->filled('q')) {
         $query->where('title', 'like', '%' . $request->q . '%');
     }
-    
+
     if ($request->filled('category')) {
         $query->where('category_id', $request->category);
     }
-    
+
     $posts = $query->latest()->paginate(9)->withQueryString();
     $categories = Category::all();
-    
+
     return view('frontend.posts', compact('posts', 'categories'));
 });
 
 Route::get('/berita', function (Request $request) {
     $query = Post::with(['category', 'user'])->where('is_published', true)->where('is_active', true);
-    
+
     if ($request->filled('q')) {
         $query->where('title', 'like', '%' . $request->q . '%');
     }
-    
+
     if ($request->filled('category')) {
         $query->where('category_id', $request->category);
     }
-    
+
     $posts = $query->latest()->paginate(9)->withQueryString();
     $categories = Category::all();
-    
+
     return view('frontend.posts', compact('posts', 'categories'));
 });
 
 Route::get('/posts', function (Request $request) {
     $query = Post::with(['category', 'user'])->where('is_published', true)->where('is_active', true);
-    
+
     if ($request->filled('q')) {
         $query->where('title', 'like', '%' . $request->q . '%');
     }
-    
+
     if ($request->filled('category')) {
         $query->where('category_id', $request->category);
     }
-    
+
     $posts = $query->latest()->paginate(9)->withQueryString();
     $categories = Category::all();
-    
+
     return view('frontend.posts', compact('posts', 'categories'));
 });
 
 Route::get('/informasi/{slug}', function ($slug) {
-    $post = Post::with(['category', 'user', 'postImages' => function($q) { $q->orderBy('order_index'); }])->where('slug', $slug)->first();
-    
+    $post = Post::with(['category', 'user', 'postImages' => function ($q) {
+        $q->orderBy('order_index');
+    }])->where('slug', $slug)->first();
+
     if (!$post) {
-        $post = Post::with(['category', 'user', 'postImages' => function($q) { $q->orderBy('order_index'); }])->where('id', $slug)->orWhere('slug', 'like', $slug . '%')->first();
+        $post = Post::with(['category', 'user', 'postImages' => function ($q) {
+            $q->orderBy('order_index');
+        }])->where('id', $slug)->orWhere('slug', 'like', $slug . '%')->first();
     }
-    
+
     if (!$post) {
         abort(404);
     }
-    
+
     $latestPosts = Post::with('category')->where('id', '!=', $post->id)->where('is_published', true)->where('is_active', true)->latest()->take(5)->get();
-    
+
     return view('frontend.post-detail', compact('post', 'latestPosts'));
 });
 
 Route::get('/berita/{slug}', function ($slug) {
-    $post = Post::with(['category', 'user', 'postImages' => function($q) { $q->orderBy('order_index'); }])->where('slug', $slug)->first();
-    
+    $post = Post::with(['category', 'user', 'postImages' => function ($q) {
+        $q->orderBy('order_index');
+    }])->where('slug', $slug)->first();
+
     if (!$post) {
-        $post = Post::with(['category', 'user', 'postImages' => function($q) { $q->orderBy('order_index'); }])->where('id', $slug)->orWhere('slug', 'like', $slug . '%')->first();
+        $post = Post::with(['category', 'user', 'postImages' => function ($q) {
+            $q->orderBy('order_index');
+        }])->where('id', $slug)->orWhere('slug', 'like', $slug . '%')->first();
     }
-    
+
     if (!$post) {
         abort(404);
     }
-    
+
     $latestPosts = Post::with('category')->where('id', '!=', $post->id)->where('is_published', true)->where('is_active', true)->latest()->take(5)->get();
-    
+
     return view('frontend.post-detail', compact('post', 'latestPosts'));
 });
 
 Route::get('/posts/{slug}', function ($slug) {
-    $post = Post::with(['category', 'user', 'postImages' => function($q) { $q->orderBy('order_index'); }])->where('slug', $slug)->first();
-    
+    $post = Post::with(['category', 'user', 'postImages' => function ($q) {
+        $q->orderBy('order_index');
+    }])->where('slug', $slug)->first();
+
     if (!$post) {
-        $post = Post::with(['category', 'user', 'postImages' => function($q) { $q->orderBy('order_index'); }])->where('id', $slug)->orWhere('slug', 'like', $slug . '%')->first();
+        $post = Post::with(['category', 'user', 'postImages' => function ($q) {
+            $q->orderBy('order_index');
+        }])->where('id', $slug)->orWhere('slug', 'like', $slug . '%')->first();
     }
-    
+
     if (!$post) {
         abort(404);
     }
-    
+
     $latestPosts = Post::with('category')->where('id', '!=', $post->id)->where('is_published', true)->where('is_active', true)->latest()->take(5)->get();
-    
+
     return view('frontend.post-detail', compact('post', 'latestPosts'));
 });
 
@@ -198,13 +212,13 @@ Route::post('/kontak', function (Request $request) {
         'subjek' => 'required|string|max:255',
         'pesan' => 'required|string',
     ]);
-    
+
     return back()->with('success', 'Terima kasih, pesan Anda telah berhasil dikirim ke Bagian Pemerintahan Kabupaten Probolinggo.');
 });
 
 // === GALERI FOTO & GALERI VIDEO PUBLIK ===
 Route::get('/galeri-foto', function (\Illuminate\Http\Request $request) {
-    $query = Gallery::where('type', 'image')->where('is_active', true)->where(function($q) {
+    $query = Gallery::where('type', 'image')->where('is_active', true)->where(function ($q) {
         $q->whereNotNull('file_path')->orHas('galleryItems');
     });
     if ($request->filled('q')) {
@@ -215,21 +229,27 @@ Route::get('/galeri-foto', function (\Illuminate\Http\Request $request) {
 });
 Route::get('/galeri-foto/{gallery}', function (Gallery $gallery) {
     if ($gallery->type !== 'image' || !$gallery->is_active) abort(404);
-    $gallery->load(['galleryItems' => function($q) { $q->orderBy('order_index'); }]);
+    $gallery->load(['galleryItems' => function ($q) {
+        $q->orderBy('order_index');
+    }]);
     return view('frontend.foto-detail', compact('gallery'));
 })->name('frontend.foto.detail');
 
 Route::get('/page/galeri-foto', function () {
-    $photos = Gallery::where('type', 'image')->where('is_active', true)->where(function($q) { $q->whereNotNull('file_path'); })->latest()->paginate(12);
+    $photos = Gallery::where('type', 'image')->where('is_active', true)->where(function ($q) {
+        $q->whereNotNull('file_path');
+    })->latest()->paginate(12);
     return view('frontend.foto', compact('photos'));
 });
 Route::get('/galeri/foto', function () {
-    $photos = Gallery::where('type', 'image')->where('is_active', true)->where(function($q) { $q->whereNotNull('file_path'); })->latest()->paginate(12);
+    $photos = Gallery::where('type', 'image')->where('is_active', true)->where(function ($q) {
+        $q->whereNotNull('file_path');
+    })->latest()->paginate(12);
     return view('frontend.foto', compact('photos'));
 });
 
 Route::get('/galeri-video', function (\Illuminate\Http\Request $request) {
-    $query = Gallery::where('type', 'video')->where('is_active', true)->where(function($q) {
+    $query = Gallery::where('type', 'video')->where('is_active', true)->where(function ($q) {
         $q->whereNotNull('video_url')->orHas('galleryItems');
     });
     if ($request->filled('q')) {
@@ -240,28 +260,40 @@ Route::get('/galeri-video', function (\Illuminate\Http\Request $request) {
 });
 Route::get('/galeri-video/{gallery}', function (Gallery $gallery) {
     if ($gallery->type !== 'video' || !$gallery->is_active) abort(404);
-    $gallery->load(['galleryItems' => function($q) { $q->orderBy('order_index'); }]);
+    $gallery->load(['galleryItems' => function ($q) {
+        $q->orderBy('order_index');
+    }]);
     return view('frontend.video-detail', compact('gallery'));
 })->name('frontend.video.detail');
 Route::get('/page/video', function () {
-    $videos = Gallery::where('type', 'video')->where('is_active', true)->where(function($q) { $q->whereNotNull('video_url'); })->latest()->paginate(12);
+    $videos = Gallery::where('type', 'video')->where('is_active', true)->where(function ($q) {
+        $q->whereNotNull('video_url');
+    })->latest()->paginate(12);
     return view('frontend.video', compact('videos'));
 });
 Route::get('/page/galeri-video', function () {
-    $videos = Gallery::where('type', 'video')->where('is_active', true)->where(function($q) { $q->whereNotNull('video_url'); })->latest()->paginate(12);
+    $videos = Gallery::where('type', 'video')->where('is_active', true)->where(function ($q) {
+        $q->whereNotNull('video_url');
+    })->latest()->paginate(12);
     return view('frontend.video', compact('videos'));
 });
 Route::get('/galeri/video', function () {
-    $videos = Gallery::where('type', 'video')->where('is_active', true)->where(function($q) { $q->whereNotNull('video_url'); })->latest()->paginate(12);
+    $videos = Gallery::where('type', 'video')->where('is_active', true)->where(function ($q) {
+        $q->whereNotNull('video_url');
+    })->latest()->paginate(12);
     return view('frontend.video', compact('videos'));
 });
 
 Route::get('/galeri', function () {
-    $photos = Gallery::where('type', 'image')->where('is_active', true)->where(function($q) { $q->whereNotNull('file_path'); })->latest()->paginate(12);
+    $photos = Gallery::where('type', 'image')->where('is_active', true)->where(function ($q) {
+        $q->whereNotNull('file_path');
+    })->latest()->paginate(12);
     return view('frontend.foto', compact('photos'));
 });
 Route::get('/galleries', function () {
-    $photos = Gallery::where('type', 'image')->where('is_active', true)->where(function($q) { $q->whereNotNull('file_path'); })->latest()->paginate(12);
+    $photos = Gallery::where('type', 'image')->where('is_active', true)->where(function ($q) {
+        $q->whereNotNull('file_path');
+    })->latest()->paginate(12);
     return view('frontend.foto', compact('photos'));
 });
 
@@ -270,12 +302,12 @@ Route::get('/galleries', function () {
 // 4. PDF Viewer Terintegrasi (Standar Pelayanan Publik, dll)
 Route::get('/halaman/{slug}', function ($slug) {
     $page = Page::where('slug', $slug)->first();
-    
+
     if (!$page) {
         $title = ucwords(str_replace('-', ' ', $slug));
         return view('frontend.pdf-viewer', compact('title', 'slug', 'page'));
     }
-    
+
     $title = $page->title;
     return view('frontend.pdf-viewer', compact('title', 'slug', 'page'));
 });
@@ -289,7 +321,7 @@ Route::get('/dokumen/{kategori}', function ($kategori) {
     // Cari menu dengan tipe dokumen yang sesuai dengan slug kategori
     $menus = Menu::where('module_type', 'documents')->get();
     $matchedMenu = null;
-    
+
     foreach ($menus as $menu) {
         $expectedSlug = str_replace(' ', '-', strtolower($menu->title));
         if ($expectedSlug === strtolower($kategori)) {
@@ -297,18 +329,18 @@ Route::get('/dokumen/{kategori}', function ($kategori) {
             break;
         }
     }
-    
+
     // Jika tidak ditemukan, fallback ke ucwords biasa (barangkali ada dokumen lama yang belum terikat menu)
     $categoryName = $matchedMenu ? $matchedMenu->title : ucwords(str_replace('-', ' ', $kategori));
-    
+
     $query = Document::where('category', $categoryName);
-    
+
     if (request()->filled('year')) {
         $query->whereYear(DB::raw('COALESCE(document_date, created_at)'), request('year'));
     }
-    
+
     $documents = $query->latest()->get();
-    
+
     // Ambil tahun yang tersedia untuk kategori ini (tanpa terpengaruh filter year saat ini)
     $availableYears = Document::where('category', $categoryName)
         ->selectRaw('YEAR(COALESCE(document_date, created_at)) as year')
@@ -318,7 +350,7 @@ Route::get('/dokumen/{kategori}', function ($kategori) {
         ->sort()
         ->values()
         ->toArray();
-    
+
     // Fallback view jika frontend.dokumen tidak ada, pakai frontend.document-list (tergantung tema)
     if (view()->exists('frontend.dokumen')) {
         return view('frontend.dokumen', ['documents' => $documents, 'kategori' => $categoryName, 'availableYears' => $availableYears]);
@@ -329,23 +361,23 @@ Route::get('/dokumen/{kategori}', function ($kategori) {
 // Generic Page Fallback
 Route::get('/page/{slug}', function ($slug) {
     $page = Page::where('slug', $slug)->first();
-    
+
     if ($page && $page->external_url) {
         return redirect()->away($page->external_url);
     }
-    
+
     if (!$page) {
         $title = ucwords(str_replace('-', ' ', $slug));
         return view('frontend.page', compact('title', 'slug', 'page'));
     }
-    
+
     $title = $page->title;
     return view('frontend.page', compact('title', 'slug', 'page'));
 });
 
 
 // === ROUTES AUTHENTICATION ===
-Route::get('/refresh_captcha', function() {
+Route::get('/refresh_captcha', function () {
     return response()->json(['captcha' => captcha_img('flat')]);
 });
 
@@ -356,17 +388,17 @@ Route::post('/login', [LoginController::class, 'authenticate'])->name('login.pos
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Password Reset Routes
-Route::middleware('guest')->group(function () {
-    Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email')->middleware('throttle:6,1');
-    Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-    Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update')->middleware('throttle:5,1');
-});
+// Route::middleware('guest')->group(function () {
+//     Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+//     Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email')->middleware('throttle:6,1');
+//     Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+//     Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update')->middleware('throttle:5,1');
+// });
 
 
 // === ROUTES BACKEND ADMIN PANEL ===
 Route::middleware(['auth', 'prevent-back-history'])->prefix('admin')->name('admin.')->group(function () {
-    
+
     // CKEditor 5 Upload Endpoint (Images, PDF, Word, Excel, ZIP)
     Route::post('/ckeditor/upload', function (Request $request) {
         $validator = Validator::make($request->all(), [
@@ -385,10 +417,10 @@ Route::middleware(['auth', 'prevent-back-history'])->prefix('admin')->name('admi
             $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
             $extension = strtolower($file->getClientOriginalExtension());
             $safeName = Str::slug($originalName) . '_' . time() . '.' . $extension;
-            
+
             $path = $file->storeAs('uploads/ckeditor', $safeName, 'public');
             $url = asset('storage/' . $path);
-            
+
             return response()->json([
                 'uploaded' => true,
                 'fileName' => $safeName,
@@ -404,17 +436,17 @@ Route::middleware(['auth', 'prevent-back-history'])->prefix('admin')->name('admi
     // Modules CRUD Routes (Superadmin, Admin OPD, Staf)
     Route::middleware(['role:Superadmin|Admin OPD|Staf'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-        
+
         Route::patch('posts/{post}/toggle', [PostController::class, 'toggleStatus'])->name('posts.toggle');
         Route::delete('posts/{post}/delete-image/{imageId}', [PostController::class, 'deleteImage'])->name('posts.delete-image');
         Route::post('posts/{post}/reorder-images', [PostController::class, 'reorderImages'])->name('posts.reorder-images');
         Route::resource('posts', PostController::class);
-        
+
         Route::delete('galleries/{gallery}/delete-item/{itemId}', [GalleryController::class, 'deleteItem'])->name('galleries.delete-item');
         Route::post('galleries/{gallery}/reorder-items', [GalleryController::class, 'reorderItems'])->name('galleries.reorder-items');
         Route::patch('galleries/{gallery}/toggle', [GalleryController::class, 'toggleStatus'])->name('galleries.toggle');
         Route::resource('galleries', GalleryController::class);
-        
+
         Route::resource('documents', DocumentController::class);
         Route::resource('content-activities', ContentActivityController::class)->only(['index', 'show']);
     });
@@ -436,7 +468,7 @@ Route::middleware(['auth', 'prevent-back-history'])->prefix('admin')->name('admi
         Route::get('organization-members', [OrganizationMemberController::class, 'index'])->name('organization-members.index');
         Route::get('/instagram', [InstagramPostController::class, 'index'])->name('instagram.index');
         Route::post('/instagram/profile', [InstagramPostController::class, 'updateProfile'])->name('instagram.profile');
-        
+
         // Admin & Superadmin Setting Routes
         Route::resource('contact-settings', ContactSettingController::class)->only(['index', 'store']);
     });
@@ -458,10 +490,8 @@ Route::middleware(['auth', 'prevent-back-history'])->prefix('admin')->name('admi
         Route::resource('users', UserController::class);
         Route::delete('activity-logs/purge-old', [ActivityLogController::class, 'purgeOld'])->name('activity-logs.purge-old');
         Route::resource('activity-logs', ActivityLogController::class)->only(['index', 'show']);
-        
+
         // Custom route for user toggle active
         Route::post('/users/{user}/toggle', [UserController::class, 'toggleActive'])->name('users.toggle');
     });
 });
-
-
