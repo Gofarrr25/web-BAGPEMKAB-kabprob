@@ -500,7 +500,7 @@
     </div> <!-- END OF WRAPPER -->
 
     <!-- Tombol Accessibility & Back to Top -->
-    <div class="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 flex flex-col gap-3">
+    <div class="fixed bottom-4 left-4 md:bottom-6 md:left-6 z-[90] flex flex-col gap-3">
         <button id="btn-accessibility-toggle" class="bg-brand-blue text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg hover:bg-brand-blue-hover transition-transform hover:scale-110">
             <i class="fab fa-accessible-icon"></i>
         </button>
