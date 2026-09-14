@@ -21,7 +21,7 @@
     @endphp
     <link rel="icon" type="image/png" href="{{ $faviconUrl }}">
     <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600;700;800&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -44,6 +44,22 @@
     </script>
     <style>
         body { font-family: 'Nunito', sans-serif; transition: font-size 0.2s ease, letter-spacing 0.2s ease, line-height 0.2s ease, font-weight 0.2s ease, filter 0.2s ease, background-color 0.2s ease, color 0.2s ease; }
+        
+        /* Font-family khusus navigasi menu utama & submenu (Desktop & Mobile) */
+        header nav,
+        header nav a,
+        header nav button,
+        header nav span,
+        header .dropdown-menu,
+        header .dropdown-menu a,
+        header .dropdown-menu span,
+        #mobileMenu,
+        #mobileMenu a,
+        #mobileMenu button,
+        #mobileMenu span {
+            font-family: 'Open Sans', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+        }
+
         @media (hover: hover) {
             .dropdown-wrapper:hover .dropdown-menu {
                 display: block !important;
