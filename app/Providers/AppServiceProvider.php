@@ -46,7 +46,11 @@ class AppServiceProvider extends ServiceProvider
         View::composer('*', function ($view) {
             $cachedSettings = \Illuminate\Support\Facades\Cache::remember('site_settings', 3600, function () {
                 try {
-                    return Setting::all()->pluck('value', 'key')->toArray();
+                    $settings = Setting::all()->pluck('value', 'key')->toArray();
+                    if (isset($settings['berakhlak_logo']) && (str_contains($settings['berakhlak_logo'], 'tmp') || str_contains($settings['berakhlak_logo'], 'Temp') || preg_match('/php[a-zA-Z0-9]{4,}/i', $settings['berakhlak_logo']))) {
+                        $settings['berakhlak_logo'] = '';
+                    }
+                    return $settings;
                 } catch (\Throwable $e) {
                     return [];
                 }

@@ -37,13 +37,17 @@
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-2">Logo Header Kanan</label>
                         <div class="w-full h-28 bg-white border border-gray-300 rounded-lg flex items-center justify-center p-2 shadow-xs mb-2 relative overflow-hidden">
-                            @if(isset($settings['berakhlak_logo']) && $settings['berakhlak_logo'])
-                                <img src="{{ asset('storage/' . $settings['berakhlak_logo']) }}" alt="Logo Header Kanan" class="max-h-full max-w-full object-contain">
-                            @else
-                                <img src="https://diskominfo.probolinggokab.go.id/frontend/images/img-berakhlak.png" alt="Logo Header Kanan Default" class="max-h-full max-w-full object-contain">
-                            @endif
+                            @php
+                                $valBerakhlak = $settings['berakhlak_logo'] ?? '';
+                                $isTempBerakhlak = !empty($valBerakhlak) && (str_contains($valBerakhlak, 'tmp') || str_contains($valBerakhlak, 'Temp') || preg_match('/php[a-zA-Z0-9]{4,}/i', $valBerakhlak));
+                                $hasValidBerakhlak = !empty($valBerakhlak) && !$isTempBerakhlak;
+                                $adminBerakhlakUrl = $hasValidBerakhlak
+                                    ? ((str_starts_with($valBerakhlak, 'http://') || str_starts_with($valBerakhlak, 'https://')) ? $valBerakhlak : asset('storage/' . $valBerakhlak))
+                                    : 'https://diskominfo.probolinggokab.go.id/frontend/images/img-berakhlak.png';
+                            @endphp
+                            <img id="berakhlakLogoPreview" src="{{ $adminBerakhlakUrl }}" alt="Logo Header Kanan" class="max-h-full max-w-full object-contain">
                         </div>
-                        <input type="file" name="berakhlak_logo" accept="image/jpeg,image/png,image/webp,image/gif" class="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-brand-blue file:text-white hover:file:bg-brand-blue cursor-pointer">
+                        <input type="file" id="berakhlakLogoInput" name="berakhlak_logo" accept="image/jpeg,image/png,image/webp,image/gif" class="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-brand-blue file:text-white hover:file:bg-brand-blue cursor-pointer">
                         <p class="text-[10px] text-gray-500 mt-1"><i class="fas fa-info-circle mr-1 text-brand-blue"></i> Rekomendasi 600 &times; 200 px, format PNG transparan.</p>
                     </div>
 
@@ -120,6 +124,21 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         createCkEditor('#ck-footer-editor', 'Tuliskan deskripsi profil singkat yang tampil pada footer kiri website...');
+
+        const berakhlakInput = document.getElementById('berakhlakLogoInput');
+        const berakhlakPreview = document.getElementById('berakhlakLogoPreview');
+        if (berakhlakInput && berakhlakPreview) {
+            berakhlakInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        berakhlakPreview.src = evt.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
     });
 </script>
 @endpush

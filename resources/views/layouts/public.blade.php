@@ -6,11 +6,18 @@
     <title>@yield('title', $siteSettings['site_name'] ?? 'Bagian Pemerintahan Kabupaten Probolinggo')</title>
     @stack('meta')
     
-    {{-- Favicon --}}
+    {{-- Favicon & Logos --}}
     @php
         $faviconUrl = (isset($siteSettings['site_logo']) && $siteSettings['site_logo']) 
             ? asset('storage/' . $siteSettings['site_logo']) . '?v=' . time()
             : asset('favicon.png') . '?v=' . time();
+
+        $rawBerakhlak = $siteSettings['berakhlak_logo'] ?? '';
+        $isTempBerakhlak = !empty($rawBerakhlak) && (str_contains($rawBerakhlak, 'tmp') || str_contains($rawBerakhlak, 'Temp') || preg_match('/php[a-zA-Z0-9]{4,}/i', $rawBerakhlak));
+        $hasValidBerakhlak = !empty($rawBerakhlak) && !$isTempBerakhlak;
+        $berakhlakLogoUrl = $hasValidBerakhlak 
+            ? ((str_starts_with($rawBerakhlak, 'http://') || str_starts_with($rawBerakhlak, 'https://')) ? $rawBerakhlak : asset('storage/' . $rawBerakhlak))
+            : 'https://diskominfo.probolinggokab.go.id/frontend/images/img-berakhlak.png';
     @endphp
     <link rel="icon" type="image/png" href="{{ $faviconUrl }}">
     <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
@@ -208,11 +215,7 @@
 
                 <div class="flex items-center gap-1.5 sm:gap-4 flex-shrink-0">
                     <div class="block flex-shrink-0">
-                        @if(isset($siteSettings['berakhlak_logo']) && $siteSettings['berakhlak_logo'])
-                            <img src="{{ asset('storage/' . $siteSettings['berakhlak_logo']) }}" class="h-7 sm:h-8 md:h-10 xl:h-12 w-auto object-contain" alt="BerAKHLAK">
-                        @else
-                            <img src="https://diskominfo.probolinggokab.go.id/frontend/images/img-berakhlak.png" class="h-7 sm:h-8 md:h-10 xl:h-12 w-auto object-contain" alt="BerAKHLAK Default">
-                        @endif
+                        <img src="{{ $berakhlakLogoUrl }}" class="h-7 sm:h-8 md:h-10 xl:h-12 w-auto object-contain" alt="BerAKHLAK">
                     </div>
                     <!-- Hamburger Menu Button (Mobile) -->
                     <button onclick="toggleMobileMenu()" class="xl:hidden text-gray-600 hover:text-brand-blue-hover focus:outline-none p-1.5 sm:p-2 rounded-md hover:bg-gray-100 transition flex-shrink-0">
@@ -377,15 +380,6 @@
                         @endif
                     @endif
                 </nav>
-            </div>
-            
-            <!-- Optional Right Side Image like screenshot -->
-            <div class="absolute right-0 bottom-0 opacity-20 pointer-events-none hidden md:block">
-                @if(isset($siteSettings['berakhlak_logo']) && $siteSettings['berakhlak_logo'])
-                    <img src="{{ asset('storage/' . $siteSettings['berakhlak_logo']) }}" class="h-32 object-cover grayscale" alt="Background Element">
-                @else
-                    <img src="https://diskominfo.probolinggokab.go.id/frontend/images/img-berakhlak.png" class="h-32 object-cover grayscale" alt="Background Element">
-                @endif
             </div>
         </div>
     @endif
