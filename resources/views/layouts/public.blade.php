@@ -60,6 +60,24 @@
             font-family: 'Open Sans', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
         }
 
+        /* Responsive Landscape Banner Slider */
+        #heroCarousel {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            max-height: 550px;
+        }
+        @media (min-width: 640px) {
+            #heroCarousel {
+                aspect-ratio: 2 / 1;
+            }
+        }
+        @media (min-width: 1024px) {
+            #heroCarousel {
+                aspect-ratio: 21 / 9;
+            }
+        }
+
         @media (hover: hover) {
             .dropdown-wrapper:hover .dropdown-menu {
                 display: block !important;

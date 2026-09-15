@@ -2,7 +2,7 @@
 
 @section('content')
 <!-- Hero Slider Carousel (Sesuai Rujukan Diskominfo) -->
-<div class="relative w-full h-[450px] md:h-[550px] overflow-hidden bg-gray-900 group" id="heroCarousel">
+<div class="relative w-full aspect-[16/9] sm:aspect-[2/1] lg:aspect-[21/9] max-h-[550px] overflow-hidden bg-gray-900 group" id="heroCarousel">
     
     <!-- Slides Wrapper -->
     <div class="w-full h-full relative" id="carouselSlides">
@@ -18,17 +18,17 @@
                     </div>
                     
                     <!-- Content Container -->
-                    <div class="container mx-auto h-full pl-20 pr-6 md:pl-32 md:pr-16 flex items-center relative z-20">
+                    <div class="container mx-auto h-full px-12 sm:px-16 md:pl-28 md:pr-16 lg:pl-32 lg:pr-20 flex items-center relative z-20">
                         <div class="max-w-4xl text-white">
                             @if($index === 0)
-                                <h2 class="text-2xl sm:text-3xl md:text-[44px] font-['Poppins'] font-bold text-white leading-tight textToRead drop-shadow-lg mb-2 md:mb-3">
+                                <h2 class="text-base sm:text-2xl md:text-3xl lg:text-[40px] xl:text-[44px] font-['Poppins'] font-bold text-white leading-tight textToRead drop-shadow-lg mb-1 sm:mb-2 md:mb-3">
                                     Selamat Datang di Website
                                 </h2>
-                                <h3 class="text-base sm:text-xl md:text-2xl font-['Poppins'] font-bold text-white leading-snug textToRead drop-shadow-md">
+                                <h3 class="text-xs sm:text-base md:text-xl lg:text-2xl font-['Poppins'] font-bold text-white leading-snug textToRead drop-shadow-md line-clamp-2 md:line-clamp-none">
                                     {{ $siteSettings['site_name'] ?? 'Bagian Pemerintahan Kabupaten Probolinggo' }}
                                 </h3>
                             @else
-                                <h2 class="text-2xl sm:text-3xl md:text-[44px] font-['Poppins'] font-bold text-white leading-tight textToRead drop-shadow-lg">
+                                <h2 class="text-base sm:text-2xl md:text-3xl lg:text-[40px] xl:text-[44px] font-['Poppins'] font-bold text-white leading-tight textToRead drop-shadow-lg line-clamp-3 md:line-clamp-none">
                                     {{ $banner->title }}
                                 </h2>
                             @endif
@@ -42,12 +42,12 @@
                 <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://diskominfo.probolinggokab.go.id/slider_img/slider_sae.png');">
                     <div class="absolute inset-0 bg-black/40"></div>
                 </div>
-                <div class="container mx-auto h-full pl-20 pr-6 md:pl-32 md:pr-16 flex items-center relative z-20">
+                <div class="container mx-auto h-full px-12 sm:px-16 md:pl-28 md:pr-16 lg:pl-32 lg:pr-20 flex items-center relative z-20">
                     <div class="max-w-4xl text-white">
-                        <h2 class="text-2xl sm:text-3xl md:text-[44px] font-['Poppins'] font-bold text-white leading-tight textToRead drop-shadow-lg mb-2 md:mb-3">
+                        <h2 class="text-base sm:text-2xl md:text-3xl lg:text-[40px] xl:text-[44px] font-['Poppins'] font-bold text-white leading-tight textToRead drop-shadow-lg mb-1 sm:mb-2 md:mb-3">
                             Selamat Datang di Website
                         </h2>
-                        <h3 class="text-base sm:text-xl md:text-2xl font-['Poppins'] font-bold text-white leading-snug textToRead drop-shadow-md">
+                        <h3 class="text-xs sm:text-base md:text-xl lg:text-2xl font-['Poppins'] font-bold text-white leading-snug textToRead drop-shadow-md line-clamp-2 md:line-clamp-none">
                             {{ $siteSettings['site_name'] ?? 'Bagian Pemerintahan Kabupaten Probolinggo' }}
                         </h3>
                     </div>
@@ -58,9 +58,9 @@
                 <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://diskominfo.probolinggokab.go.id/slider_img/slider_kadis_hudan.jpg');">
                     <div class="absolute inset-0 bg-black/40"></div>
                 </div>
-                <div class="container mx-auto h-full pl-20 pr-6 md:pl-32 md:pr-16 flex items-center relative z-20">
+                <div class="container mx-auto h-full px-12 sm:px-16 md:pl-28 md:pr-16 lg:pl-32 lg:pr-20 flex items-center relative z-20">
                     <div class="max-w-4xl text-white">
-                        <h2 class="text-2xl sm:text-3xl md:text-[44px] font-['Poppins'] font-bold text-white leading-tight textToRead drop-shadow-lg">
+                        <h2 class="text-base sm:text-2xl md:text-3xl lg:text-[40px] xl:text-[44px] font-['Poppins'] font-bold text-white leading-tight textToRead drop-shadow-lg line-clamp-3 md:line-clamp-none">
                             Bagian Pemerintahan Sekretariat Daerah Kabupaten Probolinggo
                         </h2>
                     </div>
@@ -70,17 +70,17 @@
     </div>
 
     <!-- Navigation Arrow Left -->
-    <button onclick="prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center text-xl z-30 transition shadow-lg border border-white/20">
+    <button onclick="prevSlide()" class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center text-xs sm:text-base md:text-xl z-30 transition shadow-lg border border-white/20">
         <i class="fas fa-chevron-left"></i>
     </button>
 
     <!-- Navigation Arrow Right -->
-    <button onclick="nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center text-xl z-30 transition shadow-lg border border-white/20">
+    <button onclick="nextSlide()" class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center text-xs sm:text-base md:text-xl z-30 transition shadow-lg border border-white/20">
         <i class="fas fa-chevron-right"></i>
     </button>
 
     <!-- Slide Indicators -->
-    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-30" id="carouselIndicators">
+    <div class="absolute bottom-2.5 sm:bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5 sm:gap-2 z-30" id="carouselIndicators">
         <!-- Generated by JS -->
     </div>
 </div>
@@ -441,7 +441,7 @@
         indicatorsContainer.innerHTML = '';
         slides.forEach((_, idx) => {
             const dot = document.createElement('button');
-            dot.className = `w-3 h-3 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-amber-400 w-8' : 'bg-white/50 hover:bg-white'}`;
+            dot.className = `h-2 sm:h-3 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-amber-400 w-5 sm:w-8' : 'bg-white/50 hover:bg-white w-2 sm:w-3'}`;
             dot.onclick = () => goToSlide(idx);
             indicatorsContainer.appendChild(dot);
         });
@@ -465,9 +465,9 @@
         const dots = document.querySelectorAll('#carouselIndicators button');
         dots.forEach((dot, idx) => {
             if (idx === currentSlide) {
-                dot.className = 'w-8 h-3 rounded-full bg-amber-400 transition-all duration-300';
+                dot.className = 'w-5 sm:w-8 h-2 sm:h-3 rounded-full bg-amber-400 transition-all duration-300';
             } else {
-                dot.className = 'w-3 h-3 rounded-full bg-white/50 hover:bg-white transition-all duration-300';
+                dot.className = 'w-2 sm:w-3 h-2 sm:h-3 rounded-full bg-white/50 hover:bg-white transition-all duration-300';
             }
         });
 
