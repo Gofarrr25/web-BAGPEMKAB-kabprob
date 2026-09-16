@@ -14,7 +14,7 @@
                 <i class="fas fa-arrow-left"></i> Kembali ke Galeri
             </a>
             <h1 class="text-3xl lg:text-4xl font-extrabold text-gray-900 leading-tight">{{ $gallery->title }}</h1>
-            <p class="text-sm text-gray-500 mt-2"><i class="far fa-calendar-alt text-brand-blue mr-2"></i>Dipublikasikan pada {{ $gallery->created_at->format('d F Y, H:i') }}</p>
+            <p class="text-sm text-gray-500 mt-2"><i class="far fa-calendar-alt text-brand-blue mr-2"></i>Dipublikasikan pada <span class="font-date uppercase">{{ strtoupper($gallery->created_at->locale('id')->translatedFormat('d F Y, H:i')) }}</span></p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-10">
@@ -96,9 +96,9 @@
                                 <h3 class="text-sm font-bold text-brand-blue group-hover:text-brand-blue-hover transition line-clamp-2 leading-snug">
                                     <a href="{{ route('frontend.foto.detail', $lGallery->id) }}">{{ $lGallery->title }}</a>
                                 </h3>
-                                <div class="text-xs text-gray-400 mt-1 flex items-center gap-1 font-sans">
+                                <div class="text-xs text-gray-400 mt-1 flex items-center gap-1">
                                     <i class="far fa-calendar-alt text-xs"></i>
-                                    <span>{{ $lGallery->created_at->format('d F Y') }}</span>
+                                    <span class="font-date uppercase">{{ strtoupper($lGallery->created_at->locale('id')->translatedFormat('d F Y')) }}</span>
                                 </div>
                             </div>
                         </div>

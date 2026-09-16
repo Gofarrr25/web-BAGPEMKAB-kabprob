@@ -36,7 +36,7 @@
                 <!-- Meta Info Row (Clock Icon + Date - Category) -->
                 <div class="text-xs text-gray-500 flex items-center gap-1.5 font-semibold mb-3 mt-4">
                     <i class="far fa-clock text-brand-blue text-sm"></i>
-                    <span>{{ $post->created_at->format('d F Y') }}</span>
+                    <span class="font-date uppercase">{{ strtoupper($post->created_at->locale('id')->translatedFormat('d F Y')) }}</span>
                     <span>-</span>
                     <span class="text-gray-700 font-bold">{{ $post->category->name ?? 'Pemerintahan' }}</span>
                 </div>
@@ -88,9 +88,9 @@
                                 <h3 class="text-[15px] font-medium text-brand-blue group-hover:text-brand-blue transition line-clamp-2 leading-relaxed">
                                     <a href="{{ url('/informasi/' . $lPost->slug) }}">{{ $lPost->title }}</a>
                                 </h3>
-                                <div class="text-xs text-gray-400 mt-1 flex items-center gap-1 font-sans">
+                                <div class="text-xs text-gray-400 mt-1 flex items-center gap-1">
                                     <i class="far fa-clock text-xs"></i>
-                                    <span>{{ $lPost->created_at->format('d F Y') }}</span>
+                                    <span class="font-date uppercase">{{ strtoupper($lPost->created_at->locale('id')->translatedFormat('d F Y')) }}</span>
                                 </div>
                             </div>
                         </div>

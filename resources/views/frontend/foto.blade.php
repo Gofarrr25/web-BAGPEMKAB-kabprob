@@ -60,7 +60,7 @@
                         @else
                             <!-- Tanggal untuk single photo -->
                             <p class="text-xs text-gray-300 flex items-center gap-1 opacity-80 group-hover:opacity-100 transition">
-                                <i class="far fa-calendar-alt"></i> {{ $photo->created_at->format('d M Y') }}
+                                <i class="far fa-calendar-alt"></i> <span class="font-date uppercase">{{ strtoupper($photo->created_at->locale('id')->translatedFormat('d M Y')) }}</span>
                             </p>
                         @endif
                     </div>

@@ -142,7 +142,7 @@
                     </td>
 
                     <td class="px-4 py-4 text-gray-600 border-r border-gray-100 text-xs whitespace-nowrap">{{ $doc->category }}</td>
-                    <td class="px-4 py-4 text-gray-600 text-center text-xs font-mono whitespace-nowrap">{{ $doc->created_at->format('d-m-Y') }}</td>
+                    <td class="px-4 py-4 text-gray-600 text-center text-xs whitespace-nowrap"><span class="font-date uppercase">{{ $doc->created_at->format('d-m-Y') }}</span></td>
                 </tr>
                 @empty
                 <tr>

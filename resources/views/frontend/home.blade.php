@@ -119,13 +119,13 @@
                                     $day = $lPost->created_at->format('d');
                                     $monthInt = (int)$lPost->created_at->format('m');
                                     $year = $lPost->created_at->format('Y');
-                                    $monthName = $monthsId[$monthInt];
+                                    $monthName = strtoupper($monthsId[$monthInt]);
                                 @endphp
                                 <div class="absolute top-0 left-0 flex shadow">
-                                    <div class="bg-brand-blue text-white font-bold text-lg px-3 py-1.5 flex items-center justify-center">
+                                    <div class="bg-brand-blue text-white font-date text-lg px-3 py-1.5 flex items-center justify-center">
                                         {{ $day }}
                                     </div>
-                                    <div class="bg-white text-gray-800 font-bold text-[11px] md:text-xs px-3 py-1.5 flex items-center justify-center tracking-wide">
+                                    <div class="bg-white text-gray-800 font-date text-[11px] md:text-xs px-3 py-1.5 flex items-center justify-center tracking-wide uppercase">
                                         {{ $monthName }} {{ $year }}
                                     </div>
                                 </div>
@@ -287,7 +287,7 @@
                         @endphp
                         
                         <!-- Badge Tanggal (Sesuai Submenu) -->
-                        <div class="absolute -bottom-5 left-6 md:left-7 bg-brand-blue text-white text-[13px] md:text-sm font-bold px-5 py-2.5 shadow-sm whitespace-nowrap z-30 pointer-events-none">
+                        <div class="absolute -bottom-5 left-6 md:left-7 bg-brand-blue text-white text-[13px] md:text-sm font-date px-5 py-2.5 shadow-sm whitespace-nowrap z-30 pointer-events-none uppercase">
                             {{ $formattedDate }}
                         </div>
                     </div>

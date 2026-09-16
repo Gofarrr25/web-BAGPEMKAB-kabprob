@@ -21,7 +21,7 @@
     @endphp
     <link rel="icon" type="image/png" href="{{ $faviconUrl }}">
     <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600;700;800&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Nunito:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600;700;800&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -29,6 +29,9 @@
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        'date': ['Montserrat', 'sans-serif'],
+                    },
                     colors: {
                         'brand-blue': {
                             DEFAULT: '#1a365d',
@@ -45,6 +48,15 @@
     <style>
         body { font-family: 'Nunito', sans-serif; transition: font-size 0.2s ease, letter-spacing 0.2s ease, line-height 0.2s ease, font-weight 0.2s ease, filter 0.2s ease, background-color 0.2s ease, color 0.2s ease; }
         
+        /* Font khusus seluruh teks tanggal di website (Montserrat SemiBold & Uppercase) */
+        .font-date,
+        .date-text,
+        [data-date-text] {
+            font-family: 'Montserrat', sans-serif !important;
+            font-weight: 600 !important;
+            text-transform: uppercase !important;
+        }
+
         /* Font-family khusus navigasi menu utama & submenu (Desktop & Mobile) */
         header nav,
         header nav a,

@@ -165,7 +165,7 @@
                             </td>
                             <td class="text-gray-600 whitespace-nowrap">{{ $doc->category }}</td>
                             <td class="text-gray-600 whitespace-nowrap" data-sort="{{ $doc->document_date ?? $doc->created_at }}">
-                                {{ $doc->document_date ? \Carbon\Carbon::parse($doc->document_date)->format('d-m-Y') : $doc->created_at->format('d-m-Y') }}
+                                <span class="font-date uppercase">{{ $doc->document_date ? \Carbon\Carbon::parse($doc->document_date)->format('d-m-Y') : $doc->created_at->format('d-m-Y') }}</span>
                             </td>
                         </tr>
                     @endforeach

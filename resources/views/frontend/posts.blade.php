@@ -55,7 +55,7 @@
                             $formattedDate = strtoupper($day . ' ' . $monthName . ' ' . $year);
                         @endphp
                         
-                        <div class="absolute -bottom-5 left-6 md:left-7 bg-brand-blue text-white text-[13px] md:text-sm font-bold px-5 py-2.5 shadow-sm whitespace-nowrap">
+                        <div class="absolute -bottom-5 left-6 md:left-7 bg-brand-blue text-white text-[13px] md:text-sm font-date px-5 py-2.5 shadow-sm whitespace-nowrap uppercase">
                             {{ $formattedDate }}
                         </div>
                     </div>

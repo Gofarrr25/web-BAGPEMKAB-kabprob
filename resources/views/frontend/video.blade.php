@@ -125,7 +125,7 @@
                         @endphp
                         
                         <!-- Tanggal (Sesuai Submenu Berita) -->
-                        <div class="absolute -bottom-5 left-6 md:left-7 bg-brand-blue text-white text-[13px] md:text-sm font-bold px-5 py-2.5 shadow-sm whitespace-nowrap z-30 pointer-events-none">
+                        <div class="absolute -bottom-5 left-6 md:left-7 bg-brand-blue text-white text-[13px] md:text-sm font-date px-5 py-2.5 shadow-sm whitespace-nowrap z-30 pointer-events-none uppercase">
                             {{ $formattedDate }}
                         </div>
                     </div>

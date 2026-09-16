@@ -11,7 +11,7 @@
                 <i class="fas fa-arrow-left"></i> Kembali ke Galeri
             </a>
             <h1 class="text-3xl lg:text-4xl font-extrabold text-gray-900 leading-tight">{{ $gallery->title }}</h1>
-            <p class="text-sm text-gray-500 mt-2"><i class="far fa-clock text-amber-600 mr-2"></i>Dipublikasikan pada {{ $gallery->created_at->format('d F Y') }}</p>
+            <p class="text-sm text-gray-500 mt-2"><i class="far fa-clock text-amber-600 mr-2"></i>Dipublikasikan pada <span class="font-date uppercase">{{ strtoupper($gallery->created_at->locale('id')->translatedFormat('d F Y')) }}</span></p>
         </div>
 
         @php
